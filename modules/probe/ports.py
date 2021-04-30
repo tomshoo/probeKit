@@ -90,6 +90,8 @@ def scanner(host, port, timeout, protocol):
             for x in openports:
                 print(x)
 
+            openports.clear()
+
 
         else:
             if __tscanner(host, port, timeout):
@@ -113,6 +115,8 @@ def scanner(host, port, timeout, protocol):
 
             for x in openports:
                 print(x)
+
+            openports.clear()
 
 
         else:
