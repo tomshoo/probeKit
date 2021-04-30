@@ -12,7 +12,7 @@ class moduleHelp():
 			print(f'Currently activated module: [{self.module}]')
 
 		print('Available modules are:')
-		for x in modules:
+		for x in self.modules:
 			print("\t", x)
 
 		print('type: about [Module] for more information')
