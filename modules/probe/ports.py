@@ -53,7 +53,7 @@ def __uscanner(host, port, timeout):
             return True
 
     except socket.error:
-        print('[Connection refused]')
+        print('[Err: Connection refused]')
         return False
 
     finally:

@@ -5,12 +5,18 @@
 import sys
 import mod_interpreter as modinterpreter
 import modules.data.OptInfHelp as data
+import modules.data.AboutList as Module
 
-oneliners = ["help", "exit", "terminate", None, '']
+def __returnval(value, pos):
+	try:
+		return value[int(pos)]
+	except Exception as e:
+		pass
+
+Module = Module.moduleHelp('')
+
+oneliners = ["help", "exit", "terminate", None, '', "list"]
 exitStatus = 0
-
-# All available module
-MODULE = ['probe']
 
 try:
 	while(True):
@@ -26,35 +32,29 @@ try:
 			Data = data.Help('')
 			Data.showHelp()
 
+		if value == "list":
+			Module.listmodules()
+
 		if value not in oneliners:
 			commandSplit = value.split()
-			if commandSplit[0] == "clear":
+
+			if __returnval(commandSplit, 0) == 'clear':
 				print(chr(27)+'2[j')
-				print('\033c')
+				print('\x33c')
 				print('\x1bc')
-				exitStatus = 0
-				def termFunc():
-					try:
-						if commandSplit[1] == "exit" or commandSplit[1] == "terminate": return True
-						else:
-							print('Error: Unknown Syntax')
-							return False
-					except:
-						return False
+				if __returnval(commandSplit, 1) == 'exit' or __returnval(commandSplit, 1) == 'terminate':
+					sys.exit()
 
-				if termFunc(): sys.exit()
+			elif __returnval(commandSplit, 0) == 'use':
+				if __returnval(commandSplit, 1) in Module.modules:
+					modinterpreter.interpreter(__returnval(commandSplit, 1))
 
-			elif commandSplit[0] == "use":
-				try:
-					if commandSplit[1] in MODULE:
-
-						# Call the module interpreter session
-						modinterpreter.interpreter(str(commandSplit[1]))
-
-					else:
-						print('Error: Unknown Module')
-				except Exception as e:
-					print(e)
+			elif __returnval(commandSplit, 0) == 'about':
+				if __returnval(commandSplit, 1):
+					Module.aboutModule(__returnval(commandSplit, 1))
+				else :
+					print('Error: No module specified')
+					exitStatus = 1
 
 			else:
 				print('Error: Invalid Syntax')
