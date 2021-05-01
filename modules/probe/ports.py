@@ -74,7 +74,7 @@ def __portinputislist(port):
 
 # Starts the actual scanner session
 def scanner(host, port, timeout, protocol):
-    if protocol == "tcp" or protocol == "TCP":
+    if protocol == "tcp" or protocol == "TCP" or protocol == 'tcp/ip' or protocol == 'TCP/IP':
         if __portinputislist(port):
             for x in range((int(str(port[0]))), (int(str(port[1]))+1)):
                 if __tscanner(host, int(x), timeout):

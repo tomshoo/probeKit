@@ -52,8 +52,12 @@ class Options():
 		if module == 'probe':
 			print(f'\n\t[*] LHOST => hosts ip4 address(required)(LHOST => lhost)')
 			print(f'\t[*] LPORT => ports to scan on host(required)(LPORT => lport)')
-			print(f'\t[*] PROTO => protocol to use for scanning(required)(PROTO => protocol)')
-			print(f'\t[*] TMOUT => time to wait for incomming packet in seconds(set to \'1\' by default)(TMOUT => timeout)\n')
+			print(FRED+f'\t             | values can be set as [portnumber(single portscan)] or [startport/endport(multiple portscan)]\n')
+			print(FWHITE+f'\t[*] PROTO => protocol to use for scanning(required)(PROTO => proto)')
+			print(FRED+f'\t             | Available protocols: ')
+			print(f'\t                                  | [TCP => tcp => TCP/IP => tcp/ip]')
+			print(f'\t                                  | [UDP => udp]\n')
+			print(FWHITE+f'\t[*] TMOUT => time to wait for incomming packet in seconds(set to \'1\' by default)(TMOUT => tmout)\n')
 
 		else:
 			raise Exception('Error: Invalid module')
@@ -80,9 +84,9 @@ class Info():
 				print(FRED+'\t[-] '+f'LPORT => {self.lport}')
 
 			if self.proto != '':
-				print(FGREEN+'\t[+]'+f'PROTO => {self.proto}')
+				print(FGREEN+'\t[+] '+f'PROTO => {self.proto}')
 			else:
-				print(FRED+'\t[-]'+f'PROTO => {self.proto}')
+				print(FRED+'\t[-] '+f'PROTO => {self.proto}')
 
 			print(FGREEN+f'\t[+] TMOUT => {self.timeout}\n')
 

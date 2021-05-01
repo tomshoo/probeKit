@@ -111,10 +111,10 @@ def interpreter(MODULE):
 						else:
 							LPORT = __returnval(cmdSplit, 2)
 
-					elif __returnval(cmdSplit, 1) == 'PROTO' or __returnval(cmdSplit, 1) == 'protocol':
+					elif __returnval(cmdSplit, 1) == 'PROTO' or __returnval(cmdSplit, 1) == 'proto':
 						PROTOCOL = __returnval(cmdSplit, 2)
 
-					elif __returnval(cmdSplit ,1) == 'TMOUT' or __returnval(cmdSplit, 1) == 'timeout':
+					elif __returnval(cmdSplit ,1) == 'TMOUT' or __returnval(cmdSplit, 1) == 'tmout':
 						TIMEOUT = __returnval(cmdSplit, 2)
 
 					else:
@@ -128,10 +128,10 @@ def interpreter(MODULE):
 					elif __returnval(cmdSplit, 1) == 'LPORT' or __returnval(cmdSplit, 1) == 'lport':
 						LPORT = ''
 
-					elif __returnval(cmdSplit, 1) == 'PROTO' or __returnval(cmdSplit, 1) == 'protocol':
+					elif __returnval(cmdSplit, 1) == 'PROTO' or __returnval(cmdSplit, 1) == 'proto':
 						PROTOCOL = ''
 
-					elif __returnval(cmdSplit, 1) == 'TMOUT' or __returnval(cmdSplit, 1) == 'timeout':
+					elif __returnval(cmdSplit, 1) == 'TMOUT' or __returnval(cmdSplit, 1) == 'tmout':
 						TIMEOUT = '1'
 
 					elif __returnval(cmdSplit, 1) == 'all':
