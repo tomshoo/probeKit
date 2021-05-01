@@ -3,18 +3,27 @@
 # This session will be called by the actual interpreter(also known as module selector) to run modules
 
 import sys
+from colorama import Fore, Back, init
 import modules.probe.ports as ports
 import modules.data.OptInfHelp as data
 
+FGREEN = Fore.GREEN
+FRED = Fore.RED
+FWHITE = Fore.WHITE
+
 # Calls the function based on the selected module
 def __run(lhost, lport, timeout, protocol, module):
-	if lhost == '' or lport == '':
-		raise Exception('Error: invalid arguments provided')
 	try:
-		if module == 'probe':
-			ports.scanner(lhost, lport, timeout, protocol)
-	except Exception as e:
-		print(e)
+		if lhost == '' or lport == '':
+			raise Exception(FRED+'Error: invalid arguments provided')
+		try:
+			if module == 'probe':
+				ports.scanner(lhost, lport, timeout, protocol)
+		except Exception as e:
+			print(e)
+
+	except KeyboardInterrupt as key:
+		print(FRED+'\nalert: KeyboardInterrupt detected\n')
 
 # Just a simple function to return values in a list and raise exception in such a way that the prog. doesn't break
 def __returnval(value, pos):
@@ -38,7 +47,7 @@ def interpreter(MODULE):
 	try:
 		while (True):
 
-			commands = input(f'probeKit:[{MODULE}] $> ')
+			commands = input(FWHITE+'probeKit:'+FRED+f'[{MODULE}]'+FGREEN+' $> '+FWHITE)
 
 			if commands == None or commands == '':
 				exitStatus = 'idle'
@@ -78,7 +87,7 @@ def interpreter(MODULE):
 				exitStatus = 0
 
 			if commands == 'getstat':
-				print(f'status: {exitStatus}')
+				print('status: '+FGREEN+f'{exitStatus}')
 
 			if commands == 'run':
 				try:
@@ -109,7 +118,7 @@ def interpreter(MODULE):
 						TIMEOUT = __returnval(cmdSplit, 2)
 
 					else:
-						print('Error: Invalid option')
+						print(FRED+'Error: Invalid option')
 
 				# Verb(or command) to unset options
 				if verb == 'unset':
@@ -132,7 +141,7 @@ def interpreter(MODULE):
 						TIMEOUT = '1'
 
 					else:
-						print('Error: Invalid option')
+						print(FRED+'Error: Invalid option')
 
 	except Exception as e:
 		print(e)

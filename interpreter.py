@@ -3,9 +3,14 @@
 # This is a module selector and doesn't use many commands as it is used to only select module
 
 import sys
+from colorama import Fore, Back, init
 import mod_interpreter as modinterpreter
 import modules.data.OptInfHelp as data
 import modules.data.AboutList as Module
+
+FGREEN = Fore.GREEN
+FRED = Fore.RED
+FWHITE = Fore.WHITE
 
 def __returnval(value, pos):
 	try:
@@ -20,7 +25,7 @@ exitStatus = 0
 
 try:
 	while(True):
-		value = input(f'[probkit]: {exitStatus}$> ')
+		value = input(FWHITE+'[probkit]:'+FGREEN+f' {exitStatus}'+FWHITE+'$> ')
 
 		if value == None or value == '':
 			exitStatus = "idle"
@@ -48,16 +53,20 @@ try:
 			elif __returnval(commandSplit, 0) == 'use':
 				if __returnval(commandSplit, 1) in Module.modules:
 					modinterpreter.interpreter(__returnval(commandSplit, 1))
+				elif not __returnval(commandSplit, 1):
+					print(FRED+'Error: Invalid no module specified')
+				else:
+					print(FRED+'Error: Invalid module specified')
 
 			elif __returnval(commandSplit, 0) == 'about':
 				if __returnval(commandSplit, 1):
 					Module.aboutModule(__returnval(commandSplit, 1))
 				else :
-					print('Error: No module specified')
+					print(FRED+'Error: No module specified')
 					exitStatus = 1
 
 			else:
-				print('Error: Invalid Syntax')
+				print(FRED+'Error: Invalid Syntax')
 
 except:
-	print(f'\nprobKit: exit status: {exitStatus}')
+	print(FRED+f'\nprobKit: exiting session')
