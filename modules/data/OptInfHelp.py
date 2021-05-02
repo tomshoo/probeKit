@@ -20,26 +20,28 @@ class Help():
 		if module == '':
 			print(FGREEN+'\nUsage: [verb] [options]')
 			print('Available verbs are: use, help, exit, terminate, clear\n')
-			print('\t use\t\t specify a module to use\n\t|\t\t usage: use [module]\n')
+			print('\t use\t\t specify a module to use\n\t\t\t | usage: use [module]\n')
 			print('\t help\t\t prints this help message\n')
 			print('\t list\t\t prints available modules\n')
-			print('\t about\t\t prints details about specified module\n\t|\t\t Usage: about [moduleName]\n')
+			print('\t about\t\t prints details about specified module\n\t\t\t | Usage: about [moduleName]\n')
 			print('\t exit\t\t exits the interpreter\n')
 			print('\t terminate\t alias for exit\n')
-			print('\t clear\t\t clears screen\n\t|\t\t usage: clear [option]\n\t|\t\t available options are: exit, terminate\n')
+			print('\t clear\t\t clears screen\n\t\t\t | usage: clear [option]\n\t\t\t | available options are: exit, terminate\n')
 
 		else:
 			print(FGREEN+'\nUsage: [verb] [options]')
 			print('Available verbs are: set, help, exit, back, info, options, clear, getstat, run\n')
 			print('\t options\t lists available options to configure\n')
 			print('\t info\t\t shows values assigned to each option\n')
-			print('\t set\t\t assignes values to available options\n\t|\t\t usage: set [option] [value]\n')
+			print('\t set\t\t assignes values to available options\n\t\t\t | usage: set [option] [value]\n')
 			print('\t help\t\t prints this help message\n')
 			print('\t exit\t\t exits the whole interpreter\n')
 			print('\t back\t\t moves back to the module selector\n')
 			print('\t getstat\t prints the status of previous verb\n')
 			print('\t clear\t\t clears screen\n')
 			print('\t run\t\t runs the selected module\n')
+			print('\t about\t\t prints details about specified module\n\t\t\t | Usage: about [moduleName]\n')
+			print('\t list\t\t prints available modules\n')
 
 # List available options for a selected module
 class Options():
@@ -60,7 +62,7 @@ class Options():
 			print(FWHITE+f'\t[*] TMOUT => time to wait for incomming packet in seconds(set to \'1\' by default)(TMOUT => tmout)\n')
 
 		else:
-			raise Exception('Error: Invalid module')
+			raise Exception(FRED+'Error: Invalid module')
 
 # List values assigned to various options of the module
 class Info():
@@ -88,7 +90,7 @@ class Info():
 			else:
 				print(FRED+'\t[-] '+f'PROTO => {self.proto}')
 
-			print(FGREEN+f'\t[+] TMOUT => {self.timeout}\n')
+			print(FGREEN+f'\t[*] TMOUT => {self.timeout}\n')
 
 		else:
 			raise Exception(FRED+'Error: Invalid module')

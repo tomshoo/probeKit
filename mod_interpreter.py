@@ -6,10 +6,13 @@ import sys
 from colorama import Fore, Back, init
 import modules.probe.ports as ports
 import modules.data.OptInfHelp as data
+import modules.data.AboutList as aboutList
 
 FGREEN = Fore.GREEN
 FRED = Fore.RED
 FWHITE = Fore.WHITE
+FYELLOW = Fore.YELLOW
+FBLUE = Fore.BLUE
 
 # Calls the function based on the selected module
 def __run(lhost, lport, timeout, protocol, module):
@@ -32,7 +35,7 @@ def __returnval(value, pos):
 	except Exception as e:
 		print(e)
 
-oneliners = ['info', 'options', 'exit', 'back', 'help', None, '', 'clear', 'getstat', 'run']
+oneliners = ['info', 'options', 'exit', 'back', 'help', None, '', 'clear', 'getstat', 'run', 'list']
 
 # Module interpreter function called by the actual interpreter
 def interpreter(MODULE):
@@ -47,7 +50,10 @@ def interpreter(MODULE):
 	try:
 		while (True):
 
-			commands = input(FWHITE+'probeKit:'+FRED+f'[{MODULE}]'+FGREEN+' $> '+FWHITE)
+			if MODULE == 'test':
+				commands = input(FRED+f'probeKit:[*{MODULE}*] $> '+FWHITE)
+			else:
+				commands = input(FWHITE+'probeKit:'+FBLUE+f'[{MODULE}]'+FGREEN+' $> '+FWHITE)
 
 			if commands == None or commands == '':
 				exitStatus = 'idle'
@@ -74,11 +80,14 @@ def interpreter(MODULE):
 				
 				exitStatus = 0
 
+			if commands == 'list':
+				aboutList.moduleHelp(MODULE).listmodules()
+
 			if commands == 'back':
 				break
 
 			if commands == 'exit':
-				sys.exit()
+				sys.exit(0)
 
 			if commands == 'clear':
 				print(chr(27)+'2[j')
@@ -102,26 +111,31 @@ def interpreter(MODULE):
 				# Verb(or command) to set options
 				if verb == 'set':
 					if __returnval(cmdSplit, 1) == 'LHOST' or __returnval(cmdSplit, 1) == 'lhost':
+						print(f'LHOST => {__returnval(cmdSplit, 2)}')
 						LHOST = __returnval(cmdSplit, 2)
 
 					elif __returnval(cmdSplit, 1) == 'LPORT' or __returnval(cmdSplit, 1) == 'lport':
 						if '/' in __returnval(cmdSplit, 2):
 							LPORT = __returnval(cmdSplit, 2).split('/')
+							print(f'LPORT => {LPORT}')
 						
 						else:
+							print(f'LPORT => {__returnval(cmdSplit, 2)}')
 							LPORT = __returnval(cmdSplit, 2)
 
 					elif __returnval(cmdSplit, 1) == 'PROTO' or __returnval(cmdSplit, 1) == 'proto':
+						print(f'PROTO => {__returnval(cmdSplit, 2)}')
 						PROTOCOL = __returnval(cmdSplit, 2)
 
 					elif __returnval(cmdSplit ,1) == 'TMOUT' or __returnval(cmdSplit, 1) == 'tmout':
+						print(f'TMOUT => {__returnval(cmdSplit, 2)}')
 						TIMEOUT = __returnval(cmdSplit, 2)
 
 					else:
 						print(FRED+'Error: Invalid option')
 
 				# Verb(or command) to unset options
-				if verb == 'unset':
+				elif verb == 'unset':
 					if __returnval(cmdSplit, 1) == 'LHOST' or __returnval(cmdSplit, 1) == 'lhost':
 						LHOST = ''
 
@@ -142,6 +156,26 @@ def interpreter(MODULE):
 
 					else:
 						print(FRED+'Error: Invalid option')
+
+				elif verb == 'use':
+					if __returnval(cmdSplit, 1):
+						if __returnval(cmdSplit, 1) in aboutList.moduleHelp.modules:
+							MODULE = __returnval(cmdSplit, 1)
+							print(FYELLOW+f'MODULE => {MODULE}')
+						else:
+							print(FRED+"Error: Invalid Module")
+					else:
+						print(FRED+'Error: No module specified')
+
+				elif verb == 'about':
+					if __returnval(cmdSplit, 1):
+						mod = __returnval(cmdSplit, 1)
+						aboutList.moduleHelp(mod).aboutModule(mod)
+					else:
+						aboutList.moduleHelp(MODULE).aboutModule(MODULE)
+
+				else:
+					print(FRED+'Error: Invalid syntax'+FWHITE)
 
 	except Exception as e:
 		print(e)
