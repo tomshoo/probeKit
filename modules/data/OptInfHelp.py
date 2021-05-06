@@ -61,17 +61,22 @@ class Options():
 			print(f'\t                                  | [UDP => udp]\n')
 			print(FWHITE+f'\t[*] TMOUT => time to wait for incomming packet in seconds(set to \'1\' by default)(TMOUT => tmout)\n')
 
+		elif module == 'osprobe':
+			print(f'\n\t[*] LHOST => hosts ip4 address(required)(LHOST => lhost)')
+			print(f'\t[*] TRYCT => number of tries to send the packet(set to \'1\' by default)(TRYC => tryc)\n')
+
 		else:
 			raise Exception(FRED+'Error: Invalid module')
 
 # List values assigned to various options of the module
 class Info():
-	def __init__(self, MODULE, LHOST, LPORT, PROTOCOL, TIMEOUT):
+	def __init__(self, MODULE, LHOST, LPORT, PROTOCOL, TIMEOUT, TRYCT):
 		self.module  = MODULE
 		self.lhost   = LHOST
 		self.lport   = LPORT
 		self.proto   = PROTOCOL
 		self.timeout = TIMEOUT
+		self.tryct = TRYCT
 
 	def showInfo(self):
 		if self.module == 'probe':
@@ -91,6 +96,14 @@ class Info():
 				print(FRED+'\t[-] '+f'PROTO => {self.proto}')
 
 			print(FGREEN+f'\t[*] TMOUT => {self.timeout}\n')
+
+		elif self.module == 'osprobe':
+			if self.lhost != '':
+				print(FGREEN+'\n\t[+] '+f'LHOST => {self.lhost}')
+			else:
+				print(FRED+'\n\t[+] '+f'LHOST => {self.lhost}')
+
+			print(FGREEN+f'\t[*] TRYCT => {self.tryct}\n')
 
 		else:
 			raise Exception(FRED+'Error: Invalid module')

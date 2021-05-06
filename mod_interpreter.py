@@ -7,6 +7,7 @@ from colorama import Fore, Back, init
 import modules.probe.ports as ports
 import modules.data.OptInfHelp as data
 import modules.data.AboutList as aboutList
+import modules.probe.osprobe as osprobe
 
 FGREEN = Fore.GREEN
 FRED = Fore.RED
@@ -15,13 +16,20 @@ FYELLOW = Fore.YELLOW
 FBLUE = Fore.BLUE
 
 # Calls the function based on the selected module
-def __run(lhost, lport, timeout, protocol, module):
+def __run(lhost, lport, timeout, tryct, protocol, module):
 	try:
-		if lhost == '' or lport == '':
-			raise Exception(FRED+'Error: invalid arguments provided')
 		try:
+			if lhost == '':
+				print(FRED+'Error: Invalid value for LHOST')
 			if module == 'probe':
+				if lport == '':
+					raise Exception(FRED+'Error: value for LPORT')
+				
 				ports.scanner(lhost, lport, timeout, protocol)
+		
+			elif module == 'osprobe':
+				osprobe.checkOS(lhost, tryct)
+
 		except Exception as e:
 			print(e)
 
@@ -33,7 +41,7 @@ def __returnval(value, pos):
 	try:
 		return value[int(pos)]
 	except Exception as e:
-		print(e)
+		pass
 
 oneliners = ['info', 'options', 'exit', 'back', 'help', None, '', 'clear', 'getstat', 'run', 'list']
 
@@ -45,6 +53,7 @@ def interpreter(MODULE):
 	LPORT = ''
 	PROTOCOL = ''
 	TIMEOUT = '1'
+	TRYCT = 1
 	exitStatus = 0
 
 	try:
@@ -72,7 +81,7 @@ def interpreter(MODULE):
 				exitStatus = 0
 
 			if commands == 'info':
-				Info = data.Info(MODULE, LHOST, LPORT, PROTOCOL,TIMEOUT)
+				Info = data.Info(MODULE, LHOST, LPORT, PROTOCOL, TIMEOUT, TRYCT)
 				try:
 					Info.showInfo()
 				except Exception as e:
@@ -100,7 +109,7 @@ def interpreter(MODULE):
 
 			if commands == 'run':
 				try:
-					__run(LHOST, LPORT, TIMEOUT, PROTOCOL, MODULE)
+					__run(LHOST, LPORT, TIMEOUT, TRYCT, PROTOCOL, MODULE)
 				except Exception as e:
 					print(e)
 
@@ -131,6 +140,10 @@ def interpreter(MODULE):
 						print(f'TMOUT => {__returnval(cmdSplit, 2)}')
 						TIMEOUT = __returnval(cmdSplit, 2)
 
+					elif __returnval(cmdSplit, 1) == 'TRYCT' or __returnval(cmdSplit, 1) == 'tryct':
+						print(f'TRYCT => {__returnval(cmdSplit, 2)}')
+						TRYC = int(__returnval(cmdSplit, 2))
+
 					else:
 						print(FRED+'Error: Invalid option')
 
@@ -148,10 +161,14 @@ def interpreter(MODULE):
 					elif __returnval(cmdSplit, 1) == 'TMOUT' or __returnval(cmdSplit, 1) == 'tmout':
 						TIMEOUT = '1'
 
+					elif __returnval(cmdSplit, 1) == 'TRYCT' or __returnval(cmdSplit, 1) == 'tryct':
+						TRYC = 1
+
 					elif __returnval(cmdSplit, 1) == 'all':
 						LHOST = ''
 						LPORT = ''
 						PROTOCOL = ''
+						TRYC = 1
 						TIMEOUT = '1'
 
 					else:

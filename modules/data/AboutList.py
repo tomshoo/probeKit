@@ -8,7 +8,7 @@ FWHITE = Fore.WHITE
 
 class moduleHelp():
 
-	modules = ['probe', 'test']
+	modules = ['probe', 'test', 'osprobe']
 
 	def __init__(self, MODULE):
 		self.module = MODULE
@@ -38,7 +38,24 @@ class moduleHelp():
 			print('\tTMOUT => timeout duration while awaiting connection')
 			print('\t\t | Can be called TMOUT or tmout')
 			print('\t\t | Defaults to 1 second duration\n')
+			print('\tPROTO => Protocol to be used to scan')
+			print('\t\t | Can be called PROTO or proto')
+			print('\t\t | Available Protocols are:')
+			print('\t\t                          | TCP => TCP/IP(tcp => tcp/ip)')
+			print('\t\t                          | UDP(udp)\n')
 
-		if moduleName == 'test':
+		elif moduleName == 'osprobe':
+			print(FRED+f'\nName:\t\t{moduleName}')
+			print('Type:\t\tRecon')
+			print('Description:\tThis module sends a basic ICMP packet to a host to determine its OS')
+			print('            \t| This module does not confirm the OS since it is just using TTL within the ICMP response\n')
+			print(FGREEN+'Available options:\n')
+			print('\tLHOST => IPv4 address or domain name of the target host')
+			print('\t\t | Can be called LHOST or lhost\n')
+			print('\tTRYCT => Number of times ICMP packet must be sent')
+			print('\t\t | Set to 1 packet by default')
+			print('\t\t | Can be called TRYCT ot tryct\n')
+
+		elif moduleName == 'test':
 			print(FRED+'This module is strictly for debugging purposes while creating the toolkit')
 			print(FRED+'Do not consider this as a usable module')
