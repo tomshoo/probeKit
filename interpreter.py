@@ -21,61 +21,59 @@ def __returnval(value, pos):
 
 Module = Module.moduleHelp('')
 
-oneliners = ["help", "exit", "terminate", None, '', "list"]
 exitStatus = FGREEN+'0'
 
 try:
 	while(True):
 		value = input(FWHITE+'[probkit]:'+f' {exitStatus}'+FWHITE+'$> ')
 
+		commandSplit = value.split()
+
 		if value == None or value == '':
 			exitStatus = FYELLOW+"idle"
 
-		if value == "exit" or value == "terminate":
+		elif value == "exit" or value == "terminate":
 			sys.exit()
 
-		if value == "help":
+		elif value == "help":
 			exitStatus = FGREEN+'0'
 			Data = data.Help('')
 			Data.showHelp()
 
-		if value == "list":
+		elif value == "list":
 			exitStatus = FGREEN+'0'
 			Module.listmodules()
 
-		if value not in oneliners:
-			commandSplit = value.split()
+		elif __returnval(commandSplit, 0) == 'clear':
+			print(chr(27)+'2[j')
+			print('\x33c')
+			print('\x1bc')
+			exitStatus = FGREEN+'0'
+			if __returnval(commandSplit, 1) == 'exit' or __returnval(commandSplit, 1) == 'terminate':
+				sys.exit()
 
-			if __returnval(commandSplit, 0) == 'clear':
-				print(chr(27)+'2[j')
-				print('\x33c')
-				print('\x1bc')
+		elif __returnval(commandSplit, 0) == 'use':
+			if __returnval(commandSplit, 1) in Module.modules:
 				exitStatus = FGREEN+'0'
-				if __returnval(commandSplit, 1) == 'exit' or __returnval(commandSplit, 1) == 'terminate':
-					sys.exit()
-
-			elif __returnval(commandSplit, 0) == 'use':
-				if __returnval(commandSplit, 1) in Module.modules:
-					exitStatus = FGREEN+'0'
-					modinterpreter.interpreter(__returnval(commandSplit, 1))
-				elif not __returnval(commandSplit, 1):
-					print(FRED+'Error: Invalid no module specified')
-					exitStatus = FRED+'1'
-				else:
-					print(FRED+'Error: Invalid module specified')
-					exitStatus = FRED+'1'
-
-			elif __returnval(commandSplit, 0) == 'about':
-				if __returnval(commandSplit, 1):
-					Module.aboutModule(__returnval(commandSplit, 1))
-					exitStatus = FGREEN+'0'
-				else :
-					print(FRED+'Error: No module specified')
-					exitStatus = FRED+'1'
-
-			else:
-				print(FRED+'Error: Invalid Syntax')
+				modinterpreter.interpreter(__returnval(commandSplit, 1))
+			elif not __returnval(commandSplit, 1):
+				print(FRED+'Error: Invalid no module specified')
 				exitStatus = FRED+'1'
+			else:
+				print(FRED+'Error: Invalid module specified')
+				exitStatus = FRED+'1'
+
+		elif __returnval(commandSplit, 0) == 'about':
+			if __returnval(commandSplit, 1):
+				Module.aboutModule(__returnval(commandSplit, 1))
+				exitStatus = FGREEN+'0'
+			else :
+				print(FRED+'Error: No module specified')
+				exitStatus = FRED+'1'
+
+		else:
+			print(FRED+'Error: Invalid Syntax')
+			exitStatus = FRED+'1'
 
 except:
 	print(FRED+f'\nprobKit: exiting session')

@@ -43,8 +43,6 @@ def __returnval(value, pos):
 	except Exception as e:
 		pass
 
-oneliners = ['info', 'options', 'exit', 'back', 'help', None, '', 'clear', 'getstat', 'run', 'list']
-
 # Module interpreter function called by the actual interpreter
 def interpreter(MODULE):
 
@@ -64,14 +62,18 @@ def interpreter(MODULE):
 			else:
 				commands = input(FWHITE+'probeKit:'+FBLUE+f'[{MODULE}]'+FGREEN+' $> '+FWHITE)
 
+			if commands != None or commands != '':
+				cmdSplit = commands.split()
+				verb = __returnval(cmdSplit, 0)
+
 			if commands == None or commands == '':
 				exitStatus = 'idle'
 
-			if commands == 'help':
+			elif verb == 'help':
 				Data = data.Help(MODULE)
 				Data.showHelp()
 
-			if commands == 'options':
+			elif verb == 'options':
 				Option = data.Options(MODULE)
 				try:
 					Option.showOptions()
@@ -80,7 +82,7 @@ def interpreter(MODULE):
 
 				exitStatus = 0
 
-			if commands == 'info':
+			elif verb == 'info':
 				Info = data.Info(MODULE, LHOST, LPORT, PROTOCOL, TIMEOUT, TRYCT)
 				try:
 					Info.showInfo()
@@ -89,110 +91,107 @@ def interpreter(MODULE):
 				
 				exitStatus = 0
 
-			if commands == 'list':
+			elif verb == 'list':
 				aboutList.moduleHelp(MODULE).listmodules()
 
-			if commands == 'back':
+			elif verb == 'back':
 				break
 
-			if commands == 'exit':
+			elif verb == 'exit':
 				sys.exit(0)
 
-			if commands == 'clear':
+			elif verb == 'clear':
 				print(chr(27)+'2[j')
 				print('\033c')
 				print('\x1bc')
 				exitStatus = 0
 
-			if commands == 'getstat':
+			elif verb == 'getstat':
 				print('status: '+FGREEN+f'{exitStatus}')
 
-			if commands == 'run':
+			elif verb == 'run':
 				try:
 					__run(LHOST, LPORT, TIMEOUT, TRYCT, PROTOCOL, MODULE)
 				except Exception as e:
 					print(e)
 
-			if commands not in oneliners:
-				cmdSplit = commands.split()
-				verb = cmdSplit[0]
 
-				# Verb(or command) to set options
-				if verb == 'set':
-					if __returnval(cmdSplit, 1) == 'LHOST' or __returnval(cmdSplit, 1) == 'lhost':
-						print(f'LHOST => {__returnval(cmdSplit, 2)}')
-						LHOST = __returnval(cmdSplit, 2)
+			# Verb(or command) to set options
+			elif verb == 'set':
+				if __returnval(cmdSplit, 1) == 'LHOST' or __returnval(cmdSplit, 1) == 'lhost':
+					print(f'LHOST => {__returnval(cmdSplit, 2)}')
+					LHOST = __returnval(cmdSplit, 2)
 
-					elif __returnval(cmdSplit, 1) == 'LPORT' or __returnval(cmdSplit, 1) == 'lport':
-						if '/' in __returnval(cmdSplit, 2):
-							LPORT = __returnval(cmdSplit, 2).split('/')
-							print(f'LPORT => {LPORT}')
+				elif __returnval(cmdSplit, 1) == 'LPORT' or __returnval(cmdSplit, 1) == 'lport':
+					if '/' in __returnval(cmdSplit, 2):
+						LPORT = __returnval(cmdSplit, 2).split('/')
+						print(f'LPORT => {LPORT}')
 						
-						else:
-							print(f'LPORT => {__returnval(cmdSplit, 2)}')
-							LPORT = __returnval(cmdSplit, 2)
-
-					elif __returnval(cmdSplit, 1) == 'PROTO' or __returnval(cmdSplit, 1) == 'proto':
-						print(f'PROTO => {__returnval(cmdSplit, 2)}')
-						PROTOCOL = __returnval(cmdSplit, 2)
-
-					elif __returnval(cmdSplit ,1) == 'TMOUT' or __returnval(cmdSplit, 1) == 'tmout':
-						print(f'TMOUT => {__returnval(cmdSplit, 2)}')
-						TIMEOUT = __returnval(cmdSplit, 2)
-
-					elif __returnval(cmdSplit, 1) == 'TRYCT' or __returnval(cmdSplit, 1) == 'tryct':
-						print(f'TRYCT => {__returnval(cmdSplit, 2)}')
-						TRYC = int(__returnval(cmdSplit, 2))
-
 					else:
-						print(FRED+'Error: Invalid option')
+						print(f'LPORT => {__returnval(cmdSplit, 2)}')
+						LPORT = __returnval(cmdSplit, 2)
 
-				# Verb(or command) to unset options
-				elif verb == 'unset':
-					if __returnval(cmdSplit, 1) == 'LHOST' or __returnval(cmdSplit, 1) == 'lhost':
-						LHOST = ''
+				elif __returnval(cmdSplit, 1) == 'PROTO' or __returnval(cmdSplit, 1) == 'proto':
+					print(f'PROTO => {__returnval(cmdSplit, 2)}')
+					PROTOCOL = __returnval(cmdSplit, 2)
 
-					elif __returnval(cmdSplit, 1) == 'LPORT' or __returnval(cmdSplit, 1) == 'lport':
-						LPORT = ''
+				elif __returnval(cmdSplit ,1) == 'TMOUT' or __returnval(cmdSplit, 1) == 'tmout':
+					print(f'TMOUT => {__returnval(cmdSplit, 2)}')
+					TIMEOUT = __returnval(cmdSplit, 2)
 
-					elif __returnval(cmdSplit, 1) == 'PROTO' or __returnval(cmdSplit, 1) == 'proto':
-						PROTOCOL = ''
-
-					elif __returnval(cmdSplit, 1) == 'TMOUT' or __returnval(cmdSplit, 1) == 'tmout':
-						TIMEOUT = '1'
-
-					elif __returnval(cmdSplit, 1) == 'TRYCT' or __returnval(cmdSplit, 1) == 'tryct':
-						TRYC = 1
-
-					elif __returnval(cmdSplit, 1) == 'all':
-						LHOST = ''
-						LPORT = ''
-						PROTOCOL = ''
-						TRYC = 1
-						TIMEOUT = '1'
-
-					else:
-						print(FRED+'Error: Invalid option')
-
-				elif verb == 'use':
-					if __returnval(cmdSplit, 1):
-						if __returnval(cmdSplit, 1) in aboutList.moduleHelp.modules:
-							MODULE = __returnval(cmdSplit, 1)
-							print(FYELLOW+f'MODULE => {MODULE}')
-						else:
-							print(FRED+"Error: Invalid Module")
-					else:
-						print(FRED+'Error: No module specified')
-
-				elif verb == 'about':
-					if __returnval(cmdSplit, 1):
-						mod = __returnval(cmdSplit, 1)
-						aboutList.moduleHelp(mod).aboutModule(mod)
-					else:
-						aboutList.moduleHelp(MODULE).aboutModule(MODULE)
+				elif __returnval(cmdSplit, 1) == 'TRYCT' or __returnval(cmdSplit, 1) == 'tryct':
+					print(f'TRYCT => {__returnval(cmdSplit, 2)}')
+					TRYCT = int(__returnval(cmdSplit, 2))
 
 				else:
-					print(FRED+'Error: Invalid syntax'+FWHITE)
+					print(FRED+'Error: Invalid option')
+
+			# Verb(or command) to unset options
+			elif verb == 'unset':
+				if __returnval(cmdSplit, 1) == 'LHOST' or __returnval(cmdSplit, 1) == 'lhost':
+					LHOST = ''
+
+				elif __returnval(cmdSplit, 1) == 'LPORT' or __returnval(cmdSplit, 1) == 'lport':
+					LPORT = ''
+
+				elif __returnval(cmdSplit, 1) == 'PROTO' or __returnval(cmdSplit, 1) == 'proto':
+					PROTOCOL = ''
+
+				elif __returnval(cmdSplit, 1) == 'TMOUT' or __returnval(cmdSplit, 1) == 'tmout':
+					TIMEOUT = '1'
+
+				elif __returnval(cmdSplit, 1) == 'TRYCT' or __returnval(cmdSplit, 1) == 'tryct':
+					TRYC = 1
+
+				elif __returnval(cmdSplit, 1) == 'all':
+					LHOST = ''
+					LPORT = ''
+					PROTOCOL = ''
+					TRYC = 1
+					TIMEOUT = '1'
+
+				else:
+					print(FRED+'Error: Invalid option')
+
+			elif verb == 'use':
+				if __returnval(cmdSplit, 1):
+					if __returnval(cmdSplit, 1) in aboutList.moduleHelp.modules:
+						MODULE = __returnval(cmdSplit, 1)
+						print(FYELLOW+f'MODULE => {MODULE}')
+					else:
+						print(FRED+"Error: Invalid Module")
+				else:
+					print(FRED+'Error: No module specified')
+
+			elif verb == 'about':
+				if __returnval(cmdSplit, 1):
+					mod = __returnval(cmdSplit, 1)
+					aboutList.moduleHelp(mod).aboutModule(mod)
+				else:
+					aboutList.moduleHelp(MODULE).aboutModule(MODULE)
+
+			else:
+				print(FRED+'Error: Invalid syntax'+FWHITE)
 
 	except Exception as e:
 		print(e)
