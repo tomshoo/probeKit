@@ -12,7 +12,7 @@ Not yet tested no DOS systems
 # Installation
 This toolkit does not require any extra configurations as it is a basic plug'n'play toolkit.
 
-`git clone https://github.com/theEndurance-del/`
+`git clone https://github.com/theEndurance-del/probeKit.git`
 
 # Usage:
 Start the interpreter by typing the following in your terminal:
