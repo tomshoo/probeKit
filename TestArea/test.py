@@ -1,18 +1,14 @@
 import argparse
-from scapy.all import *
+import nmap
+import json
+
+scanner = nmap.PortScanner()
 
 parser = argparse.ArgumentParser()
 parser.add_argument('address', help='Hostname')
 args=parser.parse_args()
 
-target=args.address
+target = args.address
 
-pkt  = IP(dst=target)/TCP(flags='S', dport=443)
-isn = pkt.seq
-rpkt = sr1(pkt)
-
-sequence = isn + 1
-payload='ACK'
-acknowledge=rpkt[TCP].ack
-
-#opkt=send(IP(dst=target)/TCP(flags='A', dport=443, ack=acknowledge, seq=sequence))
+OSresult = scanner.scan(hosts=target, arguments="-O")['scan'][target]['osmatch']
+print(type(OSresult))
