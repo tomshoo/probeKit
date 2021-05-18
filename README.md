@@ -3,7 +3,7 @@ A simple tool written in Python for basic reconnaissance
 
 # Requirements:
 
-Python: `3.x`
+Python: `3.x`, Python `3.x` compatible pip, nmap, python-scapy, python-nmap
 
 OS: Unix based operating system(macOS, Linux, etc.)
 
@@ -13,6 +13,8 @@ Not yet tested no DOS systems
 This toolkit does not require any extra configurations as it is a basic plug'n'play toolkit.
 
 `git clone https://github.com/theEndurance-del/probeKit.git`
+
+`pip install -r requirements.txt`
 
 # Usage:
 Start the interpreter by typing the following in your terminal:
