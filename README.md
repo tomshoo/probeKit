@@ -1,7 +1,7 @@
-## probeKit ##
+# probeKit
 A simple tool written in Python for basic reconnaissance
 
-## Requirements: ##
+# Requirements:
 
 Python: `3.x`, Python `3.x` compatible pip, nmap, python-scapy, python-nmap
 
@@ -9,14 +9,14 @@ OS: Unix based operating system(macOS, Linux, etc.)
 
 Not yet tested no DOS systems
 
-## Installation ##
+# Installation
 This toolkit does not require any extra configurations as it is a basic plug'n'play toolkit.
 
-# Debian/Ubuntu
+## Debian/Ubuntu ##
 
 `sudo apt install nmap`
 
-# ArchLinux
+## ArchLinux ##
 
 `sudo pacman -Sy nmap`
 
@@ -24,7 +24,7 @@ This toolkit does not require any extra configurations as it is a basic plug'n'p
 
 `pip install -r requirements.txt`
 
-## Usage: ##
+# Usage:
 Start the interpreter by typing the following in your terminal:
 `python ./probeKit/interpreter.py`
 
@@ -44,4 +44,4 @@ To run the module simply type `run`
 
 *Note: This project is still not completed as a whole and still requires a lot of rewriting any suggestions for improvement are kindly accepted but may require some time to be worked upon*
 
-# Thank You!!
+## Thank You!! ##
