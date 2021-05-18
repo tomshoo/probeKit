@@ -14,15 +14,19 @@ This toolkit does not require any extra configurations as it is a basic plug'n'p
 
 ## Debian/Ubuntu ##
 
-`sudo apt install nmap`
+```
+sudo apt install nmap
+git clone https://github.com/theEndurance-del/probeKit.git
+pip install -r requirements.txt
+```
 
 ## ArchLinux ##
 
-`sudo pacman -Sy nmap`
-
-`git clone https://github.com/theEndurance-del/probeKit.git`
-
-`pip install -r requirements.txt`
+```
+sudo pacman -Sy nmap
+git clone https://github.com/theEndurance-del/probeKit.git
+pip install -r requirements.txt
+```
 
 # Usage:
 Start the interpreter by typing the following in your terminal:
