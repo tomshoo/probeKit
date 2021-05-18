@@ -16,19 +16,20 @@ FYELLOW = Fore.YELLOW
 FBLUE = Fore.BLUE
 
 # Calls the function based on the selected module
-def __run(lhost, lport, timeout, tryct, protocol, module):
+def __run(lhost, lport, timeout, tryct, nmap, protocol, module):
 	try:
 		try:
 			if lhost == '':
 				print(FRED+'Error: Invalid value for LHOST')
-			if module == 'probe':
-				if lport == '':
-					raise Exception(FRED+'Error: value for LPORT')
+			else:
+				if module == 'probe':
+					if lport == '':
+						raise Exception(FRED+'Error: value for LPORT')
 				
-				ports.scanner(lhost, lport, timeout, protocol)
+					ports.scanner(lhost, lport, timeout, protocol)
 		
-			elif module == 'osprobe':
-				osprobe.checkOS(lhost, tryct)
+				elif module == 'osprobe':
+					osprobe.checkOS(lhost, tryct, nmap).scanner()
 
 		except Exception as e:
 			print(e)
@@ -52,6 +53,7 @@ def interpreter(MODULE):
 	PROTOCOL = ''
 	TIMEOUT = '1'
 	TRYCT = 1
+	NMAP = 0
 	exitStatus = 0
 
 	try:
@@ -83,7 +85,7 @@ def interpreter(MODULE):
 				exitStatus = 0
 
 			elif verb == 'info':
-				Info = data.Info(MODULE, LHOST, LPORT, PROTOCOL, TIMEOUT, TRYCT)
+				Info = data.Info(MODULE, LHOST, LPORT, PROTOCOL, TIMEOUT, TRYCT, NMAP)
 				try:
 					Info.showInfo()
 				except Exception as e:
@@ -111,7 +113,7 @@ def interpreter(MODULE):
 
 			elif verb == 'run':
 				try:
-					__run(LHOST, LPORT, TIMEOUT, TRYCT, PROTOCOL, MODULE)
+					__run(LHOST, LPORT, TIMEOUT, TRYCT, NMAP, PROTOCOL, MODULE)
 				except Exception as e:
 					print(e)
 
@@ -143,6 +145,10 @@ def interpreter(MODULE):
 					print(f'TRYCT => {__returnval(cmdSplit, 2)}')
 					TRYCT = int(__returnval(cmdSplit, 2))
 
+				elif __returnval(cmdSplit, 1) == 'NMAP' or __returnval(cmdSplit, 1) == 'nmap':
+					print(f'NMAP  => {__returnval(cmdSplit, 2)}')
+					NMAP = int(__returnval(cmdSplit, 2))
+
 				else:
 					print(FRED+'Error: Invalid option')
 
@@ -161,13 +167,16 @@ def interpreter(MODULE):
 					TIMEOUT = '1'
 
 				elif __returnval(cmdSplit, 1) == 'TRYCT' or __returnval(cmdSplit, 1) == 'tryct':
-					TRYC = 1
+					TRYCT = 1
+				elif __returnval(cmdSplit, 1) == 'NMAP' or __returnval(cmdSplit, 1) == 'nmap':
+					NMAP = 0
 
 				elif __returnval(cmdSplit, 1) == 'all':
 					LHOST = ''
 					LPORT = ''
 					PROTOCOL = ''
-					TRYC = 1
+					TRYCT = 1
+					NMAP = 0
 					TIMEOUT = '1'
 
 				else:
