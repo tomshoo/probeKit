@@ -70,13 +70,14 @@ class Options():
 
 # List values assigned to various options of the module
 class Info():
-	def __init__(self, MODULE, LHOST, LPORT, PROTOCOL, TIMEOUT, TRYCT):
+	def __init__(self, MODULE, LHOST, LPORT, PROTOCOL, TIMEOUT, TRYCT, NMAP):
 		self.module  = MODULE
 		self.lhost   = LHOST
 		self.lport   = LPORT
 		self.proto   = PROTOCOL
 		self.timeout = TIMEOUT
 		self.tryct = TRYCT
+		self.nmap = NMAP
 
 	def showInfo(self):
 		if self.module == 'probe':
@@ -103,6 +104,7 @@ class Info():
 			else:
 				print(FRED+'\n\t[+] '+f'LHOST => {self.lhost}')
 
+			print(FGREEN+'\t[+] '+f'NMAP  => {self.nmap}')
 			print(FGREEN+f'\t[*] TRYCT => {self.tryct}\n')
 
 		else:
