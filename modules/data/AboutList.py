@@ -55,6 +55,10 @@ class moduleHelp():
 			print('\tTRYCT => Number of times ICMP packet must be sent')
 			print('\t\t | Set to 1 packet by default')
 			print('\t\t | Can be called TRYCT ot tryct\n')
+			print('\tNMAP  => Run an nmap scan')
+			print('\t\t | 0 for false')
+			print('\t\t | 1 for true')
+			print(f'{FRED}\t\t | Warning: It is an active scanning method hence use it on your own risk')
 
 		elif moduleName == 'test':
 			print(FRED+'This module is strictly for debugging purposes while creating the toolkit')
