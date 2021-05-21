@@ -26,7 +26,7 @@ def __run(lhost, lport, timeout, tryct, nmap, protocol, module):
 					if lport == '':
 						raise Exception(FRED+'Error: value for LPORT')
 				
-					ports.scanner(lhost, lport, timeout, protocol)
+					ports.scanner(lhost, lport, timeout, protocol, tryct)
 		
 				elif module == 'osprobe':
 					osprobe.checkOS(lhost, tryct, nmap).scanner()

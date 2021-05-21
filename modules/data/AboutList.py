@@ -14,6 +14,7 @@ class moduleHelp():
 		self.module = MODULE
 
 	def listmodules(self):
+		# Checks if there is any active module
 		if self.module != '':
 			print('Currently activated module: '+FRED+f'[{self.module}]')
 
@@ -23,6 +24,7 @@ class moduleHelp():
 
 		print(FWHITE+'type: about [Module] for more information')
 
+	# Prints data about a give module will print data without argument if a module is active
 	def aboutModule(self, moduleName):
 		if moduleName == 'probe':
 			print(FRED+f'\nName:\t\t{moduleName}')
@@ -60,6 +62,7 @@ class moduleHelp():
 			print('\t\t | 1 for true')
 			print(f'{FRED}\t\t | Warning: It is an active scanning method hence use it on your own risk')
 
+		# This was supposed to be a test module just for testing out the data category
 		elif moduleName == 'test':
 			print(FRED+'This module is strictly for debugging purposes while creating the toolkit')
 			print(FRED+'Do not consider this as a usable module')

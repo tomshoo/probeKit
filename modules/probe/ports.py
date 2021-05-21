@@ -33,32 +33,36 @@ def __tscanner(host, port, timeout):
         socktcp.close()
 
 # UDP port scanner function
-def __uscanner(host, port, timeout):
+def __uscanner(host, port, timeout, tryct):
     Port = int(port)
     TMOUT = int(timeout)
+    portstatus = False
     sockudp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     sockicmp = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_ICMP)
 
-    try:
-        sockudp.sendto(bytes('', 'utf-8'), (host, Port))
-        sockicmp.settimeout(TMOUT)
-        data, addr = sockicmp.recvfrom(1024)
+    for _ in range(tryct):
+        try:
+            sockudp.sendto(bytes('', 'utf-8'), (host, Port))
+            sockicmp.settimeout(TMOUT)
+            data, addr = sockicmp.recvfrom(1024)
 
-    except socket.timeout:
-        serv = __getServbyPort(Port, 'udp')
+        except socket.timeout:
+            serv = __getServbyPort(Port, 'udp')
         
-        if not serv:
-            return False
-        else:
-            return True
+            if not serv:
+                portstatus = False
+            else:
+                portstatus = True
 
-    except socket.error:
-        print('[Err: Connection refused]')
-        return False
+        except socket.error as e:
+            print(e)
+            portstatus = False
 
-    finally:
-        sockudp.close()
-        sockicmp.close()
+        finally:
+            sockudp.close()
+            sockicmp.close()
+
+    return portstatus
 
 # Checks if the given port input was in form of list or string
 # if port input is list the first element will be first port and the second element will be the last port
@@ -73,7 +77,7 @@ def __portinputislist(port):
         raise Exception('Error: Unknown input type')
 
 # Starts the actual scanner session
-def scanner(host, port, timeout, protocol):
+def scanner(host, port, timeout, protocol, tryct):
     if protocol == "tcp" or protocol == "TCP" or protocol == 'tcp/ip' or protocol == 'TCP/IP':
         if __portinputislist(port):
             for x in range((int(str(port[0]))), (int(str(port[1]))+1)):
@@ -103,7 +107,7 @@ def scanner(host, port, timeout, protocol):
     elif protocol == "udp" or protocol == "UDP":
         if __portinputislist(port):
             for x in range((int(str(port[0]))), (int(str(port[1]))+1)):
-                if __uscanner(host, x, timeout):
+                if __uscanner(host, x, timeout, tryct):
                     opeStr = f"{host}: {x} is open"
                     openports.append(opeStr)
                     print(opeStr)
@@ -120,7 +124,7 @@ def scanner(host, port, timeout, protocol):
 
 
         else:
-            if __uscanner(host, port, timeout):
+            if __uscanner(host, port, timeout, tryct):
                 print(f"{host}: {port} is open")
 
             else:

@@ -60,10 +60,15 @@ class Options():
 			print(f'\t                                  | [TCP => tcp => TCP/IP => tcp/ip]')
 			print(f'\t                                  | [UDP => udp]\n')
 			print(FWHITE+f'\t[*] TMOUT => time to wait for incomming packet in seconds(set to \'1\' by default)(TMOUT => tmout)\n')
+			print(FWHITE+f'\t[*] TRYCT => number of tries to perform while performing UDP scan(set to \'1\' by default)(TRYCT => tryct)\n')
 
 		elif module == 'osprobe':
-			print(f'\n\t[*] LHOST => hosts ip4 address(required)(LHOST => lhost)')
+			print(f'\n\t[*] LHOST => hosts ip4 address(required)(LHOST => lhost)\n')
 			print(f'\t[*] TRYCT => number of tries to send the packet(set to \'1\' by default)(TRYC => tryc)\n')
+			print(f'\t[*] NMAP  => should we perform an NMAP scan?(set to \'0\' by default)(NMAP => nmap)')
+			print(f'\t           {FRED}| 0 implies flase')
+			print(f'\t           | 1 implies true')
+			print(f'\t           | WARNING: Use at your own risk{FWHITE}\n')
 
 		else:
 			raise Exception(FRED+'Error: Invalid module')
@@ -95,6 +100,8 @@ class Info():
 				print(FGREEN+'\t[+] '+f'PROTO => {self.proto}')
 			else:
 				print(FRED+'\t[-] '+f'PROTO => {self.proto}')
+
+			print(FGREEN+f'\t[*] TRYCT => {self.tryct}')
 
 			print(FGREEN+f'\t[*] TMOUT => {self.timeout}\n')
 
