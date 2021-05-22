@@ -28,6 +28,19 @@ git clone https://github.com/theEndurance-del/probeKit.git
 pip install -r requirements.txt
 ```
 
+# Customization
+
+This toolkit has it's own default set of colors.
+
+```
+red => Alerts or critical points
+yellow => warnings or significant changes
+green => successfull result or helpful text
+blue => default prompt color
+```
+
+If the user feels to customize the colors for themselves please edit `colors.py` file.
+
 # Usage:
 Start the interpreter by typing the following in your terminal:
 `python ./probeKit/interpreter.py`
