@@ -3,28 +3,28 @@
 # This session will be called by the actual interpreter(also known as module selector) to run modules
 
 import sys
-from colorama import Fore, Back, init
 import modules.probe.ports as ports
 import modules.data.OptInfHelp as data
 import modules.data.AboutList as aboutList
 import modules.probe.osprobe as osprobe
+import colors as color
 
-FGREEN = Fore.GREEN
-FRED = Fore.RED
-FWHITE = Fore.WHITE
-FYELLOW = Fore.YELLOW
-FBLUE = Fore.BLUE
+FSUCCESS = color.FSUCCESS
+FALERT = color.FALERT
+FNORMAL = color.FNORMAL
+FURGENT = color.FURGENT
+FSTYLE = color.FPROMPT
 
 # Calls the function based on the selected module
 def __run(lhost, lport, timeout, tryct, nmap, protocol, module):
 	try:
 		try:
 			if lhost == '':
-				print(FRED+'Error: Invalid value for LHOST')
+				print(FALERT+'Error: Invalid value for LHOST')
 			else:
 				if module == 'probe':
 					if lport == '':
-						raise Exception(FRED+'Error: value for LPORT')
+						raise Exception(FALERT+'Error: value for LPORT')
 				
 					ports.scanner(lhost, lport, timeout, protocol, tryct)
 		
@@ -35,7 +35,7 @@ def __run(lhost, lport, timeout, tryct, nmap, protocol, module):
 			print(e)
 
 	except KeyboardInterrupt as key:
-		print(FRED+'\nalert: KeyboardInterrupt detected\n')
+		print(FALERT+'\nalert: KeyboardInterrupt detected\n')
 
 # Just a simple function to return values in a list and raise exception in such a way that the prog. doesn't break
 def __returnval(value, pos):
@@ -60,9 +60,9 @@ def interpreter(MODULE):
 		while (True):
 
 			if MODULE == 'test':
-				commands = input(FRED+f'probeKit:[*{MODULE}*] $> '+FWHITE)
+				commands = input(FALERT+f'probeKit:[*{MODULE}*] $> '+FNORMAL)
 			else:
-				commands = input(FWHITE+'probeKit:'+FBLUE+f'[{MODULE}]'+FGREEN+' $> '+FWHITE)
+				commands = input(FNORMAL+'probeKit:'+FSTYLE+f'[{MODULE}]'+FSUCCESS+' $> '+FWHITE)
 
 			if commands != None or commands != '':
 				cmdSplit = commands.split()
@@ -109,7 +109,7 @@ def interpreter(MODULE):
 				exitStatus = 0
 
 			elif verb == 'getstat':
-				print('status: '+FGREEN+f'{exitStatus}')
+				print('status: '+FSUCCESS+f'{exitStatus}')
 
 			elif verb == 'run':
 				try:
@@ -150,7 +150,7 @@ def interpreter(MODULE):
 					NMAP = int(__returnval(cmdSplit, 2))
 
 				else:
-					print(FRED+'Error: Invalid option')
+					print(FALERT+'Error: Invalid option')
 
 			# Verb(or command) to unset options
 			elif verb == 'unset':
@@ -180,17 +180,17 @@ def interpreter(MODULE):
 					TIMEOUT = '1'
 
 				else:
-					print(FRED+'Error: Invalid option')
+					print(FALERT+'Error: Invalid option')
 
 			elif verb == 'use':
 				if __returnval(cmdSplit, 1):
 					if __returnval(cmdSplit, 1) in aboutList.moduleHelp.modules:
 						MODULE = __returnval(cmdSplit, 1)
-						print(FYELLOW+f'MODULE => {MODULE}')
+						print(FURGENT+f'MODULE => {MODULE}')
 					else:
-						print(FRED+"Error: Invalid Module")
+						print(FALERT+"Error: Invalid Module")
 				else:
-					print(FRED+'Error: No module specified')
+					print(FALERT+'Error: No module specified')
 
 			elif verb == 'about':
 				if __returnval(cmdSplit, 1):
@@ -200,7 +200,7 @@ def interpreter(MODULE):
 					aboutList.moduleHelp(MODULE).aboutModule(MODULE)
 
 			else:
-				print(FRED+'Error: Invalid syntax'+FWHITE)
+				print(FALERT+'Error: Invalid syntax'+FNORMAL)
 
 	except Exception as e:
 		print(e)

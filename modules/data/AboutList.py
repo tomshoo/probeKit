@@ -1,10 +1,12 @@
 #! /usr/bin/env python3
 
-from colorama import Fore
+import sys
+sys.path.append('../../')
+import colors as color
 
-FGREEN = Fore.GREEN
-FRED = Fore.RED
-FWHITE = Fore.WHITE
+FSUCCESS = color.FSUCCESS
+FALERT = color.FALERT
+FNORMAL = color.FNORMAL
 
 class moduleHelp():
 
@@ -16,21 +18,21 @@ class moduleHelp():
 	def listmodules(self):
 		# Checks if there is any active module
 		if self.module != '':
-			print('Currently activated module: '+FRED+f'[{self.module}]')
+			print('Currently activated module: '+FALERT+f'[{self.module}]')
 
-		print(FWHITE+'Available modules are:')
+		print(FNORMAL+'Available modules are:')
 		for x in self.modules:
-			print(FGREEN+"\t", x)
+			print(FSUCCESS+"\t", x)
 
-		print(FWHITE+'type: about [Module] for more information')
+		print(FNORMAL+'type: about [Module] for more information')
 
 	# Prints data about a give module will print data without argument if a module is active
 	def aboutModule(self, moduleName):
 		if moduleName == 'probe':
-			print(FRED+f'\nName:\t\t{moduleName}')
+			print(FALERT+f'\nName:\t\t{moduleName}')
 			print('Type:\t\tRecon')
 			print('Description:\tThis module is meant to perform a basic port scan on the specidied host.\n')
-			print(FGREEN+'Available options:\n')
+			print(FSUCCESS+'Available options:\n')
 			print('\tLHOST => IPv4 address or domain name of the target host')
 			print('\t\t | Can be called LHOST or lhost\n')
 			print('\tLPORT => ports to be scanned')
@@ -47,11 +49,11 @@ class moduleHelp():
 			print('\t\t                          | UDP(udp)\n')
 
 		elif moduleName == 'osprobe':
-			print(FRED+f'\nName:\t\t{moduleName}')
+			print(FALERT+f'\nName:\t\t{moduleName}')
 			print('Type:\t\tRecon')
 			print('Description:\tThis module sends a basic ICMP packet to a host to determine its OS')
 			print('            \t| This module does not confirm the OS since it is just using TTL within the ICMP response\n')
-			print(FGREEN+'Available options:\n')
+			print(FSUCCESS+'Available options:\n')
 			print('\tLHOST => IPv4 address or domain name of the target host')
 			print('\t\t | Can be called LHOST or lhost\n')
 			print('\tTRYCT => Number of times ICMP packet must be sent')
@@ -60,9 +62,9 @@ class moduleHelp():
 			print('\tNMAP  => Run an nmap scan')
 			print('\t\t | 0 for false')
 			print('\t\t | 1 for true')
-			print(f'{FRED}\t\t | Warning: It is an active scanning method hence use it on your own risk')
+			print(f'{FALERT}\t\t | Warning: It is an active scanning method hence use it on your own risk')
 
 		# This was supposed to be a test module just for testing out the data category
 		elif moduleName == 'test':
-			print(FRED+'This module is strictly for debugging purposes while creating the toolkit')
-			print(FRED+'Do not consider this as a usable module')
+			print(FALERT+'This module is strictly for debugging purposes while creating the toolkit')
+			print(FALERT+'Do not consider this as a usable module')
