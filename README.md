@@ -7,7 +7,7 @@ Python: `3.x`, Python `3.x` compatible pip, nmap, python-scapy, python-nmap
 
 OS: Unix based operating system(macOS, Linux, etc.)
 
-Not yet tested no DOS systems
+Not compatible with DOS based operating systems
 
 # Installation
 This toolkit does not require any extra configurations as it is a basic plug'n'play toolkit.
