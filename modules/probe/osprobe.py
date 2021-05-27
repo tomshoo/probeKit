@@ -47,11 +47,13 @@ class checkOS():
 		target = self.target
 		targetip = socket.gethostbyname(target)
 
-		OSresult = scanner.scan(hosts=target, arguments="-O")['scan'][targetip]['osmatch']
-		if not OSresult:
+		OSresult = scanner.scan(hosts=target, arguments="-O")['scan'][targetip]
+		if not OSresult['osmatch']:
 			print(FRED+"Error: Unable to identify OS via Nmap")
 		else:
-			print(OSresult)
+			for data in OSresult['osmatch']:
+				for i in data:
+					print(data[i])
 
 	def scanner(self):
 		print("Running TTL check on host")
