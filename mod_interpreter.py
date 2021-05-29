@@ -7,13 +7,13 @@ import modules.probe.ports as ports
 import modules.data.OptInfHelp as data
 import modules.data.AboutList as aboutList
 import modules.probe.osprobe as osprobe
-import colors as color
+from data import colors, variables
 
-FSUCCESS = color.FSUCCESS
-FALERT = color.FALERT
-FNORMAL = color.FNORMAL
-FURGENT = color.FURGENT
-FSTYLE = color.FPROMPT
+FSUCCESS = colors.FSUCCESS
+FALERT = colors.FALERT
+FNORMAL = colors.FNORMAL
+FURGENT = colors.FURGENT
+FSTYLE = colors.FPROMPT
 
 # Calls the function based on the selected module
 def __run(lhost, lport, timeout, tryct, nmap, protocol, module):
@@ -48,12 +48,12 @@ def __returnval(value, pos):
 def interpreter(MODULE):
 
 	# Variables also known as options to the user
-	LHOST = ''
-	LPORT = ''
-	PROTOCOL = ''
-	TIMEOUT = '1'
-	TRYCT = 1
-	NMAP = 0
+	LHOST = variables.LHOST
+	LPORT = variables.LPORT
+	PROTOCOL = variables.PROTOCOL
+	TIMEOUT = variables.TIMEOUT
+	TRYCT = variables.TRYCT
+	NMAP = variables.NMAP
 	exitStatus = 0
 
 	try:
@@ -62,7 +62,7 @@ def interpreter(MODULE):
 			if MODULE == 'test':
 				commands = input(FALERT+f'probeKit:[*{MODULE}*] $> '+FNORMAL)
 			else:
-				commands = input(FNORMAL+'probeKit:'+FSTYLE+f'[{MODULE}]'+FSUCCESS+' $> '+FWHITE)
+				commands = input(FNORMAL+'probeKit:'+FSTYLE+f'[{MODULE}]'+FSUCCESS+' $> '+FNORMAL)
 
 			if commands != None or commands != '':
 				cmdSplit = commands.split()
