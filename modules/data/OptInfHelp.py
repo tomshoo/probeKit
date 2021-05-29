@@ -4,11 +4,11 @@
 
 import sys
 sys.path.append('../../')
-import colors as color
+from data import colors
 
-FSUCCESS = color.FSUCCESS
-FALERT = color.FALERT
-FNORMAL = color.FNORMAL
+FSUCCESS = colors.FSUCCESS
+FALERT = colors.FALERT
+FNORMAL = colors.FNORMAL
 
 # This class prints help for the interpreter
 class Help():

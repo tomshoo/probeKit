@@ -6,12 +6,12 @@ import sys
 import mod_interpreter as modinterpreter
 import modules.data.OptInfHelp as data
 import modules.data.AboutList as Module
-import colors as color
+from data import colors
 
-FSUCCESS = color.FSUCCESS
-FALERT = color.FALERT
-FNORMAL = color.FNORMAL
-FURGENT = color.FURGENT
+FSUCCESS = colors.FSUCCESS
+FALERT = colors.FALERT
+FNORMAL = colors.FNORMAL
+FURGENT = colors.FURGENT
 
 def __returnval(value, pos):
 	try:
