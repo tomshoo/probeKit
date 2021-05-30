@@ -1,6 +1,6 @@
 from colorama import Fore, Back
-# Foreground colors
 
+# configure colors in this class
 class colors():
     FALERT   = Fore.RED
     FSUCCESS = Fore.GREEN
@@ -15,6 +15,8 @@ class colors():
     BNORMAL = Back.BLACK
     BURGENT = Back.YELLOW
 
+# provide defaults for all the options for a module
+# These values will be overridden if user tends to unset the value
 class variables():
     LHOST = ''
     LPORT = ''
