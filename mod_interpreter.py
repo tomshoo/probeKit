@@ -120,37 +120,41 @@ def interpreter(MODULE):
 
 			# Verb(or command) to set options
 			elif verb == 'set':
-				if __returnval(cmdSplit, 1) == 'LHOST' or __returnval(cmdSplit, 1) == 'lhost':
-					print(f'LHOST => {__returnval(cmdSplit, 2)}')
-					LHOST = __returnval(cmdSplit, 2)
+				if __returnval(cmdSplit, 2):
+					if __returnval(cmdSplit, 1) == 'LHOST' or __returnval(cmdSplit, 1) == 'lhost':
+						print(f'LHOST => {__returnval(cmdSplit, 2)}')
+						LHOST = __returnval(cmdSplit, 2)
 
-				elif __returnval(cmdSplit, 1) == 'LPORT' or __returnval(cmdSplit, 1) == 'lport':
-					if '/' in __returnval(cmdSplit, 2):
-						LPORT = __returnval(cmdSplit, 2).split('/')
-						print(f'LPORT => {LPORT}')
+					elif __returnval(cmdSplit, 1) == 'LPORT' or __returnval(cmdSplit, 1) == 'lport':
+						if '/' in __returnval(cmdSplit, 2):
+							LPORT = __returnval(cmdSplit, 2).split('/')
+							print(f'LPORT => {LPORT}')
 						
+						else:
+							print(f'LPORT => {__returnval(cmdSplit, 2)}')
+							LPORT = __returnval(cmdSplit, 2)
+
+					elif __returnval(cmdSplit, 1) == 'PROTO' or __returnval(cmdSplit, 1) == 'proto':
+						print(f'PROTO => {__returnval(cmdSplit, 2)}')
+						PROTOCOL = __returnval(cmdSplit, 2)
+
+					elif __returnval(cmdSplit ,1) == 'TMOUT' or __returnval(cmdSplit, 1) == 'tmout':
+						print(f'TMOUT => {__returnval(cmdSplit, 2)}')
+						TIMEOUT = __returnval(cmdSplit, 2)
+
+					elif __returnval(cmdSplit, 1) == 'TRYCT' or __returnval(cmdSplit, 1) == 'tryct':
+						print(f'TRYCT => {__returnval(cmdSplit, 2)}')
+						TRYCT = int(__returnval(cmdSplit, 2))
+
+					elif __returnval(cmdSplit, 1) == 'NMAP' or __returnval(cmdSplit, 1) == 'nmap':
+						print(f'NMAP  => {__returnval(cmdSplit, 2)}')
+						NMAP = int(__returnval(cmdSplit, 2))
+
 					else:
-						print(f'LPORT => {__returnval(cmdSplit, 2)}')
-						LPORT = __returnval(cmdSplit, 2)
-
-				elif __returnval(cmdSplit, 1) == 'PROTO' or __returnval(cmdSplit, 1) == 'proto':
-					print(f'PROTO => {__returnval(cmdSplit, 2)}')
-					PROTOCOL = __returnval(cmdSplit, 2)
-
-				elif __returnval(cmdSplit ,1) == 'TMOUT' or __returnval(cmdSplit, 1) == 'tmout':
-					print(f'TMOUT => {__returnval(cmdSplit, 2)}')
-					TIMEOUT = __returnval(cmdSplit, 2)
-
-				elif __returnval(cmdSplit, 1) == 'TRYCT' or __returnval(cmdSplit, 1) == 'tryct':
-					print(f'TRYCT => {__returnval(cmdSplit, 2)}')
-					TRYCT = int(__returnval(cmdSplit, 2))
-
-				elif __returnval(cmdSplit, 1) == 'NMAP' or __returnval(cmdSplit, 1) == 'nmap':
-					print(f'NMAP  => {__returnval(cmdSplit, 2)}')
-					NMAP = int(__returnval(cmdSplit, 2))
+						print(FALERT+'Error: Invalid option')
 
 				else:
-					print(FALERT+'Error: Invalid option')
+					print(f"{FALERT}[-] Error: Invalid value provided to option")
 
 			# Verb(or command) to unset options
 			elif verb == 'unset':
@@ -203,7 +207,7 @@ def interpreter(MODULE):
 				print(FALERT+'Error: Invalid syntax'+FNORMAL)
 
 	except EOFError as E:
-		pass
+		sys.exit()
 
 	except Exception as e:
 		print(e)
