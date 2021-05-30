@@ -39,7 +39,9 @@ green => successfull result or helpful text
 blue => default prompt color
 ```
 
-If the user feels to customize the colors for themselves please edit `colors.py` file.
+Also there is an option to provide default values to options.
+
+Please edit `data.py` file to change color settings or option settings.
 
 # Usage:
 Start the interpreter by typing the following in your terminal:
