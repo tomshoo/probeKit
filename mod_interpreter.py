@@ -202,6 +202,8 @@ def interpreter(MODULE):
 			else:
 				print(FALERT+'Error: Invalid syntax'+FNORMAL)
 
+	except EOFError as E:
+		pass
+
 	except Exception as e:
 		print(e)
-		sys.exit()
