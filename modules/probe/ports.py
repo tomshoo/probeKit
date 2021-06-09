@@ -25,8 +25,8 @@ def __tscanner(host, port, timeout):
         socktcp.connect((host, Port))
         return True
 
-    except Exception as e:
-        print(e)
+    except Exception as exp:
+        print(exp)
         return False
 
     finally:
@@ -78,7 +78,7 @@ def __portinputislist(port):
 
 # Starts the actual scanner session
 def scanner(host, port, timeout, protocol, tryct):
-    if protocol == "tcp" or protocol == "TCP" or protocol == 'tcp/ip' or protocol == 'TCP/IP':
+    if protocol in ['tcp', 'tcp/ip', 'TCP', 'TCP/IP']:
         if __portinputislist(port):
             for x in range((int(str(port[0]))), (int(str(port[1]))+1)):
                 if __tscanner(host, int(x), timeout):
@@ -104,7 +104,7 @@ def scanner(host, port, timeout, protocol, tryct):
             else:
                 print(f"{host}: {port} is closed")
 
-    elif protocol == "udp" or protocol == "UDP":
+    elif protocol in ['udp', 'UDP']:
         if __portinputislist(port):
             for x in range((int(str(port[0]))), (int(str(port[1]))+1)):
                 if __uscanner(host, x, timeout, tryct):
