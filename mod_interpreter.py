@@ -71,6 +71,10 @@ def interpreter(MODULE):
 			if commands == None or commands == '':
 				exitStatus = 'idle'
 
+			elif commands[0] == '#':
+				exitStatus = 0
+				pass
+
 			elif verb == 'help':
 				Data = data.Help(MODULE)
 				Data.showHelp()
@@ -121,11 +125,11 @@ def interpreter(MODULE):
 			# Verb(or command) to set options
 			elif verb == 'set':
 				if __returnval(cmdSplit, 2):
-					if __returnval(cmdSplit, 1) == 'LHOST' or __returnval(cmdSplit, 1) == 'lhost':
+					if __returnval(cmdSplit, 1) in ['LHOST', 'lhost']:
 						print(f'LHOST => {__returnval(cmdSplit, 2)}')
 						LHOST = __returnval(cmdSplit, 2)
 
-					elif __returnval(cmdSplit, 1) == 'LPORT' or __returnval(cmdSplit, 1) == 'lport':
+					elif __returnval(cmdSplit, 1) in ['LPORT', 'lport']:
 						if '/' in __returnval(cmdSplit, 2):
 							LPORT = __returnval(cmdSplit, 2).split('/')
 							print(f'LPORT => {LPORT}')
@@ -134,19 +138,19 @@ def interpreter(MODULE):
 							print(f'LPORT => {__returnval(cmdSplit, 2)}')
 							LPORT = __returnval(cmdSplit, 2)
 
-					elif __returnval(cmdSplit, 1) == 'PROTO' or __returnval(cmdSplit, 1) == 'proto':
+					elif __returnval(cmdSplit, 1) in ['PROTO', 'proto']:
 						print(f'PROTO => {__returnval(cmdSplit, 2)}')
 						PROTOCOL = __returnval(cmdSplit, 2)
 
-					elif __returnval(cmdSplit ,1) == 'TMOUT' or __returnval(cmdSplit, 1) == 'tmout':
+					elif __returnval(cmdSplit ,1) in ['TMOUT', 'tmout']:
 						print(f'TMOUT => {__returnval(cmdSplit, 2)}')
 						TIMEOUT = __returnval(cmdSplit, 2)
 
-					elif __returnval(cmdSplit, 1) == 'TRYCT' or __returnval(cmdSplit, 1) == 'tryct':
+					elif __returnval(cmdSplit, 1) in ['TRYCT', 'tryct']:
 						print(f'TRYCT => {__returnval(cmdSplit, 2)}')
 						TRYCT = int(__returnval(cmdSplit, 2))
 
-					elif __returnval(cmdSplit, 1) == 'NMAP' or __returnval(cmdSplit, 1) == 'nmap':
+					elif __returnval(cmdSplit, 1) in ['NMAP', 'nmap']:
 						print(f'NMAP  => {__returnval(cmdSplit, 2)}')
 						NMAP = int(__returnval(cmdSplit, 2))
 
@@ -158,21 +162,28 @@ def interpreter(MODULE):
 
 			# Verb(or command) to unset options
 			elif verb == 'unset':
-				if __returnval(cmdSplit, 1) == 'LHOST' or __returnval(cmdSplit, 1) == 'lhost':
+				if __returnval(cmdSplit, 1) in ['LHOST', 'lhost']:
+					print(f'{FALERT}unset LHOST')
 					LHOST = ''
 
-				elif __returnval(cmdSplit, 1) == 'LPORT' or __returnval(cmdSplit, 1) == 'lport':
+				elif __returnval(cmdSplit, 1) in ['LPORT', 'lport']:
+					print(f'{FALERT}unset LPORT')
 					LPORT = ''
 
-				elif __returnval(cmdSplit, 1) == 'PROTO' or __returnval(cmdSplit, 1) == 'proto':
+				elif __returnval(cmdSplit, 1) in ['PROTO', 'proto']:
+					print(f'{FALERT}unset PROTO')
 					PROTOCOL = ''
 
-				elif __returnval(cmdSplit, 1) == 'TMOUT' or __returnval(cmdSplit, 1) == 'tmout':
+				elif __returnval(cmdSplit, 1) in ['TMOUT', 'tmout']:
+					print(f'{FALERT}unset TMOUT')
 					TIMEOUT = '1'
 
-				elif __returnval(cmdSplit, 1) == 'TRYCT' or __returnval(cmdSplit, 1) == 'tryct':
+				elif __returnval(cmdSplit, 1) in ['TRYCT', 'tryct']:
+					print(f'{FALERT}unset TRYCT')
 					TRYCT = 1
-				elif __returnval(cmdSplit, 1) == 'NMAP' or __returnval(cmdSplit, 1) == 'nmap':
+
+				elif __returnval(cmdSplit, 1) in ['NMAP', 'nmap']:
+					print(f'{FALERT}unset NMAP')
 					NMAP = 0
 
 				elif __returnval(cmdSplit, 1) == 'all':

@@ -29,10 +29,13 @@ try:
 
 		commandSplit = value.split()
 
-		if value == None or value == '':
+		if value in [None, '']:
 			exitStatus = FURGENT+"idle"
 
-		elif value == "exit" or value == "terminate":
+		elif value[0] == '#':
+			exitStatus = FSUCCESS+'0'
+
+		elif value in ['exit', 'terminate']:
 			sys.exit()
 
 		elif value == "help":
@@ -49,7 +52,7 @@ try:
 			print('\x33c')
 			print('\x1bc')
 			exitStatus = FSUCCESS+'0'
-			if __returnval(commandSplit, 1) == 'exit' or __returnval(commandSplit, 1) == 'terminate':
+			if __returnval(commandSplit, 1) in ['exit', 'terminate']:
 				sys.exit()
 
 		elif __returnval(commandSplit, 0) == 'use':
