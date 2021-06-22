@@ -19,7 +19,6 @@ def __tscanner(host, port, timeout):
     socktcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     Port = int(port)
     TMOUT = int(timeout)
-    
     try:
         socktcp.settimeout(TMOUT)
         socktcp.connect((host, Port))
@@ -74,7 +73,8 @@ def __portinputislist(port):
         return False
 
     else:
-        raise Exception('Error: Unknown input type')
+        exception = Exception('Error: Unknown input type')
+        return exception
 
 # Starts the actual scanner session
 def scanner(host, port, timeout, protocol, tryct):
