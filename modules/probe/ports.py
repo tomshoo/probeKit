@@ -43,7 +43,7 @@ def __uscanner(host, port, timeout, tryct):
         try:
             sockudp.sendto(bytes('', 'utf-8'), (host, Port))
             sockicmp.settimeout(TMOUT)
-            data, addr = sockicmp.recvfrom(1024)
+            sockicmp.recvfrom(1024)
 
         except socket.timeout:
             serv = __getServbyPort(Port, 'udp')
