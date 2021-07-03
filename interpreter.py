@@ -14,9 +14,10 @@ FNORMAL = colors.FNORMAL
 FURGENT = colors.FURGENT
 
 def banner():
-    print('''                      *               *    *          *
-                      *               *   *     *     *
-                      *               *  *            *
+    print('''
+                          *               *    *          *
+                          *               *   *     *     *
+                          *               *  *            *
     * ***   * **   ****   * ***    ****   * *      **    ****
     **   *   *    *    *  **   *  *    *  **        *     *
     *    *   *    *    *  *    *  ******  * *       *     *
@@ -24,7 +25,10 @@ def banner():
     * ***    *    *    *  **   *  *    *  *   *     *     *  *
     *        *     ****   * ***    ****   *    *  *****    **
     *
-    *''')
+    *
+
+    -- by theEndurance-del
+    ''')
 
 banner()
 
@@ -34,7 +38,7 @@ def __returnval(value, pos):
     except Exception as e:
         return None
 
-Module = Module.moduleHelp('')
+Mod = Module.moduleHelp('')
 
 exitStatus = FSUCCESS+'0'
 
@@ -60,7 +64,7 @@ try:
 
         elif value == "list":
             exitStatus = FSUCCESS+'0'
-            Module.listmodules()
+            Mod.listmodules()
 
         elif value == "banner":
             banner()
@@ -74,7 +78,7 @@ try:
                 sys.exit()
 
         elif __returnval(commandSplit, 0) == 'use':
-            if __returnval(commandSplit, 1) in Module.modules:
+            if __returnval(commandSplit, 1) in Module.moduleHelp.modules:
                 exitStatus = FSUCCESS+'0'
                 modinterpreter.interpreter(__returnval(commandSplit, 1))
             elif not __returnval(commandSplit, 1):

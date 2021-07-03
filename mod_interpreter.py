@@ -16,9 +16,10 @@ FURGENT = colors.FURGENT
 FSTYLE = colors.FPROMPT
 
 def banner():
-    print('''                      *               *    *          *
-                      *               *   *     *     *
-                      *               *  *            *
+    print('''
+                          *               *    *          *
+                          *               *   *     *     *
+                          *               *  *            *
     * ***   * **   ****   * ***    ****   * *      **    ****
     **   *   *    *    *  **   *  *    *  **        *     *
     *    *   *    *    *  *    *  ******  * *       *     *
@@ -26,13 +27,22 @@ def banner():
     * ***    *    *    *  **   *  *    *  *   *     *     *  *
     *        *     ****   * ***    ****   *    *  *****    **
     *
-    *''')
+    *
+
+    -- by theEndurance-del
+    ''')
 
 
 
 # Calls the function based on the selected module
-def __run(lhost, lport, timeout, tryct, nmap, protocol, module):
+def __run(module, options):
     try:
+        lhost    = options[0]
+        lport    = options[1]
+        protocol = options[2]
+        timeout  = options[3]
+        tryct    = options[4]
+        nmap     = options[5]        
         try:
             if lhost == '':
                 print(FALERT+'Error: Invalid value for LHOST')
@@ -63,12 +73,13 @@ def __returnval(value, pos):
 def interpreter(MODULE):
 
     # Variables also known as options to the user
-    LHOST = variables.LHOST
-    LPORT = variables.LPORT
-    PROTOCOL = variables.PROTOCOL
-    TIMEOUT = variables.TIMEOUT
-    TRYCT = variables.TRYCT
-    NMAP = variables.NMAP
+    OPTIONS = [variables.LHOST
+    , variables.LPORT
+    , variables.PROTOCOL
+    , variables.TIMEOUT
+    , variables.TRYCT
+    , variables.NMAP
+    ]
     exitStatus = 0
 
     try:
@@ -107,7 +118,7 @@ def interpreter(MODULE):
                 exitStatus = 0
 
             elif verb == 'info':
-                Info = data.Info(MODULE, LHOST, LPORT, PROTOCOL, TIMEOUT, TRYCT, NMAP)
+                Info = data.Info(MODULE, OPTIONS)
                 try:
                     Info.showInfo()
                 except Exception as e:
@@ -135,7 +146,7 @@ def interpreter(MODULE):
 
             elif verb == 'run':
                 try:
-                    __run(LHOST, LPORT, TIMEOUT, TRYCT, NMAP, PROTOCOL, MODULE)
+                    __run(MODULE, OPTIONS)
                 except Exception as e:
                     print(e)
 
@@ -145,32 +156,32 @@ def interpreter(MODULE):
                 if __returnval(cmdSplit, 2):
                     if __returnval(cmdSplit, 1) in ['LHOST', 'lhost']:
                         print(f'LHOST => {__returnval(cmdSplit, 2)}')
-                        LHOST = __returnval(cmdSplit, 2)
+                        OPTIONS[0] = __returnval(cmdSplit, 2)
 
                     elif __returnval(cmdSplit, 1) in ['LPORT', 'lport']:
                         if '/' in __returnval(cmdSplit, 2):
-                            LPORT = __returnval(cmdSplit, 2).split('/')
-                            print(f'LPORT => {LPORT}')
+                            OPTIONS[1] = __returnval(cmdSplit, 2).split('/')
+                            print(f'LPORT => {OPTIONS[1]}')
 
                         else:
                             print(f'LPORT => {__returnval(cmdSplit, 2)}')
-                            LPORT = __returnval(cmdSplit, 2)
+                            OPTIONS[1] = __returnval(cmdSplit, 2)
 
                     elif __returnval(cmdSplit, 1) in ['PROTO', 'proto']:
                         print(f'PROTO => {__returnval(cmdSplit, 2)}')
-                        PROTOCOL = __returnval(cmdSplit, 2)
+                        OPTIONS[2] = __returnval(cmdSplit, 2)
 
                     elif __returnval(cmdSplit ,1) in ['TMOUT', 'tmout']:
                         print(f'TMOUT => {__returnval(cmdSplit, 2)}')
-                        TIMEOUT = __returnval(cmdSplit, 2)
+                        OPTIONS[3] = __returnval(cmdSplit, 2)
 
                     elif __returnval(cmdSplit, 1) in ['TRYCT', 'tryct']:
                         print(f'TRYCT => {__returnval(cmdSplit, 2)}')
-                        TRYCT = int(__returnval(cmdSplit, 2))
+                        OPTIONS[4] = int(__returnval(cmdSplit, 2))
 
                     elif __returnval(cmdSplit, 1) in ['NMAP', 'nmap']:
                         print(f'NMAP  => {__returnval(cmdSplit, 2)}')
-                        NMAP = int(__returnval(cmdSplit, 2))
+                        OPTIONS[5] = int(__returnval(cmdSplit, 2))
 
                     else:
                         print(FALERT+'Error: Invalid option')
@@ -182,35 +193,35 @@ def interpreter(MODULE):
             elif verb == 'unset':
                 if __returnval(cmdSplit, 1) in ['LHOST', 'lhost']:
                     print(f'{FALERT}unset LHOST')
-                    LHOST = ''
+                    OPTIONS[0] = ''
 
                 elif __returnval(cmdSplit, 1) in ['LPORT', 'lport']:
                     print(f'{FALERT}unset LPORT')
-                    LPORT = ''
+                    OPTIONS[1] = ''
 
                 elif __returnval(cmdSplit, 1) in ['PROTO', 'proto']:
                     print(f'{FALERT}unset PROTO')
-                    PROTOCOL = ''
+                    OPTIONS[2] = ''
 
                 elif __returnval(cmdSplit, 1) in ['TMOUT', 'tmout']:
                     print(f'{FALERT}unset TMOUT')
-                    TIMEOUT = '1'
+                    OPTIONS[3] = '1'
 
                 elif __returnval(cmdSplit, 1) in ['TRYCT', 'tryct']:
                     print(f'{FALERT}unset TRYCT')
-                    TRYCT = 1
+                    OPTIONS[4] = 1
 
                 elif __returnval(cmdSplit, 1) in ['NMAP', 'nmap']:
                     print(f'{FALERT}unset NMAP')
-                    NMAP = 0
+                    OPTIONS[5] = 0
 
                 elif __returnval(cmdSplit, 1) == 'all':
-                    LHOST = ''
-                    LPORT = ''
-                    PROTOCOL = ''
-                    TRYCT = 1
-                    NMAP = 0
-                    TIMEOUT = '1'
+                    OPTIONS[0] = ''
+                    OPTIONS[1] = ''
+                    OPTIONS[2] = ''
+                    OPTIONS[3] = 1
+                    OPTIONS[4] = 0
+                    OPTIONS[5] = '1'
 
                 else:
                     print(FALERT+'Error: Invalid option')
