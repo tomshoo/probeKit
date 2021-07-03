@@ -29,6 +29,7 @@ class Help():
             print('\t exit\t\t exits the interpreter\n')
             print('\t terminate\t alias for exit\n')
             print('\t clear\t\t clears screen\n\t\t\t | usage: clear [option]\n\t\t\t | available options are: exit, terminate\n')
+            print('\t banner\t\t prints an ascii banner\n')
 
         else:
             print(FSUCCESS+'\nUsage: [verb] [options]')
@@ -44,6 +45,7 @@ class Help():
             print('\t run\t\t runs the selected module\n')
             print('\t about\t\t prints details about specified module\n\t\t\t | Usage: about [moduleName]\n')
             print('\t list\t\t prints available modules\n')
+            print('\t banner\t\t prints an ascii banner\n')
 
 # List available options for a selected module
 class Options():
@@ -77,14 +79,14 @@ class Options():
 
 # List values assigned to various options of the module
 class Info():
-    def __init__(self, MODULE, LHOST, LPORT, PROTOCOL, TIMEOUT, TRYCT, NMAP):
+    def __init__(self, MODULE, OPTIONS):
         self.module  = MODULE
-        self.lhost   = LHOST
-        self.lport   = LPORT
-        self.proto   = PROTOCOL
-        self.timeout = TIMEOUT
-        self.tryct = TRYCT
-        self.nmap = NMAP
+        self.lhost   = OPTIONS[0]
+        self.lport   = OPTIONS[1]
+        self.proto   = OPTIONS[2]
+        self.timeout = OPTIONS[3]
+        self.tryct = OPTIONS[4]
+        self.nmap = OPTIONS[5]
 
     def showInfo(self):
         if self.module == 'probe':

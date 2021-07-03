@@ -20,11 +20,11 @@ class moduleHelp():
         if self.module != '':
             print('Currently activated module: '+FALERT+f'[{self.module}]')
 
-            print(FNORMAL+'Available modules are:')
-            for x in self.modules:
-                print(FSUCCESS+"\t", x)
+        print(FNORMAL+'Available modules are:')
+        for x in self.modules:
+            print(FSUCCESS+"\t", x)
 
-            print(FNORMAL+'type: about [Module] for more information')
+        print(FNORMAL+'type: about [Module] for more information')
 
     # Prints data about a give module will print data without argument if a module is active
     def aboutModule(self, moduleName):
@@ -62,7 +62,7 @@ class moduleHelp():
             print('\tNMAP  => Run an nmap scan')
             print('\t\t | 0 for false')
             print('\t\t | 1 for true')
-            print(f'{FALERT}\t\t | Warning: It is an active scanning method hence use it on your own risk')
+            print(f'{FALERT}\t\t | Warning: It is an active scanning method hence use it on your own risk\n')
 
         # This was supposed to be a test module just for testing out the data category
         elif moduleName == 'test':
