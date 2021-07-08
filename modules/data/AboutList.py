@@ -47,6 +47,8 @@ class moduleHelp():
             print('\t\t | Available Protocols are:')
             print('\t\t                          | TCP => TCP/IP(tcp => tcp/ip)')
             print('\t\t                          | UDP(udp)\n')
+            print('\tVERBOSE => show complete output')
+            print('\t\t | Available Options are true/false\n')
 
         elif moduleName == 'osprobe':
             print(FALERT+f'\nName:\t\t{moduleName}')

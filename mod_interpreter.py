@@ -42,7 +42,8 @@ def __run(module, options):
         protocol = options[2]
         timeout  = options[3]
         tryct    = options[4]
-        nmap     = options[5]        
+        nmap     = options[5]
+        verbose  = options[6]        
         try:
             if lhost == '':
                 print(FALERT+'Error: Invalid value for LHOST')
@@ -51,7 +52,7 @@ def __run(module, options):
                     if lport == '':
                         raise Exception(FALERT+'Error: value for LPORT')
 
-                    ports.scanner(lhost, lport, timeout, protocol, tryct)
+                    ports.scanner(lhost, lport, timeout, protocol, tryct, verbose)
 
                 elif module == 'osprobe':
                     osprobe.checkOS(lhost, tryct, nmap).scanner()
@@ -79,6 +80,7 @@ def interpreter(MODULE):
     , variables.TIMEOUT
     , variables.TRYCT
     , variables.NMAP
+    , variables.VERBOSE
     ]
     exitStatus = 0
 
@@ -153,7 +155,7 @@ def interpreter(MODULE):
 
             # Verb(or command) to set options
             elif verb == 'set':
-                if __returnval(cmdSplit, 2):
+                if __returnval(cmdSplit, 2) and __returnval(cmdSplit, 1) != 'all':
                     if __returnval(cmdSplit, 1) in ['LHOST', 'lhost']:
                         print(f'LHOST => {__returnval(cmdSplit, 2)}')
                         OPTIONS[0] = __returnval(cmdSplit, 2)
@@ -182,9 +184,28 @@ def interpreter(MODULE):
                     elif __returnval(cmdSplit, 1) in ['NMAP', 'nmap']:
                         print(f'NMAP  => {__returnval(cmdSplit, 2)}')
                         OPTIONS[5] = int(__returnval(cmdSplit, 2))
-
+                    
+                    elif __returnval(cmdSplit, 1) in ['VERBOSE', 'verbose']:
+                        if __returnval(cmdSplit, 2) not in ['true', 'false']:
+                            print(FALERT+'Error: Invalid value provided')
+                        elif __returnval(cmdSplit, 2) == 'true':
+                            OPTIONS[6] = True
+                            print(f'VERBOSE => {OPTIONS[6]}')
+                        elif __returnval(cmdSplit, 2) == 'false':
+                            OPTIONS[6] = False
+                            print(f'VERBOSE => {OPTIONS[6]}')
+ 
                     else:
-                        print(FALERT+'Error: Invalid option')
+                        print(FALERT+'[-] Error: Invalid option')
+
+                elif __returnval(cmdSplit, 1) == 'all':
+                    OPTIONS[0] = variables.LHOST
+                    OPTIONS[1] = variables.LPORT
+                    OPTIONS[2] = variables.PROTOCOL
+                    OPTIONS[3] = variables.TIMEOUT
+                    OPTIONS[4] = variables.TRYCT
+                    OPTIONS[5] = variables.NMAP
+                    OPTIONS[6] = variables.VERBOSE           
 
                 else:
                     print(f"{FALERT}[-] Error: Invalid value provided to option")
@@ -215,14 +236,18 @@ def interpreter(MODULE):
                     print(f'{FALERT}unset NMAP')
                     OPTIONS[5] = 0
 
+                elif __returnval(cmdSplit, 2) in ['VERBOSE', 'verbose']:
+                    print(f'{FALERT}unset VERBOSE')
+                    OPTIONS[6] = ''
+
                 elif __returnval(cmdSplit, 1) == 'all':
                     OPTIONS[0] = ''
                     OPTIONS[1] = ''
                     OPTIONS[2] = ''
                     OPTIONS[3] = 1
-                    OPTIONS[4] = 0
+                    OPTIONS[4] = 1
                     OPTIONS[5] = '1'
-
+                    OPTIONS[6] = ''
                 else:
                     print(FALERT+'Error: Invalid option')
 

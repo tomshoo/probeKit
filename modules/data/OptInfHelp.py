@@ -65,6 +65,8 @@ class Options():
             print(f'\t                                  | [UDP => udp]\n')
             print(FNORMAL+f'\t[*] TMOUT => time to wait for incomming packet in seconds(set to \'1\' by default)(TMOUT => tmout)\n')
             print(FNORMAL+f'\t[*] TRYCT => number of tries to perform while performing UDP scan(set to \'1\' by default)(TRYCT => tryct)\n')
+            print(FNORMAL+f'\t[*] VERBOSE => Provide a verbose output or not(VERBOSE => verbose)')
+            print(f'\t                     | Available options are true (or) false\n')
 
         elif module == 'osprobe':
             print(f'\n\t[*] LHOST => hosts ip4 address(required)(LHOST => lhost)\n')
@@ -87,6 +89,7 @@ class Info():
         self.timeout = OPTIONS[3]
         self.tryct = OPTIONS[4]
         self.nmap = OPTIONS[5]
+        self.verbose = OPTIONS[6]
 
     def showInfo(self):
         if self.module == 'probe':
@@ -107,7 +110,13 @@ class Info():
 
             print(FSUCCESS+f'\t[*] TRYCT => {self.tryct}')
 
-            print(FSUCCESS+f'\t[*] TMOUT => {self.timeout}\n')
+            print(FSUCCESS+f'\t[*] TMOUT => {self.timeout}')
+
+            if self.verbose != '':
+                print(FSUCCESS+'\t[+] '+f'VERBOSE => {self.verbose}\n')
+            else:
+                print(FALERT+'\t[-] '+f'VERBOSE => {self.verbose}\n')
+
 
         elif self.module == 'osprobe':
             if self.lhost != '':
