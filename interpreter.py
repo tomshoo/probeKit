@@ -90,7 +90,8 @@ try:
 
         elif __returnval(commandSplit, 0) == 'about':
             if __returnval(commandSplit, 1):
-                Module.aboutModule(__returnval(commandSplit, 1))
+                mod = __returnval(commandSplit, 1)
+                Module.moduleHelp(mod).aboutModule(mod)
                 exitStatus = FSUCCESS+'0'
             else :
                 print(FALERT+'Error: No module specified')
