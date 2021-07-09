@@ -7,7 +7,8 @@ import modules.probe.ports as ports
 import modules.data.OptInfHelp as data
 import modules.data.AboutList as aboutList
 import modules.probe.osprobe as osprobe
-from data import colors, variables
+import readline
+from data import colors, variables, aliases
 
 FSUCCESS = colors.FSUCCESS
 FALERT = colors.FALERT
@@ -92,6 +93,9 @@ def interpreter(MODULE):
             else:
                 commands = input(FNORMAL+'probeKit:'+FSTYLE+f'[{MODULE}]'+FSUCCESS+' $> '+FNORMAL)
 
+            if commands in aliases['command_aliases']:
+                commands = aliases['command_aliases'][commands]
+
             if commands != None or commands != '':
                 cmdSplit = commands.split()
                 verb = __returnval(cmdSplit, 0)
@@ -103,50 +107,58 @@ def interpreter(MODULE):
                 exitStatus = 0
                 pass
 
-            elif commands == "banner":
+            elif commands == "banner" or commands in aliases['banner']:
                 banner()
 
-            elif verb == 'help':
+            elif verb == 'help' or commands in aliases['help']:
                 Data = data.Help(MODULE)
                 Data.showHelp()
-
-            elif verb == 'options':
-                Option = data.Options(MODULE)
-                try:
-                    Option.showOptions()
-                except Exception as e:
-                    print(e)
-
-                exitStatus = 0
-
-            elif verb == 'info':
-                Info = data.Info(MODULE, OPTIONS)
-                try:
-                    Info.showInfo()
-                except Exception as e:
-                    print(e)
-
-                exitStatus = 0
-
-            elif verb == 'list':
+                
+            elif verb == 'list' or commands in aliases['list']:
                 aboutList.moduleHelp(MODULE).listmodules()
 
-            elif verb == 'back':
+            elif verb == 'show' or commands in aliases['show']:
+                if __returnval(cmdSplit, 1):
+                    if __returnval(cmdSplit, 1) == 'info':
+                        Info = data.Info(MODULE, OPTIONS)
+                        try:
+                            Info.showInfo()
+                        except Exception as e:
+                           print(e)
+
+                        exitStatus = 0
+
+                    elif __returnval(cmdSplit, 1) == 'options':
+                        Option = data.Options(MODULE)
+                        try:
+                            Option.showOptions()
+                        except Exception as e:
+                            print(e)
+
+                    elif __returnval(cmdSplit, 1) == 'status':
+                        print(exitStatus)
+                        exitStatus = 0
+
+                    else:
+                        print(f'{FALERT}[-] Error: Invalid argument provided')
+                        exitStatus = 1
+                else:
+                    print(f'{FALERT}[-] Error: no argument provided')
+                    exitStatus = 1
+
+            elif verb == 'back' or commands in aliases['back']:
                 break
 
-            elif verb == 'exit':
+            elif verb == 'exit' or commands in aliases['exit']:
                 sys.exit(0)
 
-            elif verb == 'clear':
+            elif verb == 'clear' or commands in aliases['clear']:
                 print(chr(27)+'2[j')
                 print('\033c')
                 print('\x1bc')
                 exitStatus = 0
 
-            elif verb == 'getstat':
-                print('status: '+FSUCCESS+f'{exitStatus}')
-
-            elif verb == 'run':
+            elif verb == 'run' or commands in aliases['run']:
                 try:
                     __run(MODULE, OPTIONS)
                 except Exception as e:
@@ -154,7 +166,7 @@ def interpreter(MODULE):
 
 
             # Verb(or command) to set options
-            elif verb == 'set':
+            elif verb == 'set' or commands in aliases['set']:
                 if __returnval(cmdSplit, 2) and __returnval(cmdSplit, 1) != 'all':
                     if __returnval(cmdSplit, 1) in ['LHOST', 'lhost']:
                         print(f'LHOST => {__returnval(cmdSplit, 2)}')
@@ -211,7 +223,7 @@ def interpreter(MODULE):
                     print(f"{FALERT}[-] Error: Invalid value provided to option")
 
             # Verb(or command) to unset options
-            elif verb == 'unset':
+            elif verb == 'unset' or commands in aliases['unset']:
                 if __returnval(cmdSplit, 1) in ['LHOST', 'lhost']:
                     print(f'{FALERT}unset LHOST')
                     OPTIONS[0] = ''
@@ -246,12 +258,12 @@ def interpreter(MODULE):
                     OPTIONS[2] = ''
                     OPTIONS[3] = 1
                     OPTIONS[4] = 1
-                    OPTIONS[5] = '1'
+                    OPTIONS[5] = 0
                     OPTIONS[6] = ''
                 else:
                     print(FALERT+'Error: Invalid option')
 
-            elif verb == 'use':
+            elif verb == 'use' or commands in aliases['use']:
                 if __returnval(cmdSplit, 1):
                     if __returnval(cmdSplit, 1) in aboutList.moduleHelp.modules:
                         MODULE = __returnval(cmdSplit, 1)
@@ -261,15 +273,15 @@ def interpreter(MODULE):
                 else:
                     print(FALERT+'Error: No module specified')
 
-            elif verb == 'about':
+            elif verb == 'about' or commands in aliases['about']:
                 if __returnval(cmdSplit, 1):
                     mod = __returnval(cmdSplit, 1)
                     aboutList.moduleHelp(mod).aboutModule(mod)
                 else:
                     aboutList.moduleHelp(MODULE).aboutModule(MODULE)
 
-        else:
-            print(FALERT+'Error: Invalid syntax'+FNORMAL)
+            else:
+                print(FALERT+'Error: Invalid syntax'+FNORMAL)
 
     except EOFError as E:
         sys.exit()

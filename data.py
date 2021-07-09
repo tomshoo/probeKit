@@ -18,10 +18,37 @@ class colors():
 # provide defaults for all the options for a module
 # These values will be overridden if user tends to unset the value
 class variables():
-    LHOST = '127.0.0.1'
-    LPORT = ['0','8000']
-    PROTOCOL = 'tcp'
-    TIMEOUT = '1'
+    LHOST = ''
+    LPORT = ''
+    PROTOCOL = ''
+    TIMEOUT = 1
     TRYCT = 1
     NMAP = 0
-    VERBOSE = '' 
+    VERBOSE = ''
+
+aliases = {
+    'use': {},
+    'help': {},
+    'list': {'show modules'},
+    'about': {},
+    'exit': {'terminate'},
+    'back': {},
+    'clear': {
+        'cls',
+        'c'
+    },
+    'banner': {},
+    'show': {},
+    'set': {},
+    'unset': {},
+    'run': {
+        'execute',
+        'exec'
+    },
+    'command_aliases': {
+        'info': 'show info',
+        'options': 'show options',
+        'default': 'set all',
+        'destroy': 'unset all'
+    }
+}
