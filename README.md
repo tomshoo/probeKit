@@ -3,7 +3,7 @@ A simple tool written in Python for basic reconnaissance
 
 # Requirements:
 
-Python: `3.x`, Python `3.x` compatible pip, nmap, python-scapy, python-nmap
+Python: `3.x`, Python `3.x` compatible pip, nmap, python-scapy, python-nmap, readline
 
 OS: Unix based operating system(macOS, Linux, etc.)
 
@@ -14,7 +14,7 @@ This toolkit does not require any extra configurations as it is a basic plug'n'p
 
 ## Debian/Ubuntu ##
 
-```
+``` bash
 sudo apt install nmap
 git clone https://github.com/theEndurance-del/probeKit.git
 pip install -r requirements.txt
@@ -22,7 +22,7 @@ pip install -r requirements.txt
 
 ## ArchLinux ##
 
-```
+``` bash
 sudo pacman -Sy nmap
 git clone https://github.com/theEndurance-del/probeKit.git
 pip install -r requirements.txt
