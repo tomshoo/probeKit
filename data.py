@@ -26,29 +26,13 @@ class variables():
     NMAP = 0
     VERBOSE = ''
 
+# Aliases for the user's comfort
 aliases = {
-    'use': {},
-    'help': {},
-    'list': {'show modules'},
-    'about': {},
-    'exit': {'terminate'},
-    'back': {},
-    'clear': {
-        'cls',
-        'c'
-    },
-    'banner': {},
-    'show': {},
-    'set': {},
-    'unset': {},
-    'run': {
-        'execute',
-        'exec'
-    },
-    'command_aliases': {
-        'info': 'show info',
-        'options': 'show options',
-        'default': 'set all',
-        'destroy': 'unset all'
-    }
+    'exec': 'run',
+    'execute': 'run',
+    'c': 'clear',
+    'probe': 'use probe',
+    'info': 'show info',
+    'options': 'show options',
+    'getstatus': 'show status'
 }

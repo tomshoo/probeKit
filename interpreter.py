@@ -46,8 +46,8 @@ try:
     while True:
         value = input(FNORMAL+'[probkit]:'+f' {exitStatus}'+FNORMAL+'$> ')
         
-        if value in aliases['command_aliases']:
-            value = aliases['command_aliases'][value]
+        if value in aliases:
+            value = aliases[value]
 
         commandSplit = value.split()
 
@@ -57,22 +57,22 @@ try:
         elif value[0] == '#':
             exitStatus = FSUCCESS+'0'
 
-        elif value == 'exit' or value in aliases['exit']:
+        elif value == 'exit':
             sys.exit()
 
-        elif value == "help" or value in aliases['help']:
+        elif value == "help":
             exitStatus = FSUCCESS+'0'
             Data = data.Help('')
             Data.showHelp()
 
-        elif value == "list" or value in aliases['list']:
+        elif value == "list":
             exitStatus = FSUCCESS+'0'
             Mod.listmodules()
 
-        elif value == "banner" or value in aliases['banner']:
+        elif value == "banner":
             banner()
 
-        elif __returnval(commandSplit, 0) == 'clear' or __returnval(commandSplit, 0) in aliases['clear']:
+        elif __returnval(commandSplit, 0) == 'clear':
             print(chr(27)+'2[j')
             print('\x33c')
             print('\x1bc')
@@ -80,7 +80,7 @@ try:
             if __returnval(commandSplit, 1) in ['exit', 'terminate']:
                 sys.exit()
 
-        elif __returnval(commandSplit, 0) == 'use' or __returnval(commandSplit, 0) in aliases['use']:
+        elif __returnval(commandSplit, 0) == 'use':
             if __returnval(commandSplit, 1) in Module.moduleHelp.modules:
                 exitStatus = FSUCCESS+'0'
                 modinterpreter.interpreter(__returnval(commandSplit, 1))
@@ -91,7 +91,7 @@ try:
                 print(FALERT+'Error: Invalid module specified')
                 exitStatus = FALERT+'1'
 
-        elif __returnval(commandSplit, 0) == 'about' or __returnval(commandSplit, 0) in aliases['about']:
+        elif __returnval(commandSplit, 0) == 'about':
             if __returnval(commandSplit, 1):
                 mod = __returnval(commandSplit, 1)
                 Module.moduleHelp(mod).aboutModule(mod)
@@ -99,6 +99,33 @@ try:
             else :
                 print(FALERT+'Error: No module specified')
                 exitStatus = FALERT+'1'
+
+
+        elif __returnval(commandSplit, 0) == 'alias':
+            try:
+                if not __returnval(commandSplit, 1):
+                    for x in aliases:
+                        print(x,":",aliases[x])
+                
+                else:
+                    splitCommand = value.split('=')
+                    assignedCommand = splitCommand[1]
+                    if not assignedCommand or assignedCommand == '':
+                        print(f'{FALERT}Error: please provide a command to alias')
+                    else:
+                        alias = splitCommand[0].split()[1]
+                        print(alias, assignedCommand)
+                        aliases[alias]=assignedCommand
+
+            except Exception as e:
+                print(e)
+                pass
+
+        elif __returnval(commandSplit, 0) == 'unalias':
+            if __returnval(commandSplit, 1) and __returnval(commandSplit, 1) in aliases:
+                del aliases[__returnval(commandSplit, 1)]
+            else:
+                print(f'{FALERT}[-] Error: no such alias \'{FURGENT}{__returnval(commandSplit, 1)}{FALERT}\' exists')
 
         else:
             print(FALERT+'Error: Invalid Syntax')
