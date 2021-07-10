@@ -44,7 +44,7 @@ def __run(module, options):
         timeout  = options[3]
         tryct    = options[4]
         nmap     = options[5]
-        verbose  = options[6]        
+        verbose  = options[6]
         try:
             if lhost == '':
                 print(FALERT+'Error: Invalid value for LHOST')
@@ -64,7 +64,8 @@ def __run(module, options):
     except KeyboardInterrupt as key:
         print(FALERT+'\nalert: KeyboardInterrupt detected\n')
 
-# Just a simple function to return values in a list and raise exception in such a way that the prog. doesn't break
+# Just a simple function to return values in a list and raise exception 
+# in such a way that the prog. doesn't break
 def __returnval(value, pos):
     try:
         return value[int(pos)]
@@ -93,9 +94,10 @@ def interpreter(MODULE):
             else:
                 commands = input(FNORMAL+'probeKit:'+FSTYLE+f'[{MODULE}]'+FSUCCESS+' $> '+FNORMAL)
 
-            if commands in aliases['command_aliases']:
-                commands = aliases['command_aliases'][commands]
-
+            if commands in aliases:
+                commands = aliases[commands]
+                print(commands)
+            
             if commands != None or commands != '':
                 cmdSplit = commands.split()
                 verb = __returnval(cmdSplit, 0)
@@ -107,17 +109,17 @@ def interpreter(MODULE):
                 exitStatus = 0
                 pass
 
-            elif commands == "banner" or commands in aliases['banner']:
+            elif commands == "banner":
                 banner()
 
-            elif verb == 'help' or commands in aliases['help']:
+            elif verb == 'help':
                 Data = data.Help(MODULE)
                 Data.showHelp()
-                
-            elif verb == 'list' or commands in aliases['list']:
+
+            elif verb == 'list':
                 aboutList.moduleHelp(MODULE).listmodules()
 
-            elif verb == 'show' or commands in aliases['show']:
+            elif verb == 'show':
                 if __returnval(cmdSplit, 1):
                     if __returnval(cmdSplit, 1) == 'info':
                         Info = data.Info(MODULE, OPTIONS)
@@ -146,19 +148,19 @@ def interpreter(MODULE):
                     print(f'{FALERT}[-] Error: no argument provided')
                     exitStatus = 1
 
-            elif verb == 'back' or commands in aliases['back']:
+            elif verb == 'back':
                 break
 
-            elif verb == 'exit' or commands in aliases['exit']:
+            elif verb == 'exit':
                 sys.exit(0)
 
-            elif verb == 'clear' or commands in aliases['clear']:
+            elif verb == 'clear':
                 print(chr(27)+'2[j')
                 print('\033c')
                 print('\x1bc')
                 exitStatus = 0
 
-            elif verb == 'run' or commands in aliases['run']:
+            elif verb == 'run':
                 try:
                     __run(MODULE, OPTIONS)
                 except Exception as e:
@@ -166,7 +168,7 @@ def interpreter(MODULE):
 
 
             # Verb(or command) to set options
-            elif verb == 'set' or commands in aliases['set']:
+            elif verb == 'set':
                 if __returnval(cmdSplit, 2) and __returnval(cmdSplit, 1) != 'all':
                     if __returnval(cmdSplit, 1) in ['LHOST', 'lhost']:
                         print(f'LHOST => {__returnval(cmdSplit, 2)}')
@@ -196,7 +198,7 @@ def interpreter(MODULE):
                     elif __returnval(cmdSplit, 1) in ['NMAP', 'nmap']:
                         print(f'NMAP  => {__returnval(cmdSplit, 2)}')
                         OPTIONS[5] = int(__returnval(cmdSplit, 2))
-                    
+
                     elif __returnval(cmdSplit, 1) in ['VERBOSE', 'verbose']:
                         if __returnval(cmdSplit, 2) not in ['true', 'false']:
                             print(FALERT+'Error: Invalid value provided')
@@ -206,7 +208,7 @@ def interpreter(MODULE):
                         elif __returnval(cmdSplit, 2) == 'false':
                             OPTIONS[6] = False
                             print(f'VERBOSE => {OPTIONS[6]}')
- 
+
                     else:
                         print(FALERT+'[-] Error: Invalid option')
 
@@ -217,13 +219,13 @@ def interpreter(MODULE):
                     OPTIONS[3] = variables.TIMEOUT
                     OPTIONS[4] = variables.TRYCT
                     OPTIONS[5] = variables.NMAP
-                    OPTIONS[6] = variables.VERBOSE           
+                    OPTIONS[6] = variables.VERBOSE
 
                 else:
                     print(f"{FALERT}[-] Error: Invalid value provided to option")
 
             # Verb(or command) to unset options
-            elif verb == 'unset' or commands in aliases['unset']:
+            elif verb == 'unset':
                 if __returnval(cmdSplit, 1) in ['LHOST', 'lhost']:
                     print(f'{FALERT}unset LHOST')
                     OPTIONS[0] = ''
@@ -263,7 +265,7 @@ def interpreter(MODULE):
                 else:
                     print(FALERT+'Error: Invalid option')
 
-            elif verb == 'use' or commands in aliases['use']:
+            elif verb == 'use':
                 if __returnval(cmdSplit, 1):
                     if __returnval(cmdSplit, 1) in aboutList.moduleHelp.modules:
                         MODULE = __returnval(cmdSplit, 1)
@@ -273,12 +275,35 @@ def interpreter(MODULE):
                 else:
                     print(FALERT+'Error: No module specified')
 
-            elif verb == 'about' or commands in aliases['about']:
+            elif verb == 'about':
                 if __returnval(cmdSplit, 1):
                     mod = __returnval(cmdSplit, 1)
                     aboutList.moduleHelp(mod).aboutModule(mod)
                 else:
                     aboutList.moduleHelp(MODULE).aboutModule(MODULE)
+
+            elif verb == 'alias':
+                try:
+                    if not __returnval(cmdSplit, 1):
+                        for x in aliases:
+                            print(x,":",aliases[x])
+                
+                    else:
+                        splitCommand = commands.split('=')
+                        assignedCommand = splitCommand[1]
+                        alias = splitCommand[0].split()[1]
+                        print(alias, assignedCommand)
+                        aliases[alias]=assignedCommand
+
+                except Exception as e:
+                    print(e)
+                    pass
+
+            elif verb == 'unalias':
+                if __returnval(cmdSplit, 1) and __returnval(cmdSplit, 1) in aliases:
+                    del aliases[__returnval(cmdSplit, 1)]
+                else:
+                    print(f'{FALERT}[-] Error: no such alias \'{FURGENT}{__returnval(cmdSplit, 1)}{FALERT}\' exists')
 
             else:
                 print(FALERT+'Error: Invalid syntax'+FNORMAL)
