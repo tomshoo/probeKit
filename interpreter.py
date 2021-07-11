@@ -6,7 +6,7 @@ import sys
 import mod_interpreter as modinterpreter
 import modules.data.OptInfHelp as data
 import modules.data.AboutList as Module
-from data import colors, aliases
+from config import colors, aliases
 
 FSUCCESS = colors.FSUCCESS
 FALERT = colors.FALERT
@@ -45,7 +45,13 @@ exitStatus = FSUCCESS+'0'
 try:
     while True:
         value = input(FNORMAL+'[probkit]:'+f' {exitStatus}'+FNORMAL+'$> ')
-        
+
+        if '#' in value:
+            if value[0] == '#':
+                pass
+            else:
+                value = value[:value.index('#'):]
+
         if value in aliases:
             value = aliases[value]
 
@@ -53,9 +59,6 @@ try:
 
         if value in [None, '']:
             exitStatus = FURGENT+"idle"
-
-        elif value[0] == '#':
-            exitStatus = FSUCCESS+'0'
 
         elif value == 'exit':
             sys.exit()
@@ -88,7 +91,7 @@ try:
                 print(FALERT+'Error: no module specified')
                 exitStatus = FALERT+'1'
             else:
-                print(FALERT+'Error: Invalid module specified')
+                print(f'{FALERT}Error: Invalid module specified: \'{__returnval(commandSplit, 1)}\'')
                 exitStatus = FALERT+'1'
 
         elif __returnval(commandSplit, 0) == 'about':
@@ -114,9 +117,9 @@ try:
                         print(f'{FALERT}Error: please provide a command to alias')
                     else:
                         alias = splitCommand[0].split()[1]
-                        print(alias, assignedCommand)
+                        print(alias, "=>",assignedCommand)
                         aliases[alias]=assignedCommand
-
+        
             except Exception as e:
                 print(e)
                 pass
