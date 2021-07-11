@@ -8,7 +8,7 @@ import modules.data.OptInfHelp as data
 import modules.data.AboutList as aboutList
 import modules.probe.osprobe as osprobe
 import readline
-from data import colors, variables, aliases
+from config import colors, variables, aliases
 
 FSUCCESS = colors.FSUCCESS
 FALERT = colors.FALERT
@@ -94,6 +94,13 @@ def interpreter(MODULE):
             else:
                 commands = input(FNORMAL+'probeKit:'+FSTYLE+f'[{MODULE}]'+FSUCCESS+' $> '+FNORMAL)
 
+            if '#' in commands:
+                if commands[0] == '#':
+                    pass
+                else:
+                    commands = commands[:commands.index('#'):]
+
+
             if commands in aliases:
                 commands = aliases[commands]
                 print(commands)
@@ -104,10 +111,6 @@ def interpreter(MODULE):
 
             if commands == None or commands == '':
                 exitStatus = 'idle'
-
-            elif commands[0] == '#':
-                exitStatus = 0
-                pass
 
             elif commands == "banner":
                 banner()
@@ -221,6 +224,9 @@ def interpreter(MODULE):
                     OPTIONS[5] = variables.NMAP
                     OPTIONS[6] = variables.VERBOSE
 
+                elif not __returnval(cmdSplit, 2):
+                    print(f'{FALERT}[-] Error: no value provided to option')
+
                 else:
                     print(f"{FALERT}[-] Error: Invalid value provided to option")
 
@@ -271,7 +277,7 @@ def interpreter(MODULE):
                         MODULE = __returnval(cmdSplit, 1)
                         print(FURGENT+f'MODULE => {MODULE}')
                     else:
-                        print(FALERT+"Error: Invalid Module")
+                        print(f'{FALERT}Error: Invalid module specified: \'{__returnval(cmdSplit, 1)}\'')
                 else:
                     print(FALERT+'Error: No module specified')
 
@@ -292,8 +298,11 @@ def interpreter(MODULE):
                         splitCommand = commands.split('=')
                         assignedCommand = splitCommand[1]
                         alias = splitCommand[0].split()[1]
-                        print(alias, assignedCommand)
-                        aliases[alias]=assignedCommand
+                        if not assignedCommand or assignedCommand == '':
+                            print(f'{FALERT}[-] Error: please provide a command to alias')
+                        else:
+                            print(alias, "=>",assignedCommand)
+                            aliases[alias]=assignedCommand
 
                 except Exception as e:
                     print(e)

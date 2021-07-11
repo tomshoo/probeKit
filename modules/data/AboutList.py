@@ -2,7 +2,7 @@
 
 import sys
 sys.path.append('../../')
-from data import colors
+from config import colors
 
 FSUCCESS = colors.FSUCCESS
 FALERT = colors.FALERT
