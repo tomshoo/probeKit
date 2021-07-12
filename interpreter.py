@@ -113,7 +113,7 @@ try:
             else:
                 inputval = inputval[:inputval.index('#'):]
 
-        if inputval[len(inputval)-1::] != ';':
+        elif inputval[len(inputval)-1::] != ';':
             valsplit = list(inputval)
             valsplit.append(';')
             inputval = ''.join(valsplit)
