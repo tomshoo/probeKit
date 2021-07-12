@@ -127,7 +127,6 @@ try:
             aliasedcommand = commands.split()
             aliasedcommand[0] = aliases.get(__returnval(commands.split(), 0), __returnval(commands.split(), 0))
             commands = ' '.join(aliasedcommand)
-            print('[->] '+commands+'\n')
             
             if commands != None or commands != '':
                 cmdSplit = commands.split()
