@@ -37,6 +37,8 @@ def banner():
     -- by theEndurance-del
     ''')
 
+banner()
+
 MODULE = ''
 
 
@@ -122,9 +124,10 @@ try:
 
             commands = trim(commands)
 
-            if commands in aliases:
-                commands = aliases.get(commands)
-                print(commands)
+            aliasedcommand = commands.split()
+            aliasedcommand[0] = aliases.get(__returnval(commands.split(), 0), __returnval(commands.split(), 0))
+            commands = ' '.join(aliasedcommand)
+            print('[->] '+commands+'\n')
             
             if commands != None or commands != '':
                 cmdSplit = commands.split()
