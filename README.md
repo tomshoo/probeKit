@@ -45,7 +45,7 @@ Please edit `config.py` file to change color settings or option settings.
 
 # Usage:
 Start the interpreter by typing the following in your terminal:
-`python ./probeKit/interpreter.py`
+`python3 ./probeKit/interpreter.py`
 
 To use a module simply type:
 `use [module]`
