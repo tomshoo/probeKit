@@ -41,7 +41,7 @@ blue => default prompt color
 
 Also there is an option to provide default values to options.
 
-Please edit `data.py` file to change color settings or option settings.
+Please edit `config.py` file to change color settings or option settings.
 
 # Usage:
 Start the interpreter by typing the following in your terminal:

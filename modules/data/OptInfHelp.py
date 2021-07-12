@@ -122,10 +122,32 @@ class Info():
             if self.lhost != '':
                 print(FSUCCESS+'\n\t[+] '+f'LHOST => {self.lhost}')
             else:
-                print(FALERT+'\n\t[+] '+f'LHOST => {self.lhost}')
+                print(FALERT+'\n\t[-] '+f'LHOST => {self.lhost}')
 
             print(FSUCCESS+'\t[+] '+f'NMAP  => {self.nmap}')
             print(FSUCCESS+f'\t[*] TRYCT => {self.tryct}\n')
 
         else:
-            raise Exception(FALERT+'Error: Invalid module')
+            if self.lhost != '':
+                print(FSUCCESS+'\n\t[+] '+f'LHOST => {self.lhost}')
+            else:
+                print(FALERT+'\n\t[-] '+f'LHOST => {self.lhost}')
+
+            if self.lport != '':
+                print(FSUCCESS+f'\t[+] '+f'LPORT => {self.lport}')
+            else:
+                print(FALERT+'\t[-] '+f'LPORT => {self.lport}')
+
+            if self.proto != '':
+                print(FSUCCESS+'\t[+] '+f'PROTO => {self.proto}')
+            else:
+                print(FALERT+'\t[-] '+f'PROTO => {self.proto}')
+
+            if self.verbose != '':
+                print(FSUCCESS+'\t[+] '+f'VERBOSE => {self.verbose}')
+            else:
+                print(FALERT+'\t[-] '+f'VERBOSE => {self.verbose}')
+
+            print(FSUCCESS+'\t[+] '+f'NMAP  => {self.nmap}')
+            print(FSUCCESS+f'\t[*] TRYCT => {self.tryct}')
+            print(FSUCCESS+f'\t[*] TMOUT => {self.timeout}\n')
