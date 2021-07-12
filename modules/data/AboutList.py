@@ -70,3 +70,9 @@ class moduleHelp():
         elif moduleName == 'test':
             print(FALERT+'This module is strictly for debugging purposes while creating the toolkit')
             print(FALERT+'Do not consider this as a usable module')
+
+        elif moduleName == '':
+            print(FALERT+'[-] Error: no module selected')
+
+        else:
+            print(f'{FALERT}[-] Error: Invalid module \'{moduleName}\'')
