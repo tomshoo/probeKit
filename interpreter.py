@@ -13,126 +13,113 @@ FALERT = colors.FALERT
 FNORMAL = colors.FNORMAL
 FURGENT = colors.FURGENT
 
-def banner():
-    print('''
-                          *               *    *          *
-                          *               *   *     *     *
-                          *               *  *            *
-    * ***   * **   ****   * ***    ****   * *      **    ****
-    **   *   *    *    *  **   *  *    *  **        *     *
-    *    *   *    *    *  *    *  ******  * *       *     *
-    **   *   *    *    *  *    *  *       *  *      *     *
-    * ***    *    *    *  **   *  *    *  *   *     *     *  *
-    *        *     ****   * ***    ****   *    *  *****    **
-    *
-    *
-
-    -- by theEndurance-del
-    ''')
-
-banner()
-
-def __returnval(value, pos):
-    try:
-        return value[int(pos)]
-    except Exception as e:
-        return None
-
+banner = modinterpreter.banner()
 Mod = Module.moduleHelp('')
 
 exitStatus = FSUCCESS+'0'
 
 try:
     while True:
-        value = input(FNORMAL+'[probkit]:'+f' {exitStatus}'+FNORMAL+'$> ')
+        inputval = input(FNORMAL+'[probkit]:'+f' {exitStatus}'+FNORMAL+'$> ')
 
-        if '#' in value:
-            if value[0] == '#':
+        if '#' in inputval:
+            if inputval[0] == '#':
                 pass
             else:
-                value = value[:value.index('#'):]
+                inputval = inputval[:inputval.index('#'):]
 
-        if value in aliases:
-            value = aliases[value]
+        if inputval[len(inputval)-1::] != ';':
+            valsplit = list(inputval)
+            valsplit.append(';')
+            inputval = ''.join(valsplit)
 
-        commandSplit = value.split()
+        valuesplit = inputval.split(';')
+        valuesplit.pop(len(valuesplit)-1)
+        for value in valuesplit:
 
-        if value in [None, '']:
-            exitStatus = FURGENT+"idle"
+            value = modinterpreter.trim(value)
 
-        elif value == 'exit':
-            sys.exit()
+            if value in aliases:
+                value = aliases[value]
 
-        elif value == "help":
-            exitStatus = FSUCCESS+'0'
-            Data = data.Help('')
-            Data.showHelp()
+            commandSplit = value.split()
 
-        elif value == "list":
-            exitStatus = FSUCCESS+'0'
-            Mod.listmodules()
+            if value in [None, '']:
+                exitStatus = FURGENT+"idle"
 
-        elif value == "banner":
-            banner()
-
-        elif __returnval(commandSplit, 0) == 'clear':
-            print(chr(27)+'2[j')
-            print('\x33c')
-            print('\x1bc')
-            exitStatus = FSUCCESS+'0'
-            if __returnval(commandSplit, 1) in ['exit', 'terminate']:
+            elif value == 'exit':
                 sys.exit()
 
-        elif __returnval(commandSplit, 0) == 'use':
-            if __returnval(commandSplit, 1) in Module.moduleHelp.modules:
+            elif value == "help":
                 exitStatus = FSUCCESS+'0'
-                modinterpreter.interpreter(__returnval(commandSplit, 1))
-            elif not __returnval(commandSplit, 1):
-                print(FALERT+'Error: no module specified')
-                exitStatus = FALERT+'1'
-            else:
-                print(f'{FALERT}Error: Invalid module specified: \'{__returnval(commandSplit, 1)}\'')
-                exitStatus = FALERT+'1'
+                Data = data.Help('')
+                Data.showHelp()
 
-        elif __returnval(commandSplit, 0) == 'about':
-            if __returnval(commandSplit, 1):
-                mod = __returnval(commandSplit, 1)
-                Module.moduleHelp(mod).aboutModule(mod)
+            elif value == "list":
                 exitStatus = FSUCCESS+'0'
-            else :
-                print(FALERT+'Error: No module specified')
-                exitStatus = FALERT+'1'
+                Mod.listmodules()
 
+            elif value == "banner":
+                modinterpreter.banner()
 
-        elif __returnval(commandSplit, 0) == 'alias':
-            try:
-                if not __returnval(commandSplit, 1):
-                    for x in aliases:
-                        print(x,":",aliases[x])
-                
+            elif modinterpreter.__returnval(commandSplit, 0) == 'clear':
+                print(chr(27)+'2[j')
+                print('\x33c')
+                print('\x1bc')
+                exitStatus = FSUCCESS+'0'
+                if modinterpreter.__returnval(commandSplit, 1) in ['exit', 'terminate']:
+                    sys.exit()
+
+            elif modinterpreter.__returnval(commandSplit, 0) == 'use':
+                if modinterpreter.__returnval(commandSplit, 1) in Module.moduleHelp.modules:
+                    exitStatus = FSUCCESS+'0'
+                    modinterpreter.interpreter(modinterpreter.__returnval(commandSplit, 1))
+                elif not modinterpreter.__returnval(commandSplit, 1):
+                    print(FALERT+'Error: no module specified')
+                    exitStatus = FALERT+'1'
                 else:
-                    splitCommand = value.split('=')
-                    assignedCommand = splitCommand[1]
-                    if not assignedCommand or assignedCommand == '':
-                        print(f'{FALERT}Error: please provide a command to alias')
+                    print(f'{FALERT}Error: Invalid module specified: \'{modinterpreter.__returnval(commandSplit, 1)}\'')
+                    exitStatus = FALERT+'1'
+
+            elif modinterpreter.__returnval(commandSplit, 0) == 'about':
+                if modinterpreter.__returnval(commandSplit, 1):
+                    mod = modinterpreter.__returnval(commandSplit, 1)
+                    Module.moduleHelp(mod).aboutModule(mod)
+                    exitStatus = FSUCCESS+'0'
+                else :
+                    print(FALERT+'Error: No module specified')
+                    exitStatus = FALERT+'1'
+
+
+            elif modinterpreter.__returnval(commandSplit, 0) == 'alias':
+                try:
+                    if not modinterpreter.__returnval(commandSplit, 1):
+                        for x in aliases:
+                            print(x,":",aliases[x])
+                
                     else:
-                        alias = splitCommand[0].split()[1]
-                        print(alias, "=>",assignedCommand)
-                        aliases[alias]=assignedCommand
+                        splitCommand = value.split('=')
+                        assignedCommand = splitCommand[1]
+                        if not assignedCommand or assignedCommand == '':
+                            print(f'{FALERT}Error: please provide a command to alias')
+                        else:
+                            alias = splitCommand[0].split()[1]
+                            print(alias, "=>",assignedCommand)
+                            aliases[alias]=assignedCommand
         
-            except Exception as e:
-                print(e)
-                pass
+                except Exception as e:
+                    print(e)
+                    pass
 
-        elif __returnval(commandSplit, 0) == 'unalias':
-            if __returnval(commandSplit, 1) and __returnval(commandSplit, 1) in aliases:
-                del aliases[__returnval(commandSplit, 1)]
+            elif modinterpreter.__returnval(commandSplit, 0) == 'unalias':
+                if modinterpreter.__returnval(commandSplit, 1) and modinterpreter.__returnval(commandSplit, 1) in aliases:
+                    del aliases[modinterpreter.__returnval(commandSplit, 1)]
+                else:
+                    print(f'{FALERT}[-] Error: no such alias \'{FURGENT}{modinterpreter.__returnval(commandSplit, 1)}{FALERT}\' exists')
+
             else:
-                print(f'{FALERT}[-] Error: no such alias \'{FURGENT}{__returnval(commandSplit, 1)}{FALERT}\' exists')
-
-        else:
-            print(FALERT+'Error: Invalid Syntax')
-            exitStatus = FALERT+'1'
+                print(FALERT+'Error: Invalid Syntax')
+                exitStatus = FALERT+'1'
 
 except EOFError:
     print(FALERT+f'\nprobKit: exiting session')
