@@ -10,7 +10,7 @@ FNORMAL = colors.FNORMAL
 
 class moduleHelp():
 
-    modules = ['probe', 'test', 'osprobe']
+    modules = ['probe', 'osprobe']
 
     def __init__(self, MODULE):
         self.module = MODULE
@@ -65,11 +65,6 @@ class moduleHelp():
             print('\t\t | 0 for false')
             print('\t\t | 1 for true')
             print(f'{FALERT}\t\t | Warning: It is an active scanning method hence use it on your own risk\n')
-
-        # This was supposed to be a test module just for testing out the data category
-        elif moduleName == 'test':
-            print(FALERT+'This module is strictly for debugging purposes while creating the toolkit')
-            print(FALERT+'Do not consider this as a usable module')
 
         elif moduleName == '':
             print(FALERT+'[-] Error: no module selected')
