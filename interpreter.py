@@ -2,7 +2,6 @@
 
 # This session will be called by the actual interpreter(also known as module selector) to run modules
 
-from posixpath import expanduser
 import sys
 import readline
 import os
@@ -36,6 +35,8 @@ def check_history():
     register_history(True)
   else:
     register_history(False)
+
+
 if os.path.exists(os.path.join(os.path.expanduser('~'), '.probeKit.history')):
   readline.read_history_file(os.path.join(os.path.expanduser('~'), '.probeKit.history'))
 
@@ -87,16 +88,16 @@ def __run(module, options):
         except Exception as e:
             print(e)
 
-    except KeyboardInterrupt as key:
+    except KeyboardInterrupt:
         print(FALERT+'\nalert: KeyboardInterrupt detected\n')
 
 # Just a simple function to return values in a list and raise exception
 # in such a way that the prog. doesn't break
 def __returnval(value, pos):
     try:
-        return value[int(pos)]
-    except Exception as e:
-        pass
+      return str(value[int(pos)])
+    except Exception:
+        return ''
 
 # Variables also known as options to the user
 OPTIONS = [variables.LHOST
@@ -133,12 +134,14 @@ try:
             valuesplit = inputval.split(';')
             valuesplit.pop(len(valuesplit)-1)
             for commands in valuesplit:
+                verb = ''
+                cmdSplit = []
 
                 commands = trim(commands)
 
                 aliasedcommand = commands.split()
                 calledAlias = __returnval(aliasedcommand, 0)
-                aliasedcommand[0] = aliases.get(calledAlias, calledAlias)
+                aliasedcommand[0] = aliases.get(str(calledAlias), str(calledAlias))
                 commands = ' '.join(aliasedcommand)
 
                 if commands[0] == '#':
