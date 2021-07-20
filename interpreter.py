@@ -2,12 +2,14 @@
 
 # This session will be called by the actual interpreter(also known as module selector) to run modules
 
+from posixpath import expanduser
 import sys
+import readline
+import os
 import modules.probe.ports as ports
 import modules.data.OptInfHelp as data
 import modules.data.AboutList as aboutList
 import modules.probe.osprobe as osprobe
-import readline
 from config import colors, variables, aliases
 
 FSUCCESS = colors.FSUCCESS
@@ -22,6 +24,20 @@ class ExitException(Exception):
 def trim(string):
     strsplit = string.split()
     return ' '.join(strsplit)
+
+def register_history(exists):
+  if exists:
+    readline.append_history_file(1000, os.path.join(os.path.expanduser('~'), '.probeKit.history'))
+  else:
+    readline.write_history_file(os.path.join(os.path.expanduser('~'), '.probeKit.history'))
+
+def check_history():
+  if os.path.exists(os.path.join(os.path.expanduser('~'), '.probeKit.history')):
+    register_history(True)
+  else:
+    register_history(False)
+if os.path.exists(os.path.join(os.path.expanduser('~'), '.probeKit.history')):
+  readline.read_history_file(os.path.join(os.path.expanduser('~'), '.probeKit.history'))
 
 def banner():
     print('''
@@ -74,7 +90,7 @@ def __run(module, options):
     except KeyboardInterrupt as key:
         print(FALERT+'\nalert: KeyboardInterrupt detected\n')
 
-# Just a simple function to return values in a list and raise exception 
+# Just a simple function to return values in a list and raise exception
 # in such a way that the prog. doesn't break
 def __returnval(value, pos):
     try:
@@ -105,17 +121,15 @@ try:
 
         if MODULE == '':
             inputval = input(f'{FNORMAL}[probkit]: {COLOR}{exitStatus}{FNORMAL}$> ')
-        elif MODULE == 'test':
-            inputval = input(FALERT+f'probeKit:[*{MODULE}*] $> '+FNORMAL)
         else:
             inputval = input(FNORMAL+'probeKit:'+FSTYLE+f'[{MODULE}]'+FSUCCESS+' $> '+FNORMAL)
-    
+
         try:
             if inputval[len(inputval)-1::] != ';':
                 valsplit = list(inputval)
                 valsplit.append(';')
                 inputval = ''.join(valsplit)
-            
+
             valuesplit = inputval.split(';')
             valuesplit.pop(len(valuesplit)-1)
             for commands in valuesplit:
@@ -123,7 +137,8 @@ try:
                 commands = trim(commands)
 
                 aliasedcommand = commands.split()
-                aliasedcommand[0] = aliases.get(__returnval(commands.split(), 0), __returnval(commands.split(), 0))
+                calledAlias = __returnval(aliasedcommand, 0)
+                aliasedcommand[0] = aliases.get(calledAlias, calledAlias)
                 commands = ' '.join(aliasedcommand)
 
                 if commands[0] == '#':
@@ -319,7 +334,7 @@ try:
                         if not __returnval(cmdSplit, 1):
                             for x in aliases:
                                 print(x,":",aliases[x])
-                
+
                         else:
                             splitCommand = commands.split('=')
                             assignedCommand = splitCommand[1]
@@ -342,7 +357,7 @@ try:
 
                 else:
                     print(f'{FALERT}[-] Error: Invalid command \'{verb}\'{FNORMAL}')
-  
+                check_history()
         except ExitException as e:
             print(e)
             sys.exit(0)
