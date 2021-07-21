@@ -15,7 +15,7 @@ def __getServbyPort(port, protocol):
         return False
 
 # TCP port scanner function
-def __tscanner(host, port, timeout, verbose):
+def __tscanner(host, port, timeout, verbose=False):
     socktcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     Port = int(port)
     TMOUT = int(timeout)
@@ -33,7 +33,7 @@ def __tscanner(host, port, timeout, verbose):
         socktcp.close()
 
 # UDP port scanner function
-def __uscanner(host, port, timeout, tryct, verbose):
+def __uscanner(host, port, timeout, tryct, verbose=False):
     Port = int(port)
     TMOUT = int(timeout)
     portstatus = False
@@ -48,7 +48,7 @@ def __uscanner(host, port, timeout, tryct, verbose):
 
         except socket.timeout:
             serv = __getServbyPort(Port, 'udp')
-        
+
             if not serv:
                 portstatus = False
             else:
@@ -57,7 +57,7 @@ def __uscanner(host, port, timeout, tryct, verbose):
         except socket.error as e:
             if verbose:
                 print(e)
-            
+
             portstatus = False
 
         finally:
@@ -102,7 +102,7 @@ def scanner(host, port, timeout, protocol, tryct, verbose):
 
 
         else:
-            if __tscanner(host, port, timeout):
+            if __tscanner(host, port, timeout, verbose):
                 print(f"{host}: {port} is open")
 
             else:
@@ -111,7 +111,7 @@ def scanner(host, port, timeout, protocol, tryct, verbose):
     elif protocol in ['udp', 'UDP']:
         if __portinputislist(port):
             for x in range((int(str(port[0]))), (int(str(port[1]))+1)):
-                if __uscanner(host, x, timeout, tryct, verbose):
+                if __uscanner(host, x, timeout, tryct):
                     opeStr = f"{host}: {x} is open"
                     openports.append(opeStr)
                     print(opeStr)

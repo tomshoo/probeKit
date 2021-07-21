@@ -2,7 +2,6 @@
 
 # This session will be called by the actual interpreter(also known as module selector) to run modules
 
-from posixpath import expanduser
 import sys
 import readline
 import os
@@ -25,20 +24,6 @@ def trim(string):
     strsplit = string.split()
     return ' '.join(strsplit)
 
-def register_history(exists):
-  if exists:
-    readline.append_history_file(1000, os.path.join(os.path.expanduser('~'), '.probeKit.history'))
-  else:
-    readline.write_history_file(os.path.join(os.path.expanduser('~'), '.probeKit.history'))
-
-def check_history():
-  if os.path.exists(os.path.join(os.path.expanduser('~'), '.probeKit.history')):
-    register_history(True)
-  else:
-    register_history(False)
-if os.path.exists(os.path.join(os.path.expanduser('~'), '.probeKit.history')):
-  readline.read_history_file(os.path.join(os.path.expanduser('~'), '.probeKit.history'))
-
 def banner():
     print('''
                           *               *    *          *
@@ -60,6 +45,26 @@ banner()
 
 MODULE = ''
 
+class register_history():
+  def __init__(self, command : str):
+    self.command = command
+    self.histfile : str = os.path.join(os.path.expanduser('~'), '.probeKit.history')
+
+  def write_history(self):
+    histfile = self.histfile
+    if os.path.exists(histfile):
+      with open(histfile, 'a') as fp:
+        fp.write(self.command + ' \n')
+        pass
+    
+    else:
+      with open(histfile, 'w') as fp:
+        fp.write(self.command + '\n')
+        pass
+
+histfile : str = os.path.join(os.path.expanduser('~'), '.probeKit.history')
+if os.path.exists(histfile):
+  readline.read_history_file(histfile)
 
 # Calls the function based on the selected module
 def __run(module, options):
@@ -87,16 +92,16 @@ def __run(module, options):
         except Exception as e:
             print(e)
 
-    except KeyboardInterrupt as key:
+    except KeyboardInterrupt:
         print(FALERT+'\nalert: KeyboardInterrupt detected\n')
 
 # Just a simple function to return values in a list and raise exception
 # in such a way that the prog. doesn't break
 def __returnval(value, pos):
     try:
-        return value[int(pos)]
-    except Exception as e:
-        pass
+      return str(value[int(pos)])
+    except Exception:
+        return ''
 
 # Variables also known as options to the user
 OPTIONS = [variables.LHOST
@@ -124,6 +129,7 @@ try:
         else:
             inputval = input(FNORMAL+'probeKit:'+FSTYLE+f'[{MODULE}]'+FSUCCESS+' $> '+FNORMAL)
 
+        register_history(inputval).write_history()
         try:
             if inputval[len(inputval)-1::] != ';':
                 valsplit = list(inputval)
@@ -133,12 +139,14 @@ try:
             valuesplit = inputval.split(';')
             valuesplit.pop(len(valuesplit)-1)
             for commands in valuesplit:
+                verb = ''
+                cmdSplit = []
 
                 commands = trim(commands)
 
                 aliasedcommand = commands.split()
                 calledAlias = __returnval(aliasedcommand, 0)
-                aliasedcommand[0] = aliases.get(calledAlias, calledAlias)
+                aliasedcommand[0] = aliases.get(str(calledAlias), str(calledAlias))
                 commands = ' '.join(aliasedcommand)
 
                 if commands[0] == '#':
@@ -357,7 +365,6 @@ try:
 
                 else:
                     print(f'{FALERT}[-] Error: Invalid command \'{verb}\'{FNORMAL}')
-                check_history()
         except ExitException as e:
             print(e)
             sys.exit(0)
