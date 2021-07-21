@@ -41,6 +41,11 @@ def banner():
     -- by theEndurance-del
     ''')
 
+def datevalue():
+    from datetime import datetime
+    return datetime.now().strftime('%a %F %H:%M:%S')
+
+print(f'current session started at {datevalue()}')
 banner()
 
 MODULE = ''
@@ -54,12 +59,12 @@ class register_history():
     histfile = self.histfile
     if os.path.exists(histfile):
       with open(histfile, 'a') as fp:
-        fp.write(self.command + ' \n')
+        fp.write(self.command + f' # {datevalue()} \n')
         pass
     
     else:
       with open(histfile, 'w') as fp:
-        fp.write(self.command + '\n')
+        fp.write(self.command + ' # {datevalue()} \n')
         pass
 
 histfile : str = os.path.join(os.path.expanduser('~'), '.probeKit.history')
@@ -366,6 +371,9 @@ try:
                 else:
                     print(f'{FALERT}[-] Error: Invalid command \'{verb}\'{FNORMAL}')
         except ExitException as e:
+            with open(histfile, 'a') as fp:
+              fp.write('# session ended at: ' + datevalue() + ' # \n')
+              pass
             print(e)
             sys.exit(0)
 
@@ -374,6 +382,10 @@ try:
             pass
 
 except EOFError as E:
+    with open(histfile, 'a') as fp:
+        fp.write('# session ended at: ' + datevalue() + ' # \n')
+        pass
+
     print(f'\n{FALERT}probeKit: exiting session')
     sys.exit()
 
