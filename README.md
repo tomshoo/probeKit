@@ -1,7 +1,7 @@
 # probeKit
 A simple tool written in Python for basic reconnaissance
 
-# Requirements:
+## Requirements:
 
 Python: `3.x`, Python `3.x` compatible pip, nmap, python-scapy, python-nmap, readline
 
@@ -9,30 +9,71 @@ OS: Unix based operating system(macOS, Linux, etc.)
 
 Not supported on DOS based platforms.
 
-# Installation
-This toolkit does not require any extra configurations as it is a basic plug'n'play toolkit.
+## Installation
 
-## Debian/Ubuntu ##
-
-``` bash
-sudo apt install nmap
-git clone https://github.com/theEndurance-del/probeKit.git
-pip install -r requirements.txt
-```
-
-## ArchLinux ##
+### Debian/Ubuntu
 
 ``` bash
-sudo pacman -Sy nmap
-git clone https://github.com/theEndurance-del/probeKit.git
-pip install -r requirements.txt
+git clone https://theEndurance-del/probeKit.git && cd ./probeKit
+sudo apt install nmap python-pip
+pip install scapy python-nmap
 ```
 
-# Customization
+### Arch based distributions
+
+``` bash
+git clone https://theEndurance-del/probeKit.git && cd ./probeKit
+sudo pacman -Syu nmap python-pip
+pip install scapy python-nmap
+```
+
+## Usage
+
+Start the interpreter by typing the following in your terminal:
+`python3 ./probeKit/interpreter.py`
+
+Show help by using the `help` command.
+
+This is the help shown:
+
+``` text
+
+Usage: [verb] [options]
+Available verbs are: set, help, exit, back, clear, run
+
+    show        shows information on provided argument(*)
+
+    set         assignes values to available options(*)
+
+    help        prints this help message
+
+    exit        exits the whole interpreter
+
+    back        moves back to the module selector
+
+    clear       clears screen
+
+    run         runs the selected module
+
+    about       prints details about specified module(*)
+
+    list        prints available modules
+
+    banner      prints an ascii banner
+
+    alias       set an alias for a command(*)
+
+    unalias     unset a pre-existing alias(*)
+
+```
+
+Run `help [command]` for more information(only the commands marked with `(*)` have a seperate help)
+
+## Customization
 
 This toolkit has it's own default set of colors.
 
-```
+``` text
 red => Alerts or critical points
 yellow => warnings or significant changes
 green => successfull result or helpful text
@@ -43,24 +84,6 @@ Also there is an option to provide default values to options.
 
 Please edit `config.py` file to change color settings or option settings.
 
-# Usage:
-Start the interpreter by typing the following in your terminal:
-`python3 ./probeKit/interpreter.py`
-
-To use a module simply type:
-`use [module]`
-
-Once into the module's interpreter the shell will display the module's name.
-
-To know about the options available with the module simply type `options` in the interpreter shell.
-
-To know about the configured options for a module or to check assigned values to available options type `info` in the interpreter
-
-To assign value to an available option:
-`set [OPTION] [VALUE]`
-
-To run the module simply type `run`
-
 *Note: This project is still not completed as a whole and still requires a lot of rewriting any suggestions for improvement are kindly accepted but may require some time to be worked upon*
 
-## Thank You!! ##
+## Thank You
