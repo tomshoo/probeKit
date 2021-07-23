@@ -1,7 +1,5 @@
 #! /usr/bin/env python3
 
-import sys
-sys.path.append('../../')
 from config import colors
 
 FSUCCESS = colors.FSUCCESS

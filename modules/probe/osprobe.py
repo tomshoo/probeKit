@@ -1,13 +1,12 @@
 from scapy.all import *
-from colorama import Fore, init, Back
 import nmap
-import json
 import socket
+from config import colors
 
-FRED = Fore.RED
-FWHITE = Fore.WHITE
-FGREEN = Fore.GREEN
-FYELLOW = Fore.YELLOW
+FRED = colors.FALERT
+FWHITE = colors.FNORMAL
+FGREEN = colors.FSUCCESS
+FYELLOW = colors.FURGENT
 
 def checkTTL(target, iterator):
     pkt = IP(dst=target)/ICMP(seq=9999)

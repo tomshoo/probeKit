@@ -1,29 +1,35 @@
 #! /usr/bin/env python3
+"""
+Interpreter for the entire probeKit
+"""
 
-# This session will be called by the actual interpreter(also known as module selector) to run modules
-
+# Imports
 import sys
 import readline
 import os
 import modules.probe.ports as ports
-import modules.data.OptInfHelp as data
+from modules.data.OptInfHelp import PromptHelp, Options, Info
 import modules.data.AboutList as aboutList
 import modules.probe.osprobe as osprobe
 from config import colors, variables, aliases
 
+# Setting up colors (edit these in config.py)
 FSUCCESS = colors.FSUCCESS
 FALERT = colors.FALERT
 FNORMAL = colors.FNORMAL
 FURGENT = colors.FURGENT
 FSTYLE = colors.FPROMPT
 
+# Custom exception to exit the session
 class ExitException(Exception):
     pass
 
+# Function to remove extra white spaces from the string
 def trim(string):
-    strsplit = string.split()
+    strsplit : list = string.split()
     return ' '.join(strsplit)
 
+# Function to print the introductory banner
 def banner():
     print('''
                           *               *    *          *
@@ -41,6 +47,7 @@ def banner():
     -- by theEndurance-del
     ''')
 
+# Function to get immediate time at a point
 def datevalue():
     from datetime import datetime
     return datetime.now().strftime('%a %F %H:%M:%S')
@@ -48,30 +55,33 @@ def datevalue():
 print(f'current session started at {datevalue()}')
 banner()
 
+# Initial module is set to blank
+# Set it to any other module if you want a default module at startup
 MODULE = ''
 
+# Class to register history
 class register_history():
-  def __init__(self, command : str):
-    self.command = command
-    self.histfile : str = os.path.join(os.path.expanduser('~'), '.probeKit.history')
+    def __init__(self, command : str):
+        self.command = command
+        self.histfile : str = os.path.join(os.path.expanduser('~'), '.probeKit.history')
 
-  def write_history(self):
-    histfile = self.histfile
-    if os.path.exists(histfile):
-      with open(histfile, 'a') as fp:
-        fp.write(self.command + f' # {datevalue()} \n')
-        pass
-    
-    else:
-      with open(histfile, 'w') as fp:
-        fp.write(self.command + ' # {datevalue()} \n')
-        pass
+    def write_history(self):
+        histfile = self.histfile
+        if os.path.exists(histfile):
+            with open(histfile, 'a') as fp:
+                fp.write(self.command + f' # {datevalue()} \n')
+                pass
+        else:
+            with open(histfile, 'w') as fp:
+                fp.write(self.command + f' # {datevalue()} \n')
+                pass
 
+# Checks if history file already exists or not 
 histfile : str = os.path.join(os.path.expanduser('~'), '.probeKit.history')
 if os.path.exists(histfile):
   readline.read_history_file(histfile)
 
-# Calls the function based on the selected module
+# runs the module after verying all required options
 def __run(module, options):
     try:
         lhost    = options[0]
@@ -104,7 +114,7 @@ def __run(module, options):
 # in such a way that the prog. doesn't break
 def __returnval(value, pos):
     try:
-      return str(value[int(pos)])
+        return str(value[int(pos)])
     except Exception:
         return ''
 
@@ -119,6 +129,8 @@ OPTIONS = [variables.LHOST
 ]
 exitStatus = 0
 
+# Session starts over here
+# Not the best way to do it but it works so...
 try:
     while (True):
 
@@ -129,49 +141,69 @@ try:
         else:
             COLOR = colors.FALERT
 
+        # Checks if module is activated or not
         if MODULE == '':
             inputval = input(f'{FNORMAL}[probkit]: {COLOR}{exitStatus}{FNORMAL}$> ')
         else:
             inputval = input(FNORMAL+'probeKit:'+FSTYLE+f'[{MODULE}]'+FSUCCESS+' $> '+FNORMAL)
 
+        # Call the register_history class to write history
+        # Adds time stamp to each command after the session has ended
         register_history(inputval).write_history()
+
+        # Split the command using a ';' helps in scripting support (or)
+        # multiple commands in a single line
         try:
             if inputval[len(inputval)-1::] != ';':
                 valsplit = list(inputval)
                 valsplit.append(';')
                 inputval = ''.join(valsplit)
 
-            valuesplit = inputval.split(';')
-            valuesplit.pop(len(valuesplit)-1)
-            for commands in valuesplit:
+            commadlist : list = inputval.split(';')
+            commadlist.pop(len(commadlist)-1)
+
+            # Interate everything for commands stored in the commanlist
+            for commands in commadlist:
                 verb = ''
                 cmdSplit = []
 
                 commands = trim(commands)
 
-                aliasedcommand = commands.split()
+                aliasedcommand : list = commands.split()
                 calledAlias = __returnval(aliasedcommand, 0)
                 aliasedcommand[0] = aliases.get(str(calledAlias), str(calledAlias))
                 commands = ' '.join(aliasedcommand)
 
+                # Check if the given input was a comment
+                # Will not work if the input has a ';'
+                # Need to create an escape character for that
+                # something like '\;'
                 if commands[0] == '#':
                     commands = ''
                 elif '#' in commands:
                     commands = commands[:commands.index('#'):]
 
-
+                # split the input to obtain command arguments
                 if commands  not in ['', None]:
                     cmdSplit = commands.split()
                     verb = __returnval(cmdSplit, 0)
 
+                # Check if given input is blank
+                # Helps in maintaining comments
+                # Need to find a better less messy way to handle comments
                 if commands in ['', None]:
                     exitStatus = 0
 
+                # Henceforth starts the if... elif... else for command based output
                 elif verb == "banner":
                     banner()
 
                 elif verb == 'help':
-                    Data = data.Help(MODULE)
+                  if not __returnval(cmdSplit, 1):
+                    Data = PromptHelp('')
+                    Data.showHelp()
+                  else:
+                    Data = PromptHelp(__returnval(cmdSplit, 1))
                     Data.showHelp()
 
                 elif verb == 'list':
@@ -180,7 +212,7 @@ try:
                 elif verb == 'show':
                     if __returnval(cmdSplit, 1):
                         if __returnval(cmdSplit, 1) == 'info':
-                            Info = data.Info(MODULE, OPTIONS)
+                            Info = Info(MODULE, OPTIONS)
                             try:
                                 Info.showInfo()
                             except Exception as e:
@@ -189,7 +221,7 @@ try:
                             exitStatus = 0
 
                         elif __returnval(cmdSplit, 1) == 'options':
-                            Option = data.Options(MODULE)
+                            Option = Options(MODULE)
                             try:
                                 Option.showOptions()
                             except Exception as e:
@@ -207,8 +239,12 @@ try:
                         exitStatus = 1
 
                 elif verb == 'back':
-                    MODULE = ''
+                    if MODULE == '':
+                        raise ExitException(f'{FALERT}probeKit: exiting session')
+                    else:
+                        MODULE = ''
 
+                # Create an exception which exits the try block and then exits the session
                 elif verb == 'exit':
                     raise ExitException(f'{FALERT}probeKit: exiting session')
 
@@ -226,6 +262,7 @@ try:
 
                 # Verb(or command) to set options
                 elif verb == 'set':
+                    # if the first argument is 'all' all values default to those specified in config.py
                     if __returnval(cmdSplit, 2) and __returnval(cmdSplit, 1) != 'all':
                         if __returnval(cmdSplit, 1) in ['LHOST', 'lhost']:
                             print(f'LHOST => {__returnval(cmdSplit, 2)}')
@@ -269,6 +306,8 @@ try:
                         else:
                             print(FALERT+'[-] Error: Invalid option')
 
+                    # If there are no values in the config.py then,
+                    # this is same as `unset all`
                     elif __returnval(cmdSplit, 1) == 'all':
                         OPTIONS[0] = variables.LHOST
                         OPTIONS[1] = variables.LPORT
@@ -370,6 +409,9 @@ try:
 
                 else:
                     print(f'{FALERT}[-] Error: Invalid command \'{verb}\'{FNORMAL}')
+
+        # Write the date and time when the session was ended to the history
+        # Helps in finding those specific commands we try to remember
         except ExitException as e:
             with open(histfile, 'a') as fp:
               fp.write('# session ended at: ' + datevalue() + ' # \n')
@@ -377,10 +419,13 @@ try:
             print(e)
             sys.exit(0)
 
+        # Except the index error in the main try block and pass an idle exit status
+        # Helps in keeping the session active even if no input was given before enter
         except IndexError:
             exitStatus = 'idle'
             pass
 
+# Does the same as ExitException nothing new
 except EOFError as E:
     with open(histfile, 'a') as fp:
         fp.write('# session ended at: ' + datevalue() + ' # \n')
