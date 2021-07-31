@@ -2,50 +2,74 @@
 
 # This is the data-information module which will print help for the interpreter and information about selected module
 
-import sys
-sys.path.append('../../')
 from config import colors
 
 FSUCCESS = colors.FSUCCESS
 FALERT = colors.FALERT
 FNORMAL = colors.FNORMAL
+FURGENT = colors.FURGENT
 
 # This class prints help for the interpreter
-class Help():
-    def __init__(self, MODULE):
-        self.module = MODULE
+class PromptHelp():
+    def __init__(self, command : str):
+        self.command = command
 
     def showHelp(self):
-        module = self.module
+        command = self.command
 
         # Checks whether the shell is module interpreter or module selector session
-        if module == '':
+        if command == '':
             print(FSUCCESS+'\nUsage: [verb] [options]')
-            print('Available verbs are: use, help, exit, terminate, clear\n')
-            print('\t use\t\t specify a module to use\n\t\t\t | usage: use [module]\n')
-            print('\t help\t\t prints this help message\n')
-            print('\t list\t\t prints available modules\n')
-            print('\t about\t\t prints details about specified module\n\t\t\t | Usage: about [moduleName]\n')
-            print('\t exit\t\t exits the interpreter\n')
-            print('\t terminate\t alias for exit\n')
-            print('\t clear\t\t clears screen\n\t\t\t | usage: clear [option]\n\t\t\t | available options are: exit, terminate\n')
-            print('\t banner\t\t prints an ascii banner\n')
-
-        else:
-            print(FSUCCESS+'\nUsage: [verb] [options]')
-            print('Available verbs are: set, help, exit, back, info, options, clear, getstat, run\n')
-            print('\t options\t lists available options to configure\n')
-            print('\t info\t\t shows values assigned to each option\n')
-            print('\t set\t\t assignes values to available options\n\t\t\t | usage: set [option] [value]\n')
+            print('Available verbs are: set, help, exit, back, clear, run\n')
+            print('\t show\t\t shows information on provided argument(*)\n')
+            print('\t set\t\t assignes values to available options(*)\n')
             print('\t help\t\t prints this help message\n')
             print('\t exit\t\t exits the whole interpreter\n')
             print('\t back\t\t moves back to the module selector\n')
-            print('\t getstat\t prints the status of previous verb\n')
             print('\t clear\t\t clears screen\n')
             print('\t run\t\t runs the selected module\n')
-            print('\t about\t\t prints details about specified module\n\t\t\t | Usage: about [moduleName]\n')
+            print('\t about\t\t prints details about specified module(*)\n')
             print('\t list\t\t prints available modules\n')
             print('\t banner\t\t prints an ascii banner\n')
+            print('\t alias\t\t set an alias for a command(*)\n')
+            print('\t unalias\t unset a pre-existing alias(*)\n')
+
+        elif command == 'show':
+            print(f'{FSUCCESS}\n show:\t shows information on provided argument')
+            print('\t Usage: show [argument]')
+            print('\t | Available arguments are:')
+            print('\t\t | info: shows values assigned to the options available for the selected module')
+            print('\t\t\t | shows all assigned values if no module is selected\n')
+            print('\t\t | options: shows available options for selected module\n')
+            print('\t\t | status: prints exit status of previous command\n')
+
+        elif command == 'set':
+            print(f'{FSUCCESS}\n set:\t sets the provided value to the provided option')
+            print('\t | Usage: set [option] [value]')
+            print('\t | refer the [show] command to get options\n')
+
+        elif command == 'about':
+            print(f'{FSUCCESS}\n about:\t displays information about the provided module')
+            print('\t Usage: about [module_name]')
+            print('\t\t | If no argument is provided it takes the selected module as argument\n')
+
+        elif command == 'alias':
+            print(f'{FSUCCESS}\n alias:\t set an alias for a command')
+            print('\t Usage: alias [alias_name]=[command]')
+            print('\t Example: > alias lhost=set lhost')
+            print('\t          > lhost 127.0.0.1')
+            print('\t | If ran without argument it lists all the available aliases\n')
+
+        elif command == 'unalias':
+            print(f'{FSUCCESS}\nunalias:\t unset a pre-existing alias')
+            print('\t\t | Usage: unalias [alias_name]\n')
+
+        elif command in ['exit', 'back', 'help', 'clear', 'run', 'list']:
+            print(f'{FURGENT}Please refer the default help for \'{command}\'')
+
+        else:
+            print(f'{FALERT}Error: No such command: \'{command}\'')
+
 
 # List available options for a selected module
 class Options():
