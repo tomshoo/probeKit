@@ -7,11 +7,10 @@ Interpreter for the entire probeKit
 import sys
 import readline
 import os
-import modules.probe.ports as ports
 from modules.data.OptInfHelp import PromptHelp, Options, Info
 import modules.data.AboutList as aboutList
-import modules.probe.osprobe as osprobe
 from config import colors, variables, aliases
+from modules.run import run
 
 # Setting up colors (edit these in config.py)
 FSUCCESS = colors.FSUCCESS
@@ -80,35 +79,6 @@ class register_history():
 histfile : str = os.path.join(os.path.expanduser('~'), '.probeKit.history')
 if os.path.exists(histfile):
   readline.read_history_file(histfile)
-
-# runs the module after verying all required options
-def __run(module, options):
-    try:
-        lhost    = options[0]
-        lport    = options[1]
-        protocol = options[2]
-        timeout  = options[3]
-        tryct    = options[4]
-        nmap     = options[5]
-        verbose  = options[6]
-        try:
-            if lhost == '':
-                print(FALERT+'Error: Invalid value for LHOST')
-            else:
-                if module == 'probe':
-                    if lport == '':
-                        raise Exception(FALERT+'Error: value for LPORT')
-
-                    ports.scanner(lhost, lport, timeout, protocol, tryct, verbose)
-
-                elif module == 'osprobe':
-                    osprobe.checkOS(lhost, tryct, nmap).scanner()
-
-        except Exception as e:
-            print(e)
-
-    except KeyboardInterrupt:
-        print(FALERT+'\nalert: KeyboardInterrupt detected\n')
 
 # Just a simple function to return values in a list and raise exception
 # in such a way that the prog. doesn't break
@@ -212,9 +182,9 @@ try:
                 elif verb == 'show':
                     if __returnval(cmdSplit, 1):
                         if __returnval(cmdSplit, 1) == 'info':
-                            Info = Info(MODULE, OPTIONS)
+                            info = Info(MODULE, OPTIONS)
                             try:
-                                Info.showInfo()
+                                info.showInfo()
                             except Exception as e:
                                 print(e)
 
@@ -256,7 +226,7 @@ try:
 
                 elif verb == 'run':
                     try:
-                        __run(MODULE, OPTIONS)
+                        run(MODULE, OPTIONS)
                     except Exception as e:
                         print(e)
 
