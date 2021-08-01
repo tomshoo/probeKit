@@ -7,8 +7,8 @@ Interpreter for the entire probeKit
 import sys
 import readline
 import os
-from modules.data.OptInfHelp import PromptHelp, Options, Info
 import modules.data.AboutList as aboutList
+from modules.data.OptInfHelp import PromptHelp, Options, Info
 from config import colors, variables, aliases
 from modules.run import run
 
@@ -124,6 +124,15 @@ try:
         # Split the command using a ';' helps in scripting support (or)
         # multiple commands in a single line
         try:
+            # Check if the given input was a comment
+            if '#' in inputval:
+                inputlist = inputval.split('#')
+                inputlist = inputlist.pop(0)
+                print(inputlist)
+                inputval = trim(inputlist)
+            else:
+                pass
+
             if inputval[len(inputval)-1::] != ';':
                 valsplit = list(inputval)
                 valsplit.append(';')
@@ -143,15 +152,6 @@ try:
                 calledAlias = __returnval(aliasedcommand, 0)
                 aliasedcommand[0] = aliases.get(str(calledAlias), str(calledAlias))
                 commands = ' '.join(aliasedcommand)
-
-                # Check if the given input was a comment
-                # Will not work if the input has a ';'
-                # Need to create an escape character for that
-                # something like '\;'
-                if commands[0] == '#':
-                    commands = ''
-                elif '#' in commands:
-                    commands = commands[:commands.index('#'):]
 
                 # split the input to obtain command arguments
                 if commands  not in ['', None]:
