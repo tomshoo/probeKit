@@ -116,7 +116,7 @@ def scanner(host, port, timeout, protocol, tryct, verbose):
                     openports.append(opeStr)
                     print(opeStr)
 
-                elif not __uscanner(host, port, timeout, tryct, verbose) and verbose:
+                elif not __uscanner(host, x, timeout, tryct, verbose) and verbose:
                     print(f"{host}: {x} is closed")
 
             if verbose:
