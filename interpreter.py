@@ -106,7 +106,7 @@ try:
 
         if exitStatus == 0:
             COLOR = colors.FSUCCESS
-        elif exitStatus == 'idle':
+        elif exitStatus == 3:
             COLOR = colors.FURGENT
         else:
             COLOR = colors.FALERT
@@ -115,7 +115,7 @@ try:
         if MODULE == '':
             inputval = input(f'{FNORMAL}[probkit]: {COLOR}{exitStatus}{FNORMAL}$> ')
         else:
-            inputval = input(FNORMAL+'probeKit:'+FSTYLE+f'[{MODULE}]'+FSUCCESS+' $> '+FNORMAL)
+            inputval = input(f'{FNORMAL}probeKit: {FSTYLE}[{MODULE}]: {COLOR}{exitStatus}{FSUCCESS}$>{FNORMAL} ')
 
         # Call the register_history class to write history
         # Adds time stamp to each command after the session has ended
@@ -226,7 +226,7 @@ try:
 
                 elif verb == 'run':
                     try:
-                        run(MODULE, OPTIONS)
+                        exitStatus = run(MODULE, OPTIONS)
                     except Exception as e:
                         print(e)
 
@@ -379,6 +379,7 @@ try:
 
                 else:
                     print(f'{FALERT}[-] Error: Invalid command \'{verb}\'{FNORMAL}')
+                    exitStatus = 1
 
         # Write the date and time when the session was ended to the history
         # Helps in finding those specific commands we try to remember
@@ -392,7 +393,7 @@ try:
         # Except the index error in the main try block and pass an idle exit status
         # Helps in keeping the session active even if no input was given before enter
         except IndexError:
-            exitStatus = 'idle'
+            exitStatus = 3
             pass
 
 # Does the same as ExitException nothing new
@@ -402,7 +403,11 @@ except EOFError as E:
         pass
 
     print(f'\n{FALERT}probeKit: exiting session')
-    sys.exit()
+    pass
+
+except KeyboardInterrupt:
+    print(f'\n{FALERT}probeKit: exiting session')
+    pass
 
 except Exception as e:
     print(e)

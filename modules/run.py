@@ -3,6 +3,9 @@ import modules.probe.ports as ports
 from modules.data.OptInfHelp import PromptHelp, Options, Info
 import modules.data.AboutList as aboutList
 import modules.probe.osprobe as osprobe
+from config import colors
+
+FALERT = colors.FALERT
 
 def run(module, options):
     try:
@@ -22,12 +25,16 @@ def run(module, options):
                         raise Exception(FALERT+'Error: value for LPORT')
 
                     ports.scanner(lhost, lport, timeout, protocol, tryct, verbose)
+                    return 0
 
                 elif module == 'osprobe':
                     osprobe.checkOS(lhost, tryct, nmap).scanner()
+                    return 0
 
         except Exception as e:
             print(e)
+            return 1
 
     except KeyboardInterrupt:
         print(FALERT+'\nalert: KeyboardInterrupt detected\n')
+        return 2
