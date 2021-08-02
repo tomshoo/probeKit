@@ -24,6 +24,8 @@ class moduleHelp():
 
         print(FNORMAL+'type: about [Module] for more information')
 
+        return 0
+
     # Prints data about a give module will print data without argument if a module is active
     def aboutModule(self, moduleName):
         if moduleName == 'probe':

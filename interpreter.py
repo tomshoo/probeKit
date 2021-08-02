@@ -171,35 +171,29 @@ try:
                 # Henceforth starts the if... elif... else for command based output
                 elif verb == "banner":
                     banner()
+                    exitStatus = 0
 
                 elif verb == 'help':
                   if not __returnval(cmdSplit, 1):
                     Data = PromptHelp('')
-                    Data.showHelp()
+                    exitStatus = Data.showHelp()
                   else:
                     Data = PromptHelp(__returnval(cmdSplit, 1))
-                    Data.showHelp()
+                    exitStatus = Data.showHelp()
 
                 elif verb == 'list':
-                    aboutList.moduleHelp(MODULE).listmodules()
+                    exitStatus = aboutList.moduleHelp(MODULE).listmodules()
 
                 elif verb == 'show':
                     if __returnval(cmdSplit, 1):
                         if __returnval(cmdSplit, 1) == 'options':
                             info = Info(MODULE, OPTIONS) 
-                            try:
-                                info.showInfo()
-                            except Exception as e:
-                                print(e)
-
+                            info.showInfo()
                             exitStatus = 0
 
                         elif __returnval(cmdSplit, 1) == 'info':
                             Option = Options(MODULE)
-                            try:
-                                Option.showOptions()
-                            except Exception as e:
-                                print(e)
+                            exitStatus = Option.showOptions()
 
                         elif __returnval(cmdSplit, 1) == 'status':
                             print(exitStatus)
@@ -343,10 +337,13 @@ try:
                         if __returnval(cmdSplit, 1) in aboutList.moduleHelp.modules:
                             MODULE = __returnval(cmdSplit, 1)
                             print(FURGENT+f'MODULE => {MODULE}')
+                            exitStatus = 0
                         else:
                             print(f'{FALERT}Error: Invalid module specified: \'{__returnval(cmdSplit, 1)}\'')
+                            exitStatus = 1
                     else:
                         print(FALERT+'Error: No module specified')
+                        exitStatus = 1
 
                 elif verb == 'about':
                     if __returnval(cmdSplit, 1):
@@ -356,30 +353,34 @@ try:
                         aboutList.moduleHelp(MODULE).aboutModule(MODULE)
 
                 elif verb == 'alias':
-                    try:
-                        if not __returnval(cmdSplit, 1):
-                            for x in aliases:
-                                print(x,":",aliases[x])
+                    if not __returnval(cmdSplit, 1):
+                        exitStatus = 0
+                        for x in aliases:
+                            print(x,":",aliases[x])
 
+                    elif __returnval(cmdSplit, 1) and len(commands.split('=')) == 2:
+                        splitCommand = commands.split('=')
+                        assignedCommand = splitCommand[1]
+                        alias = splitCommand[0].split()[1]
+                        if not assignedCommand or assignedCommand == '':
+                            print(f'{FALERT}[-] Error: please provide a command to alias')
+                            exitStatus = 1
                         else:
-                            splitCommand = commands.split('=')
-                            assignedCommand = splitCommand[1]
-                            alias = splitCommand[0].split()[1]
-                            if not assignedCommand or assignedCommand == '':
-                                print(f'{FALERT}[-] Error: please provide a command to alias')
-                            else:
-                                print(alias, "=>",assignedCommand)
-                                aliases[alias]=assignedCommand
+                            print(alias, "=>",assignedCommand)
+                            aliases[alias]=assignedCommand
+                            exitStatus = 0
 
-                    except Exception as e:
-                        print(e)
-                        pass
+                    else:
+                        print(f'{FALERT}[-] Error: Invalid Syntax')
+                        exitStatus = 1
 
                 elif verb == 'unalias':
                     if __returnval(cmdSplit, 1) and __returnval(cmdSplit, 1) in aliases:
                         del aliases[__returnval(cmdSplit, 1)]
+                        exitStatus = 0
                     else:
                         print(f'{FALERT}[-] Error: no such alias \'{FURGENT}{__returnval(cmdSplit, 1)}{FALERT}\' exists')
+                        exitStatus = 1
 
                 else:
                     print(f'{FALERT}[-] Error: Invalid command \'{verb}\'{FNORMAL}')
@@ -409,9 +410,7 @@ except EOFError as E:
     print(f'\n{FALERT}probeKit: exiting session')
     pass
 
+# Handles keyboard interupt by exiting and "not" wrinting `session ended at` to history
 except KeyboardInterrupt:
     print(f'\n{FALERT}probeKit: exiting session')
     pass
-
-except Exception as e:
-    print(e)
