@@ -56,7 +56,12 @@ banner()
 
 # Initial module is set to blank
 # Set it to any other module if you want a default module at startup
-MODULE : str = ''
+MODULE = variables.MODULE
+if MODULE in aboutList.moduleHelp.modules or MODULE == '':
+    pass
+else:
+    print(f'{FALERT}[-] No such module: \'{MODULE}\'{FNORMAL}')
+    sys.exit(1)
 
 # Class to register history
 class register_history():
