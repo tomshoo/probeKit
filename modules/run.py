@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 import modules.probe.ports as ports
-from modules.data.OptInfHelp import PromptHelp, Options, Info
-import modules.data.AboutList as aboutList
 import modules.probe.osprobe as osprobe
 from config import colors
 

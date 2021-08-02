@@ -56,7 +56,7 @@ banner()
 
 # Initial module is set to blank
 # Set it to any other module if you want a default module at startup
-MODULE = ''
+MODULE : str = ''
 
 # Class to register history
 class register_history():
@@ -89,7 +89,7 @@ def __returnval(value, pos):
         return ''
 
 # Variables also known as options to the user
-OPTIONS = [variables.LHOST
+OPTIONS : list = [variables.LHOST
  , variables.LPORT
  , variables.PROTOCOL
  , variables.TIMEOUT
@@ -123,13 +123,12 @@ try:
 
         # Split the command using a ';' helps in scripting support (or)
         # multiple commands in a single line
+        # does not work if ';' is after a '#' tho
         try:
             # Check if the given input was a comment
             if '#' in inputval:
                 inputlist = inputval.split('#')
-                inputlist = inputlist.pop(0)
-                print(inputlist)
-                inputval = trim(inputlist)
+                inputval = trim(inputlist.pop(0))
             else:
                 pass
 
