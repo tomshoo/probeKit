@@ -185,7 +185,7 @@ try:
 
                 elif verb == 'show':
                     if __returnval(cmdSplit, 1):
-                        if __returnval(cmdSplit, 1) == 'info':
+                        if __returnval(cmdSplit, 1) == 'options':
                             info = Info(MODULE, OPTIONS)
                             try:
                                 info.showInfo()
@@ -194,7 +194,7 @@ try:
 
                             exitStatus = 0
 
-                        elif __returnval(cmdSplit, 1) == 'options':
+                        elif __returnval(cmdSplit, 1) == 'info':
                             Option = Options(MODULE)
                             try:
                                 Option.showOptions()
