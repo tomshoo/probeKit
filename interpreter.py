@@ -186,7 +186,7 @@ try:
                 elif verb == 'show':
                     if __returnval(cmdSplit, 1):
                         if __returnval(cmdSplit, 1) == 'options':
-                            info = Info(MODULE, OPTIONS)
+                            info = Info(MODULE, OPTIONS) 
                             try:
                                 info.showInfo()
                             except Exception as e:
