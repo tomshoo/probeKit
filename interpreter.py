@@ -7,6 +7,7 @@ Interpreter for the entire probeKit
 import sys
 import readline
 import os
+import platform
 import modules.data.AboutList as aboutList
 from modules.data.OptInfHelp import PromptHelp, Options, Info
 from config import colors, variables, aliases
@@ -71,10 +72,11 @@ class register_history():
                 fp.write(self.command + f' # {datevalue()} \n')
                 pass
 
-# Checks if history file already exists or not 
-histfile : str = os.path.join(os.path.expanduser('~'), '.probeKit.history')
-if os.path.exists(histfile):
-  readline.read_history_file(histfile)
+# Checks if history file already exists or not
+if 'Linux' in platform.platform(): 
+    histfile : str = os.path.join(os.path.expanduser('~'), '.probeKit.history')
+    if os.path.exists(histfile):
+        readline.read_history_file(histfile)
 
 # Just a simple function to return values in a list and raise exception
 # in such a way that the prog. doesn't break
@@ -391,9 +393,10 @@ def main():
             # Write the date and time when the session was ended to the history
             # Helps in finding those specific commands we try to remember
             except ExitException as e:
-                with open(histfile, 'a') as fp:
-                  fp.write('# session ended at: ' + datevalue() + ' # \n')
-                  pass
+                if 'Linux' in platform.platform():
+                    with open(histfile, 'a') as fp:
+                        fp.write('# session ended at: ' + datevalue() + ' # \n')
+                        pass
                 print(e)
                 sys.exit(0)
 
@@ -405,7 +408,8 @@ def main():
 
     # Does the same as ExitException nothing new
     except EOFError as E:
-        with open(histfile, 'a') as fp:
+        if 'Linux' in platform.platform():
+          with open(histfile, 'a') as fp:
             fp.write('# session ended at: ' + datevalue() + ' # \n')
             pass
 
