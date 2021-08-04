@@ -1,5 +1,3 @@
-#! /usr/bin/env python3
-
 from config import colors
 
 FSUCCESS = colors.FSUCCESS
@@ -23,6 +21,8 @@ class moduleHelp():
             print(FSUCCESS+"\t", x)
 
         print(FNORMAL+'type: about [Module] for more information')
+
+        return 0
 
     # Prints data about a give module will print data without argument if a module is active
     def aboutModule(self, moduleName):

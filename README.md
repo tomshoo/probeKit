@@ -83,7 +83,10 @@ blue => default prompt color
 Also there is an option to provide default values to options.
 
 Please edit `config.py` file to change color settings or option settings.
+ *If your terminal has a light background then please change `FNORMAL = Fore.WHITE` to `FNORMAL = Fore.BLACK` in `config.py` to provide more visibility*
 
-*Note: This project is still not completed as a whole and still requires a lot of rewriting any suggestions for improvement are kindly accepted but may require some time to be worked upon*
+## Note:
+
+This project is still not completed as a whole and still requires a lot of rewriting any suggestions for improvement are kindly accepted but may require some time to be worked upon
 
 ## Thank You

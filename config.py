@@ -18,6 +18,7 @@ class colors():
 # provide defaults for all the options for a module
 # These values will be overridden if user tends to unset the value
 class variables():
+    MODULE   : str = ''
     LHOST    : str = ''
     LPORT          = ''
     PROTOCOL : str = ''
