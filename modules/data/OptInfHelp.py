@@ -1,5 +1,3 @@
-#! /usr/bin/env python3
-
 # This is the data-information module which will print help for the interpreter and information about selected module
 
 from config import colors

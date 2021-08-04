@@ -1,5 +1,3 @@
-#! /usr/bin/env python3
-
 # This is the port prober module which just scans for open ports on a given lhost
 
 import socket

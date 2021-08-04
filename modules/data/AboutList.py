@@ -1,5 +1,3 @@
-#! /usr/bin/env python3
-
 from config import colors
 
 FSUCCESS = colors.FSUCCESS

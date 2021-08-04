@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import modules.probe.ports as ports
 import modules.probe.osprobe as osprobe
 from config import colors
