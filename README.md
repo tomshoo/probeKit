@@ -1,11 +1,13 @@
 # probeKit
+
 A simple tool written in Python for basic reconnaissance
 
-## Requirements:
+## Requirements
 
 Python: `3.x`, Python `3.x` compatible pip, nmap, python-scapy, python-nmap, readline
 
 OS: Unix based operating system(macOS, Linux, etc.)
+ *note: the history feature would not work as expected on macOS*
 
 Not supported on DOS based platforms.
 
@@ -85,7 +87,7 @@ Also there is an option to provide default values to options.
 Please edit `config.py` file to change color settings or option settings.
  *If your terminal has a light background then please change `FNORMAL = Fore.WHITE` to `FNORMAL = Fore.BLACK` in `config.py` to provide more visibility*
 
-## Note:
+## Note
 
 This project is still not completed as a whole and still requires a lot of rewriting any suggestions for improvement are kindly accepted but may require some time to be worked upon
 
