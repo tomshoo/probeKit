@@ -37,9 +37,9 @@ class PromptHelp():
             print(f'{FSUCCESS}\n show:\t shows information on provided argument')
             print('\t Usage: show [argument]')
             print('\t | Available arguments are:')
-            print('\t\t | info: shows values assigned to the options available for the selected module')
+            print('\t\t | options: shows values assigned to the options available for the selected module')
             print('\t\t\t | shows all assigned values if no module is selected\n')
-            print('\t\t | options: shows available options for selected module\n')
+            print('\t\t | info: shows available options for selected module\n')
             print('\t\t | status: prints exit status of previous command\n')
             return 0
 
