@@ -78,11 +78,11 @@ class PromptHelp():
 
 
 # List available options for a selected module
-class Options():
+class Info():
     def __init__(self, MODULE):
         self.module = MODULE
 
-    def showOptions(self):
+    def showInfo(self):
         module = self.module
 
         if module == 'probe':
@@ -113,7 +113,7 @@ class Options():
             return 1
 
 # List values assigned to various options of the module
-class Info():
+class Options():
     def __init__(self, MODULE, OPTIONS):
         self.module  = MODULE
         self.lhost   = OPTIONS[0]
@@ -124,7 +124,7 @@ class Info():
         self.nmap = OPTIONS[5]
         self.verbose = OPTIONS[6]
 
-    def showInfo(self):
+    def showOptions(self):
         if self.module == 'probe':
             if self.lhost != '':
                 print(FSUCCESS+'\n\t[+] '+f'LHOST => {self.lhost}')

@@ -190,13 +190,13 @@ def main():
                     elif verb == 'show':
                         if __returnval(cmdSplit, 1):
                             if __returnval(cmdSplit, 1) == 'options':
-                                info = Info(MODULE, OPTIONS) 
-                                info.showInfo()
+                                options = Options(MODULE, OPTIONS) 
+                                options.showOptions()
                                 exitStatus = 0
 
                             elif __returnval(cmdSplit, 1) == 'info':
-                                Option = Options(MODULE)
-                                exitStatus = Option.showOptions()
+                                info = Info(MODULE)
+                                exitStatus = info.showInfo()
 
                             elif __returnval(cmdSplit, 1) == 'status':
                                 print(exitStatus)
