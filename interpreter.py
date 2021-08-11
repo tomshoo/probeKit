@@ -211,14 +211,14 @@ def main():
 
                     elif verb == 'back':
                         if MODULE == '':
-                            raise ExitException(f'{FALERT}probeKit: exiting session')
+                            raise ExitException(f'{FALERT}probeKit: exiting session{FNORMAL}')
                         else:
                             MODULE = ''
                             exitStatus = 0
 
                     # Create an exception which exits the try block and then exits the session
                     elif verb == 'exit':
-                        raise ExitException(f'{FALERT}probeKit: exiting session')
+                        raise ExitException(f'{FALERT}probeKit: exiting session{FNORMAL}')
 
                     elif verb == 'clear':
                         print(chr(27)+'2[j')
@@ -413,12 +413,12 @@ def main():
             fp.write('# session ended at: ' + datevalue() + ' # \n')
             pass
 
-        print(f'\n{FALERT}probeKit: exiting session')
+        print(f'\n{FALERT}probeKit: exiting session{FNORMAL}')
         pass
 
     # Handles keyboard interupt by exiting and "not" wrinting `session ended at` to history
     except KeyboardInterrupt:
-        print(f'\n{FALERT}probeKit: exiting session')
+        print(f'\n{FALERT}probeKit: exiting session{FNORMAL}')
         pass
 
 if __name__ == '__main__':
