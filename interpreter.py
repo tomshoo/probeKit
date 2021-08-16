@@ -112,6 +112,9 @@ def main():
     try:
         while (True):
 
+            if os.getuid() != 0:
+                print(f'{FURGENT}[**] Warning: You won\'t be able to use the osprbe module without root access.')
+
             if exitStatus == 0:
                 COLOR = colors.FSUCCESS
             elif exitStatus == 3:
@@ -211,7 +214,7 @@ def main():
 
                     elif verb == 'back':
                         if MODULE == '':
-                            raise ExitException(f'{FALERT}probeKit: exiting session{FNORMAL}')
+                            raise ExitException(f'{FALERT}probeKit: exiting session')
                         else:
                             MODULE = ''
                             exitStatus = 0
