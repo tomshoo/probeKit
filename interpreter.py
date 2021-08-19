@@ -98,6 +98,13 @@ OPTIONS : list = [variables.LHOST
 
 # Session starts over here
 # Not the best way to do it but it works so...
+
+if 'Windows' not in platform.platform():
+    if os.getuid() != 0:
+        print(f'{FURGENT}[**] Warning: You won\'t be able to use the osprbe module without root access.')
+
+
+
 def main():
     # Initial module is set to blank
     # Set it to any other module if you want a default module at startup
@@ -111,9 +118,6 @@ def main():
     exitStatus = 0
     try:
         while (True):
-
-            if os.getuid() != 0:
-                print(f'{FURGENT}[**] Warning: You won\'t be able to use the osprbe module without root access.')
 
             if exitStatus == 0:
                 COLOR = colors.FSUCCESS
@@ -224,10 +228,13 @@ def main():
                         raise ExitException(f'{FALERT}probeKit: exiting session{FNORMAL}')
 
                     elif verb == 'clear':
-                        print(chr(27)+'2[j')
-                        print('\033c')
-                        print('\x1bc')
-                        exitStatus = 0
+                        if 'Windows' in platform.platform():
+                            os.system('cls')
+                        else:
+                            print(chr(27)+'2[j')
+                            print('\033c')
+                            print('\x1bc')
+                            exitStatus = 0
 
                     elif verb == 'run':
                         try:
