@@ -6,10 +6,9 @@ A simple tool written in Python for basic reconnaissance
 
 Python: `3.x`, Python `3.x` compatible pip, nmap, python-scapy, python-nmap, readline
 
-OS: Unix based operating system(macOS, Linux, etc.)
+OS: Unix based operating system(macOS, Linux, etc.), Windows 10.
  *note: the history feature would not work as expected on macOS*
-
-Not supported on DOS based platforms.
+ note: install [npcap](https://nmap.org/npcap/#download) before using this tool on Windows
 
 ## Installation
 
