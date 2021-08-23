@@ -12,6 +12,7 @@ import modules.data.AboutList as aboutList
 from modules.data.OptInfHelp import PromptHelp, Options, Info
 from config import colors, variables, aliases
 from modules.run import run
+from modules.led import start_editor
 
 # Setting up colors (edit these in config.py)
 FSUCCESS = colors.FSUCCESS
@@ -190,6 +191,10 @@ def main():
                       else:
                         Data = PromptHelp(__returnval(cmdSplit, 1))
                         exitStatus = Data.showHelp()
+
+                    elif verb == 'led':
+                        init_editor = start_editor(cmdSplit)
+                        init_editor.start_led()
 
                     elif verb == 'list':
                         exitStatus = aboutList.moduleHelp(MODULE).listmodules()
