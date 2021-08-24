@@ -8,6 +8,7 @@ import sys
 import readline
 import os
 import platform
+import subprocess
 import modules.data.AboutList as aboutList
 from modules.data.OptInfHelp import PromptHelp, Options, Info
 from config import colors, variables, aliases
@@ -402,8 +403,10 @@ def main():
                             exitStatus = 1
 
                     else:
-                        print(f'{FALERT}[-] Error: Invalid command \'{verb}\'{FNORMAL}')
-                        exitStatus = 1
+                        try:
+                            subprocess.call((cmdSplit))
+                        except FileNotFoundError:
+                            print(f'{FALERT}Error: Invalid command \'{verb}\'')
 
             # Write the date and time when the session was ended to the history
             # Helps in finding those specific commands we try to remember
