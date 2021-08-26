@@ -1,4 +1,4 @@
-python-nmap
-scapy
-shodan
-pyreadline
+python-nmap>=0.6.4
+scapy>=2.4.5
+shodan>=1.25.0
+pyreadline>=2.1
