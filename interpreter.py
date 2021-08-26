@@ -8,6 +8,7 @@ import sys
 import readline
 import os
 import platform
+import csv
 import subprocess
 import modules.data.AboutList as aboutList
 from modules.data.OptInfHelp import PromptHelp, Options, Info
@@ -171,7 +172,9 @@ def main():
 
                     # split the input to obtain command arguments
                     if commands  not in ['', None]:
-                        cmdSplit = commands.split()
+                        cmdSplit: list = []
+                        for l in csv.reader([commands], delimiter=' ', quotechar='"'):
+                            cmdSplit = l
                         verb = __returnval(cmdSplit, 0)
 
                     # Check if given input is blank
