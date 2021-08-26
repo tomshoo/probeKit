@@ -41,7 +41,8 @@ if 'Linux' in platform.platform():
     histfile : str = os.path.join(os.path.expanduser('~'), '.probeKit.history')
     if os.path.exists(histfile):
         readline.read_history_file(histfile)
-
+if 'Windows' in platform.platform():
+    print(f'{FURGENT}[**] Warning: system commands will not run in windows based system')
 # Variables also known as options to the user
 OPTIONS : list = [
     variables.LHOST
