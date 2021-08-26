@@ -13,7 +13,6 @@ import modules.data.AboutList as aboutList
 import modules.utils as utils
 from modules.data.OptInfHelp import PromptHelp, Options, Info
 from config import colors, variables, aliases
-from modules.run import run
 from modules.led import start_editor
 
 # Setup Utils
@@ -24,6 +23,7 @@ ExitException = utils.ExitException
 datevalue = utils.datevalue
 register_history = utils.register_history
 os = utils.os
+run = utils.run
 
 # Setting up colors (edit these in config.py)
 FSUCCESS = colors.FSUCCESS
