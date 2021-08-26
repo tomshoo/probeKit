@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+from modules.utils import os, args
 
 class start_editor():
     def __init__(self, argslist: list):
@@ -14,12 +15,6 @@ class start_editor():
 
     def start_led(self):
         self.led()
-
-    def __returnval(self, val, pos):
-        try:
-            return val[pos]
-        except IndexError:
-            return None
 
     def write(self, file_name, final_buffer):
         final_buffer_string = '\n'.join(final_buffer)
@@ -71,41 +66,40 @@ class start_editor():
                     c = input()
             
                 cmd = c.split()
-                arg = self.__returnval
                 if mode == 'normal':
                     if c in [None, '']:
                         pass
 
-                    elif arg(cmd, 0) in ['insert', 'i']:
+                    elif args(cmd, 0) in ['insert', 'i']:
                         mode = 'insert'
 
-                    elif arg(cmd, 0) in ['change', 'c']:
-                        if arg(cmd, 1) and led_buffer[int(arg(cmd, 1))-1]:
-                            led_buffer = self.change(int(arg(cmd, 1))-1, led_buffer)
+                    elif args(cmd, 0) in ['change', 'c']:
+                        if args(cmd, 1) and led_buffer[int(args(cmd, 1))-1]:
+                            led_buffer = self.change(int(args(cmd, 1))-1, led_buffer)
                         else:
                             print('Error')
 
-                    elif arg(cmd, 0) in ['print', 'p']:
+                    elif args(cmd, 0) in ['print', 'p']:
                         for x in led_buffer:
                             print(x)
 
-                    elif arg(cmd, 0) in ['lineprint', 'n']:
+                    elif args(cmd, 0) in ['lineprint', 'n']:
                         for x in range(len(led_buffer)):
                             print(f'{x+1}\t| {led_buffer[x]}')
 
-                    elif arg(cmd, 0) in ['write', 'w']:
-                        if arg(cmd, 1):
-                            self.write(arg(cmd, 1), led_buffer)
+                    elif args(cmd, 0) in ['write', 'w']:
+                        if args(cmd, 1):
+                            self.write(args(cmd, 1), led_buffer)
                         elif self.args(1):
                             self.write(self.args(1), led_buffer)
                         else:
                             print('Err: Invalid Filename')
 
-                    elif arg(cmd, 0) in ['quit', 'q']:
+                    elif args(cmd, 0) in ['quit', 'q']:
                         break;
 
                     else:
-                        print(f'Err: Invalid instruction: {arg(cmd, 0)}')
+                        print(f'Err: Invalid instruction: {args(cmd, 0)}')
 
                 elif mode == 'insert':
                     if c != '~|':

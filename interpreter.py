@@ -6,15 +6,24 @@ Interpreter for the entire probeKit
 # Imports
 import sys
 import readline
-import os
 import platform
 import csv
 import subprocess
 import modules.data.AboutList as aboutList
+import modules.utils as utils
 from modules.data.OptInfHelp import PromptHelp, Options, Info
 from config import colors, variables, aliases
 from modules.run import run
 from modules.led import start_editor
+
+# Setup Utils
+banner = utils.banner
+args = utils.args
+trim = utils.trim
+ExitException = utils.ExitException
+datevalue = utils.datevalue
+register_history = utils.register_history
+os = utils.os
 
 # Setting up colors (edit these in config.py)
 FSUCCESS = colors.FSUCCESS
@@ -23,57 +32,9 @@ FNORMAL = colors.FNORMAL
 FURGENT = colors.FURGENT
 FSTYLE = colors.FPROMPT
 
-# Custom exception to exit the session
-class ExitException(Exception):
-    pass
-
-# Function to remove extra white spaces from the string
-def trim(string):
-    strsplit : list = string.split()
-    return ' '.join(strsplit)
-
-# Function to print the introductory banner
-def banner():
-    print('''
-                          *               *    *          *
-                          *               *   *     *     *
-                          *               *  *            *
-    * ***   * **   ****   * ***    ****   * *      **    ****
-    **   *   *    *    *  **   *  *    *  **        *     *
-    *    *   *    *    *  *    *  ******  * *       *     *
-    **   *   *    *    *  *    *  *       *  *      *     *
-    * ***    *    *    *  **   *  *    *  *   *     *     *  *
-    *        *     ****   * ***    ****   *    *  *****    **
-    *
-    *
-
-    -- by theEndurance-del
-    ''')
-
-# Function to get immediate time at a point
-def datevalue():
-    from datetime import datetime
-    return datetime.now().strftime('%a %F %H:%M:%S')
-
+# Display time during statup
 print(f'current session started at {datevalue()}')
 banner()
-
-# Class to register history
-class register_history():
-    def __init__(self, command : str):
-        self.command = command
-        self.histfile : str = os.path.join(os.path.expanduser('~'), '.probeKit.history')
-
-    def write_history(self):
-        histfile = self.histfile
-        if os.path.exists(histfile):
-            with open(histfile, 'a') as fp:
-                fp.write(self.command + f' # {datevalue()} \n')
-                pass
-        else:
-            with open(histfile, 'w') as fp:
-                fp.write(self.command + f' # {datevalue()} \n')
-                pass
 
 # Checks if history file already exists or not
 if 'Linux' in platform.platform(): 
@@ -81,23 +42,16 @@ if 'Linux' in platform.platform():
     if os.path.exists(histfile):
         readline.read_history_file(histfile)
 
-# Just a simple function to return values in a list and raise exception
-# in such a way that the prog. doesn't break
-def __returnval(value, pos):
-    try:
-        return str(value[int(pos)])
-    except Exception:
-        return ''
-
 # Variables also known as options to the user
-OPTIONS : list = [variables.LHOST
- , variables.LPORT
- , variables.PROTOCOL
- , variables.TIMEOUT
- , variables.TRYCT
- , variables.NMAP
- , variables.VERBOSE
-]
+OPTIONS : list = [
+    variables.LHOST
+    , variables.LPORT
+    , variables.PROTOCOL
+    , variables.TIMEOUT
+    , variables.TRYCT
+    , variables.NMAP
+    , variables.VERBOSE
+   ]
 
 # Session starts over here
 # Not the best way to do it but it works so...
@@ -105,8 +59,6 @@ OPTIONS : list = [variables.LHOST
 if 'Windows' not in platform.platform():
     if os.getuid() != 0:
         print(f'{FURGENT}[**] Warning: You won\'t be able to use the osprbe module without root access.')
-
-
 
 def main():
     # Initial module is set to blank
@@ -166,7 +118,7 @@ def main():
                     commands = trim(commands)
 
                     aliasedcommand : list = commands.split()
-                    calledAlias = __returnval(aliasedcommand, 0)
+                    calledAlias = args(aliasedcommand, 0)
                     aliasedcommand[0] = aliases.get(str(calledAlias), str(calledAlias))
                     commands = ' '.join(aliasedcommand)
 
@@ -175,7 +127,7 @@ def main():
                         cmdSplit: list = []
                         for l in csv.reader([commands], delimiter=' ', quotechar='"'):
                             cmdSplit = l
-                        verb = __returnval(cmdSplit, 0)
+                        verb = args(cmdSplit, 0)
 
                     # Check if given input is blank
                     # Helps in maintaining comments
@@ -189,11 +141,11 @@ def main():
                         exitStatus = 0
 
                     elif verb == 'help':
-                      if not __returnval(cmdSplit, 1):
+                      if not args(cmdSplit, 1):
                         Data = PromptHelp('')
                         exitStatus = Data.showHelp()
                       else:
-                        Data = PromptHelp(__returnval(cmdSplit, 1))
+                        Data = PromptHelp(args(cmdSplit, 1))
                         exitStatus = Data.showHelp()
 
                     elif verb == 'led':
@@ -204,17 +156,17 @@ def main():
                         exitStatus = aboutList.moduleHelp(MODULE).listmodules()
 
                     elif verb == 'show':
-                        if __returnval(cmdSplit, 1):
-                            if __returnval(cmdSplit, 1) == 'options':
+                        if args(cmdSplit, 1):
+                            if args(cmdSplit, 1) == 'options':
                                 options = Options(MODULE, OPTIONS) 
                                 options.showOptions()
                                 exitStatus = 0
 
-                            elif __returnval(cmdSplit, 1) == 'info':
+                            elif args(cmdSplit, 1) == 'info':
                                 info = Info(MODULE)
                                 exitStatus = info.showInfo()
 
-                            elif __returnval(cmdSplit, 1) == 'status':
+                            elif args(cmdSplit, 1) == 'status':
                                 print(exitStatus)
                                 exitStatus = 0
 
@@ -254,43 +206,43 @@ def main():
                     # Verb(or command) to set options
                     elif verb == 'set':
                         # if the first argument is 'all' all values default to those specified in config.py
-                        if __returnval(cmdSplit, 2) and __returnval(cmdSplit, 1) != 'all':
-                            if __returnval(cmdSplit, 1) in ['LHOST', 'lhost']:
-                                print(f'LHOST => {__returnval(cmdSplit, 2)}')
-                                OPTIONS[0] = __returnval(cmdSplit, 2)
+                        if args(cmdSplit, 2) and args(cmdSplit, 1) != 'all':
+                            if args(cmdSplit, 1) in ['LHOST', 'lhost']:
+                                print(f'LHOST => {args(cmdSplit, 2)}')
+                                OPTIONS[0] = args(cmdSplit, 2)
 
-                            elif __returnval(cmdSplit, 1) in ['LPORT', 'lport']:
-                                if '/' in __returnval(cmdSplit, 2):
-                                    OPTIONS[1] = __returnval(cmdSplit, 2).split('/')
+                            elif args(cmdSplit, 1) in ['LPORT', 'lport']:
+                                if '/' in args(cmdSplit, 2):
+                                    OPTIONS[1] = args(cmdSplit, 2).split('/')
                                     print(f'LPORT => {OPTIONS[1]}')
 
                                 else:
-                                    print(f'LPORT => {__returnval(cmdSplit, 2)}')
-                                    OPTIONS[1] = __returnval(cmdSplit, 2)
+                                    print(f'LPORT => {args(cmdSplit, 2)}')
+                                    OPTIONS[1] = args(cmdSplit, 2)
 
-                            elif __returnval(cmdSplit, 1) in ['PROTO', 'proto']:
-                                print(f'PROTO => {__returnval(cmdSplit, 2)}')
-                                OPTIONS[2] = __returnval(cmdSplit, 2)
+                            elif args(cmdSplit, 1) in ['PROTO', 'proto']:
+                                print(f'PROTO => {args(cmdSplit, 2)}')
+                                OPTIONS[2] = args(cmdSplit, 2)
 
-                            elif __returnval(cmdSplit ,1) in ['TMOUT', 'tmout']:
-                                print(f'TMOUT => {__returnval(cmdSplit, 2)}')
-                                OPTIONS[3] = __returnval(cmdSplit, 2)
+                            elif args(cmdSplit ,1) in ['TMOUT', 'tmout']:
+                                print(f'TMOUT => {args(cmdSplit, 2)}')
+                                OPTIONS[3] = args(cmdSplit, 2)
 
-                            elif __returnval(cmdSplit, 1) in ['TRYCT', 'tryct']:
-                                print(f'TRYCT => {__returnval(cmdSplit, 2)}')
-                                OPTIONS[4] = int(__returnval(cmdSplit, 2))
+                            elif args(cmdSplit, 1) in ['TRYCT', 'tryct']:
+                                print(f'TRYCT => {args(cmdSplit, 2)}')
+                                OPTIONS[4] = int(args(cmdSplit, 2))
 
-                            elif __returnval(cmdSplit, 1) in ['NMAP', 'nmap']:
-                                print(f'NMAP  => {__returnval(cmdSplit, 2)}')
-                                OPTIONS[5] = int(__returnval(cmdSplit, 2))
+                            elif args(cmdSplit, 1) in ['NMAP', 'nmap']:
+                                print(f'NMAP  => {args(cmdSplit, 2)}')
+                                OPTIONS[5] = int(args(cmdSplit, 2))
 
-                            elif __returnval(cmdSplit, 1) in ['VERBOSE', 'verbose']:
-                                if __returnval(cmdSplit, 2) not in ['true', 'false']:
+                            elif args(cmdSplit, 1) in ['VERBOSE', 'verbose']:
+                                if args(cmdSplit, 2) not in ['true', 'false']:
                                     print(FALERT+'Error: Invalid value provided')
-                                elif __returnval(cmdSplit, 2) == 'true':
+                                elif args(cmdSplit, 2) == 'true':
                                     OPTIONS[6] = True
                                     print(f'VERBOSE => {OPTIONS[6]}')
-                                elif __returnval(cmdSplit, 2) == 'false':
+                                elif args(cmdSplit, 2) == 'false':
                                     OPTIONS[6] = False
                                     print(f'VERBOSE => {OPTIONS[6]}')
 
@@ -299,7 +251,7 @@ def main():
 
                         # If there are no values in the config.py then,
                         # this is same as `unset all`
-                        elif __returnval(cmdSplit, 1) == 'all':
+                        elif args(cmdSplit, 1) == 'all':
                             OPTIONS[0] = variables.LHOST
                             OPTIONS[1] = variables.LPORT
                             OPTIONS[2] = variables.PROTOCOL
@@ -308,7 +260,7 @@ def main():
                             OPTIONS[5] = variables.NMAP
                             OPTIONS[6] = variables.VERBOSE
 
-                        elif not __returnval(cmdSplit, 2):
+                        elif not args(cmdSplit, 2):
                             print(f'{FALERT}[-] Error: no value provided to option')
 
                         else:
@@ -316,35 +268,35 @@ def main():
 
                     # Verb(or command) to unset options
                     elif verb == 'unset':
-                        if __returnval(cmdSplit, 1) in ['LHOST', 'lhost']:
+                        if args(cmdSplit, 1) in ['LHOST', 'lhost']:
                             print(f'{FALERT}unset LHOST')
                             OPTIONS[0] = ''
 
-                        elif __returnval(cmdSplit, 1) in ['LPORT', 'lport']:
+                        elif args(cmdSplit, 1) in ['LPORT', 'lport']:
                             print(f'{FALERT}unset LPORT')
                             OPTIONS[1] = ''
 
-                        elif __returnval(cmdSplit, 1) in ['PROTO', 'proto']:
+                        elif args(cmdSplit, 1) in ['PROTO', 'proto']:
                             print(f'{FALERT}unset PROTO')
                             OPTIONS[2] = ''
 
-                        elif __returnval(cmdSplit, 1) in ['TMOUT', 'tmout']:
+                        elif args(cmdSplit, 1) in ['TMOUT', 'tmout']:
                             print(f'{FALERT}unset TMOUT')
                             OPTIONS[3] = '1'
 
-                        elif __returnval(cmdSplit, 1) in ['TRYCT', 'tryct']:
+                        elif args(cmdSplit, 1) in ['TRYCT', 'tryct']:
                             print(f'{FALERT}unset TRYCT')
                             OPTIONS[4] = 1
 
-                        elif __returnval(cmdSplit, 1) in ['NMAP', 'nmap']:
+                        elif args(cmdSplit, 1) in ['NMAP', 'nmap']:
                             print(f'{FALERT}unset NMAP')
                             OPTIONS[5] = 0
 
-                        elif __returnval(cmdSplit, 2) in ['VERBOSE', 'verbose']:
+                        elif args(cmdSplit, 2) in ['VERBOSE', 'verbose']:
                             print(f'{FALERT}unset VERBOSE')
                             OPTIONS[6] = ''
 
-                        elif __returnval(cmdSplit, 1) == 'all':
+                        elif args(cmdSplit, 1) == 'all':
                             OPTIONS[0] = ''
                             OPTIONS[1] = ''
                             OPTIONS[2] = ''
@@ -356,32 +308,32 @@ def main():
                             print(FALERT+'Error: Invalid option')
 
                     elif verb == 'use':
-                        if __returnval(cmdSplit, 1):
-                            if __returnval(cmdSplit, 1) in aboutList.moduleHelp.modules:
-                                MODULE = __returnval(cmdSplit, 1)
+                        if args(cmdSplit, 1):
+                            if args(cmdSplit, 1) in aboutList.moduleHelp.modules:
+                                MODULE = args(cmdSplit, 1)
                                 print(FURGENT+f'MODULE => {MODULE}')
                                 exitStatus = 0
                             else:
-                                print(f'{FALERT}Error: Invalid module specified: \'{__returnval(cmdSplit, 1)}\'')
+                                print(f'{FALERT}Error: Invalid module specified: \'{args(cmdSplit, 1)}\'')
                                 exitStatus = 1
                         else:
                             print(FALERT+'Error: No module specified')
                             exitStatus = 1
 
                     elif verb == 'about':
-                        if __returnval(cmdSplit, 1):
-                            mod = __returnval(cmdSplit, 1)
+                        if args(cmdSplit, 1):
+                            mod = args(cmdSplit, 1)
                             aboutList.moduleHelp(mod).aboutModule(mod)
                         else:
                             aboutList.moduleHelp(MODULE).aboutModule(MODULE)
 
                     elif verb == 'alias':
-                        if not __returnval(cmdSplit, 1):
+                        if not args(cmdSplit, 1):
                             exitStatus = 0
                             for x in aliases:
                                 print(x,":",aliases[x])
 
-                        elif __returnval(cmdSplit, 1) and len(commands.split('=')) == 2:
+                        elif args(cmdSplit, 1) and len(commands.split('=')) == 2:
                             splitCommand = commands.split('=')
                             assignedCommand = splitCommand[1]
                             alias = splitCommand[0].split()[1]
@@ -398,11 +350,11 @@ def main():
                             exitStatus = 1
 
                     elif verb == 'unalias':
-                        if __returnval(cmdSplit, 1) and __returnval(cmdSplit, 1) in aliases:
-                            del aliases[__returnval(cmdSplit, 1)]
+                        if args(cmdSplit, 1) and args(cmdSplit, 1) in aliases:
+                            del aliases[args(cmdSplit, 1)]
                             exitStatus = 0
                         else:
-                            print(f'{FALERT}[-] Error: no such alias \'{FURGENT}{__returnval(cmdSplit, 1)}{FALERT}\' exists')
+                            print(f'{FALERT}[-] Error: no such alias \'{FURGENT}{args(cmdSplit, 1)}{FALERT}\' exists')
                             exitStatus = 1
 
                     else:
