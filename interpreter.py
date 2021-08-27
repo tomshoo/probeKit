@@ -8,6 +8,7 @@ import sys
 import readline
 import platform
 import csv
+import os
 import subprocess
 import modules.data.AboutList as aboutList
 import modules.utils as utils
@@ -22,7 +23,6 @@ trim = utils.trim
 ExitException = utils.ExitException
 datevalue = utils.datevalue
 register_history = utils.register_history
-os = utils.os
 run = utils.run
 
 # Setting up colors (edit these in config.py)
@@ -37,10 +37,11 @@ print(f'current session started at {datevalue()}')
 banner()
 
 # Checks if history file already exists or not
-if 'Linux' in platform.platform(): 
+if 'Linux' in platform.platform():
     histfile : str = os.path.join(os.path.expanduser('~'), '.probeKit.history')
     if os.path.exists(histfile):
         readline.read_history_file(histfile)
+
 if 'Windows' in platform.platform():
     print(f'{FURGENT}[**] Warning: system commands will not run in windows based system')
 # Variables also known as options to the user
@@ -159,7 +160,7 @@ def main():
                     elif verb == 'show':
                         if args(cmdSplit, 1):
                             if args(cmdSplit, 1) == 'options':
-                                options = Options(MODULE, OPTIONS) 
+                                options = Options(MODULE, OPTIONS)
                                 options.showOptions()
                                 exitStatus = 0
 
@@ -293,7 +294,7 @@ def main():
                             print(f'{FALERT}unset NMAP')
                             OPTIONS[5] = 0
 
-                        elif args(cmdSplit, 2) in ['VERBOSE', 'verbose']:
+                        elif args(cmdSplit, 1) in ['VERBOSE', 'verbose']:
                             print(f'{FALERT}unset VERBOSE')
                             OPTIONS[6] = ''
 
@@ -357,6 +358,8 @@ def main():
                         else:
                             print(f'{FALERT}[-] Error: no such alias \'{FURGENT}{args(cmdSplit, 1)}{FALERT}\' exists')
                             exitStatus = 1
+                    elif verb in ['cd', 'chdir', 'set-location']:
+                        os.chdir(args(cmdSplit, 1))
 
                     else:
                         try:
