@@ -46,13 +46,13 @@ if 'Windows' in platform.platform():
     print(f'{FURGENT}[**] Warning: system commands will not run in windows based system')
 # Variables also known as options to the user
 OPTIONS : list = [
-    variables.LHOST
-    , variables.LPORT
-    , variables.PROTOCOL
-    , variables.TIMEOUT
-    , variables.TRYCT
-    , variables.NMAP
-    , variables.VERBOSE
+    variables.THOST
+    , variables().tport()
+    , variables().PROTOCOL
+    , variables().timeout()
+    , variables().trycount()
+    , variables().Nmap()
+    , variables().Verbose()
    ]
 
 # Session starts over here
@@ -209,17 +209,17 @@ def main():
                     elif verb == 'set':
                         # if the first argument is 'all' all values default to those specified in config.py
                         if args(cmdSplit, 2) and args(cmdSplit, 1) != 'all':
-                            if args(cmdSplit, 1) in ['LHOST', 'lhost']:
-                                print(f'LHOST => {args(cmdSplit, 2)}')
+                            if args(cmdSplit, 1) in ['THOST', 'thost']:
+                                print(f'THOST => {args(cmdSplit, 2)}')
                                 OPTIONS[0] = args(cmdSplit, 2)
 
-                            elif args(cmdSplit, 1) in ['LPORT', 'lport']:
+                            elif args(cmdSplit, 1) in ['TPORT', 'tport']:
                                 if '/' in args(cmdSplit, 2):
                                     OPTIONS[1] = args(cmdSplit, 2).split('/')
-                                    print(f'LPORT => {OPTIONS[1]}')
+                                    print(f'TPORT => {OPTIONS[1]}')
 
                                 else:
-                                    print(f'LPORT => {args(cmdSplit, 2)}')
+                                    print(f'TPORT => {args(cmdSplit, 2)}')
                                     OPTIONS[1] = args(cmdSplit, 2)
 
                             elif args(cmdSplit, 1) in ['PROTO', 'proto']:
@@ -254,8 +254,8 @@ def main():
                         # If there are no values in the config.py then,
                         # this is same as `unset all`
                         elif args(cmdSplit, 1) == 'all':
-                            OPTIONS[0] = variables.LHOST
-                            OPTIONS[1] = variables.LPORT
+                            OPTIONS[0] = variables.THOST
+                            OPTIONS[1] = variables.TPORT
                             OPTIONS[2] = variables.PROTOCOL
                             OPTIONS[3] = variables.TIMEOUT
                             OPTIONS[4] = variables.TRYCT
@@ -270,12 +270,12 @@ def main():
 
                     # Verb(or command) to unset options
                     elif verb == 'unset':
-                        if args(cmdSplit, 1) in ['LHOST', 'lhost']:
-                            print(f'{FALERT}unset LHOST')
+                        if args(cmdSplit, 1) in ['THOST', 'thost']:
+                            print(f'{FALERT}unset THOST')
                             OPTIONS[0] = ''
 
-                        elif args(cmdSplit, 1) in ['LPORT', 'lport']:
-                            print(f'{FALERT}unset LPORT')
+                        elif args(cmdSplit, 1) in ['TPORT', 'tport']:
+                            print(f'{FALERT}unset TPORT')
                             OPTIONS[1] = ''
 
                         elif args(cmdSplit, 1) in ['PROTO', 'proto']:

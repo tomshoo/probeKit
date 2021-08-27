@@ -18,14 +18,56 @@ class colors():
 # provide defaults for all the options for a module
 # These values will be overridden if user tends to unset the value
 class variables():
+
+    # Please configure the values over here
     MODULE   : str = ''
-    LHOST    : str = ''
-    LPORT          = ''
+    THOST    : str = ''
+    TPORT    : str = ''
     PROTOCOL : str = ''
-    TIMEOUT  : int = 1
-    TRYCT    : int = 1
-    NMAP     : int = 0
+    TIMEOUT  : str = '1'
+    TRYCT    : str = '1'
+    NMAP     : str = '0'
     VERBOSE  : str = ''
+
+    # This group of funtions will process the value and return it
+    # in the required form
+    def tport(self):
+        Tport = self.TPORT
+        if '/' in Tport:
+            return Tport.split('/')
+        else:
+            return Tport
+
+    def timeout(self):
+        tmout = self.TIMEOUT
+        if tmout != '':
+            return int(tmout)
+        else: 
+            return ''
+
+    def trycount(self):
+        tryct = self.TRYCT
+        if tryct != '':
+            return int(tryct)
+        else:
+            return ''
+
+    def Nmap(self):
+        nmap = self.NMAP
+        if nmap != '':
+            return int(nmap)
+        else:
+            return ''
+
+    def Verbose(self):
+        verbose = self.VERBOSE
+        if verbose in ['true', 'True']:
+            return True
+        elif verbose != '':
+            return False
+        else:
+            return ''
+
 
 # Aliases for the user's comfort
 aliases : dict = {

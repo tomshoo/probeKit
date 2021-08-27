@@ -58,8 +58,8 @@ class PromptHelp():
         elif command == 'alias':
             print(f'{FSUCCESS}\n alias:\t set an alias for a command')
             print('\t Usage: alias [alias_name]=[command]')
-            print('\t Example: > alias lhost=set lhost')
-            print('\t          > lhost 127.0.0.1')
+            print('\t Example: > alias thost=set thost')
+            print('\t          > thost 127.0.0.1')
             print('\t | If ran without argument it lists all the available aliases\n')
             return 0
 
@@ -86,8 +86,8 @@ class Info():
         module = self.module
 
         if module == 'probe':
-            print(f'\n\t[*] LHOST => hosts ip4 address(required)(LHOST => lhost)')
-            print(f'\t[*] LPORT => ports to scan on host(required)(LPORT => lport)')
+            print(f'\n\t[*] THOST => hosts ip4 address(required)(THOST => thost)')
+            print(f'\t[*] TPORT => ports to scan on host(required)(TPORT => tport)')
             print(FALERT+f'\t             | values can be set as [portnumber(single portscan)] or [startport/endport(multiple portscan)]\n')
             print(FNORMAL+f'\t[*] PROTO => protocol to use for scanning(required)(PROTO => proto)')
             print(FALERT+f'\t             | Available protocols: ')
@@ -100,7 +100,7 @@ class Info():
             return 0
 
         elif module == 'osprobe':
-            print(f'\n\t[*] LHOST => hosts ip4 address(required)(LHOST => lhost)\n')
+            print(f'\n\t[*] THOST => hosts ip4 address(required)(THOST => thost)\n')
             print(f'\t[*] TRYCT => number of tries to send the packet(set to \'1\' by default)(TRYC => tryc)\n')
             print(f'\t[*] NMAP  => should we perform an NMAP scan?(set to \'0\' by default)(NMAP => nmap)')
             print(f'\t           {FALERT}| 0 implies flase')
@@ -116,8 +116,8 @@ class Info():
 class Options():
     def __init__(self, MODULE, OPTIONS):
         self.module  = MODULE
-        self.lhost   = OPTIONS[0]
-        self.lport   = OPTIONS[1]
+        self.thost   = OPTIONS[0]
+        self.tport   = OPTIONS[1]
         self.proto   = OPTIONS[2]
         self.timeout = OPTIONS[3]
         self.tryct = OPTIONS[4]
@@ -126,15 +126,15 @@ class Options():
 
     def showOptions(self):
         if self.module == 'probe':
-            if self.lhost != '':
-                print(FSUCCESS+'\n\t[+] '+f'LHOST => {self.lhost}')
+            if self.thost != '':
+                print(FSUCCESS+'\n\t[+] '+f'THOST => {self.thost}')
             else:
-                print(FALERT+'\n\t[-] '+f'LHOST => {self.lhost}')
+                print(FALERT+'\n\t[-] '+f'THOST => {self.thost}')
 
-            if self.lport != '':
-                print(FSUCCESS+f'\t[+] '+f'LPORT => {self.lport}')
+            if self.tport != '':
+                print(FSUCCESS+f'\t[+] '+f'TPORT => {self.tport}')
             else:
-                print(FALERT+'\t[-] '+f'LPORT => {self.lport}')
+                print(FALERT+'\t[-] '+f'TPORT => {self.tport}')
 
             if self.proto != '':
                 print(FSUCCESS+'\t[+] '+f'PROTO => {self.proto}')
@@ -152,35 +152,35 @@ class Options():
 
 
         elif self.module == 'osprobe':
-            if self.lhost != '':
-                print(FSUCCESS+'\n\t[+] '+f'LHOST => {self.lhost}')
+            if self.thost != '':
+                print(FSUCCESS+'\n\t[+] '+f'THOST => {self.thost}')
             else:
-                print(FALERT+'\n\t[-] '+f'LHOST => {self.lhost}')
+                print(FALERT+'\n\t[-] '+f'THOST => {self.thost}')
 
             print(FSUCCESS+'\t[+] '+f'NMAP  => {self.nmap}')
             print(FSUCCESS+f'\t[*] TRYCT => {self.tryct}\n')
 
         else:
-            if self.lhost != '':
-                print(FSUCCESS+'\n\t[+] '+f'LHOST => {self.lhost}')
+            if self.thost != '':
+                print(FSUCCESS+'\n\t[+] '+f'THOST => {self.thost}')
             else:
-                print(FALERT+'\n\t[-] '+f'LHOST => {self.lhost}')
+                print(FALERT+'\n\t[-] '+f'THOST => {self.thost}')
 
-            if self.lport != '':
-                print(FSUCCESS+f'\t[+] '+f'LPORT => {self.lport}')
+            if self.tport != '':
+                print(FSUCCESS+f'\t[+] '+f'TPORT => {self.tport}')
             else:
-                print(FALERT+'\t[-] '+f'LPORT => {self.lport}')
+                print(FALERT+'\t[-] '+f'TPORT => {self.tport}')
 
             if self.proto != '':
                 print(FSUCCESS+'\t[+] '+f'PROTO => {self.proto}')
             else:
                 print(FALERT+'\t[-] '+f'PROTO => {self.proto}')
 
-            if self.verbose != '':
-                print(FSUCCESS+'\t[+] '+f'VERBOSE => {self.verbose}')
-            else:
-                print(FALERT+'\t[-] '+f'VERBOSE => {self.verbose}')
-
             print(FSUCCESS+'\t[+] '+f'NMAP  => {self.nmap}')
             print(FSUCCESS+f'\t[*] TRYCT => {self.tryct}')
-            print(FSUCCESS+f'\t[*] TMOUT => {self.timeout}\n')
+            print(FSUCCESS+f'\t[*] TMOUT => {self.timeout}')
+
+            if self.verbose != '':
+                print(FSUCCESS+'\t[+] '+f'VERBOSE => {self.verbose}\n')
+            else:
+                print(FALERT+'\t[-] '+f'VERBOSE => {self.verbose}\n')

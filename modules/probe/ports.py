@@ -1,11 +1,22 @@
-# This is the port prober module which just scans for open ports on a given lhost
+# This is the port prober module which just scans for open ports on a given thost
 
+
+# Imports
 import socket
-from threading import Thread
-import threading
+import concurrent.futures
+from config import colors
 
-thread_pool: list = []
+# Additional colors
+FALERT = colors.FALERT
+FSUCCESS = colors.FSUCCESS
+FNORMAL = colors.FNORMAL
+
+# Lists for presenting output
+results: list = []
 openports: list = []
+
+# List of valid protocols to be used with this module
+valid_protocols: list = ['tcp', 'tcp/ip', 'TCP', 'TCP/IP', 'udp', 'UDP']
 
 # Get the service name based on the port
 def __getServbyPort(port, protocol):
@@ -25,8 +36,7 @@ def __tscanner(host, port, timeout, verbose):
         return True
 
     except Exception as exp:
-        if verbose:
-            print(exp)
+        print(FALERT, port, exp, FNORMAL)
         return False
 
     finally:
@@ -49,14 +59,12 @@ def __uscanner(host, port, timeout, tryct, verbose):
             serv = __getServbyPort(port, 'udp')
 
             if not serv:
+                print(f'{FALERT}[*] Error: Service on port: {port} not found{FNORMAL}')
                 portstatus = False
             else:
                 portstatus = True
 
         except socket.error as e:
-            if verbose:
-                print(e)
-
             portstatus = False
 
         finally:
@@ -75,7 +83,7 @@ def __portinputislist(port):
         return False
 
     else:
-        exception = Exception('Error: Unknown input type')
+        exception = TypeError(f'{FALERT}[*] Error: Unknown input type{FNORMAL}')
         return exception
 
 # Starts the actual scanner session
@@ -83,27 +91,61 @@ def scanner(host, port, timeout, protocol, tryct, verbose=False):
     if protocol in ['tcp', 'tcp/ip', 'TCP', 'TCP/IP']:
         if __tscanner(host, port, timeout, verbose):
             serv = __getServbyPort(port, 'tcp')
-            print(f'{protocol}: {host}: {port} is open, service: {serv}')
+            return f'{FSUCCESS}[+] {protocol}: {host}: {port} is open, service: {serv}{FNORMAL}'
         elif verbose:
-            print(f'{protocol}: {host}: {port} is closed')
+            return f'{FALERT}[-] {protocol}: {host}: {port} is closed{FNORMAL}'
 
     elif protocol in ['udp', 'UDP']:
         if __uscanner(host, port, timeout, tryct, verbose):
             serv = __getServbyPort(port, 'udp')
-            print(f'{protocol}: {host}: {port} is open, service: {serv}')
+            return f'{FSUCCESS}[+] {protocol}: {host}: {port} is open, service: {serv}{FNORMAL}'
         elif verbose:
-            print(f'{protocol}: {host}: {port} is closed')
+            return f'{FALERT}[-] {protocol}: {host}: {port} is closed{FNORMAL}'
 
+# Displays the output
+# Also provides multithreading it the port input is a list
 def display(host, port, timeout, protocol, tryct, verbose):
-    if __portinputislist(port):
-        for x in range((int(str(port[0]))), (int(str(port[1]))+1)):
-            t = Thread(target=scanner, args=(host, x, timeout, protocol, tryct, verbose))
-            t.start()
-            thread_pool.append(t)
+
+    # Check if the specified protocol is valid
+    if protocol in valid_protocols:
+
+        # check if input is a single port or a range
+        if __portinputislist(port):
+            p_begin: int = int(port[0])
+            p_end: int = int(port[1])+1
+
+            # Initiate multi-threaded process
+            executor = concurrent.futures.ThreadPoolExecutor()
+            output = [ executor.submit(scanner, host, x, timeout, protocol, tryct, verbose) for x in range(p_begin, p_end) ]
+            for f in concurrent.futures.as_completed(output):
+
+                # Prevents unnecessary output if verbose is set to false
+                if f.result():
+                    results.append(f.result())
+
+        else:
+            portstatus = scanner(host, int(port), timeout, protocol, tryct, verbose)
+            print(portstatus)
+            if portstatus:
+                print(portstatus)
+            else:
+                print(f'{protocol}: {host}: {port} is closed')
+
+        # Finally print the value on the basis of what value was set to verbose
+        if verbose:
+            for x in results:
+                if 'open' in x:
+                    openports.append(x)
+                print(x)
+
+            print('-'*60)
+
+            for y in openports:
+                print(y)
+
+        else:
+            for x in results:
+                print(x)
 
     else:
-        scanner(host, port, timeout, protocol, tryct, verbose)
-
-    if len(thread_pool) != 0:
-        for threads in thread_pool:
-            threads.join()
+        print(f'{FALERT}[-] Error: Unknown protocol specified{FNORMAL}')
