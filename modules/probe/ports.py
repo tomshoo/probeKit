@@ -1,8 +1,11 @@
 # This is the port prober module which just scans for open ports on a given lhost
 
 import socket
+from threading import Thread
+import threading
 
-openports = []
+thread_pool: list = []
+openports: list = []
 
 # Get the service name based on the port
 def __getServbyPort(port, protocol):
@@ -13,13 +16,12 @@ def __getServbyPort(port, protocol):
         return False
 
 # TCP port scanner function
-def __tscanner(host, port, timeout, verbose=False):
+def __tscanner(host, port, timeout, verbose):
     socktcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    Port = int(port)
     TMOUT = int(timeout)
     try:
         socktcp.settimeout(TMOUT)
-        socktcp.connect((host, Port))
+        socktcp.connect((host, port))
         return True
 
     except Exception as exp:
@@ -31,8 +33,7 @@ def __tscanner(host, port, timeout, verbose=False):
         socktcp.close()
 
 # UDP port scanner function
-def __uscanner(host, port, timeout, tryct, verbose=False):
-    Port = int(port)
+def __uscanner(host, port, timeout, tryct, verbose):
     TMOUT = int(timeout)
     portstatus = False
     sockudp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
@@ -40,12 +41,12 @@ def __uscanner(host, port, timeout, tryct, verbose=False):
 
     for _ in range(tryct):
         try:
-            sockudp.sendto(bytes('', 'utf-8'), (host, Port))
+            sockudp.sendto(bytes('This is a test', 'utf-8'), (host, port))
             sockicmp.settimeout(TMOUT)
             sockicmp.recvfrom(1024)
 
         except socket.timeout:
-            serv = __getServbyPort(Port, 'udp')
+            serv = __getServbyPort(port, 'udp')
 
             if not serv:
                 portstatus = False
@@ -78,60 +79,31 @@ def __portinputislist(port):
         return exception
 
 # Starts the actual scanner session
-def scanner(host, port, timeout, protocol, tryct, verbose):
+def scanner(host, port, timeout, protocol, tryct, verbose=False):
     if protocol in ['tcp', 'tcp/ip', 'TCP', 'TCP/IP']:
-        if __portinputislist(port):
-            for x in range((int(str(port[0]))), (int(str(port[1]))+1)):
-                if __tscanner(host, int(x), timeout, verbose):
-                    opeStr = f"{host}: {x} is open"
-                    openports.append(opeStr)
-                    print(opeStr)
-
-                elif not __tscanner(host, int(x), timeout, verbose) and verbose:
-                    print(f"{host}: {x} is closed")
-
-            if verbose:
-                print("-"*60)
-
-                for x in openports:
-                    print(x)
-
-            openports.clear()
-
-
-        else:
-            if __tscanner(host, port, timeout, verbose):
-                print(f"{host}: {port} is open")
-
-            else:
-                print(f"{host}: {port} is closed")
+        if __tscanner(host, port, timeout, verbose):
+            serv = __getServbyPort(port, 'tcp')
+            print(f'{protocol}: {host}: {port} is open, service: {serv}')
+        elif verbose:
+            print(f'{protocol}: {host}: {port} is closed')
 
     elif protocol in ['udp', 'UDP']:
-        if __portinputislist(port):
-            for x in range((int(str(port[0]))), (int(str(port[1]))+1)):
-                if __uscanner(host, x, timeout, tryct):
-                    opeStr = f"{host}: {x} is open"
-                    openports.append(opeStr)
-                    print(opeStr)
+        if __uscanner(host, port, timeout, tryct, verbose):
+            serv = __getServbyPort(port, 'udp')
+            print(f'{protocol}: {host}: {port} is open, service: {serv}')
+        elif verbose:
+            print(f'{protocol}: {host}: {port} is closed')
 
-                elif not __uscanner(host, x, timeout, tryct, verbose) and verbose:
-                    print(f"{host}: {x} is closed")
-
-            if verbose:
-                print("-"*60)
-
-                for x in openports:
-                    print(x)
-
-            openports.clear()
-
-
-        else:
-            if __uscanner(host, port, timeout, tryct):
-                print(f"{host}: {port} is open")
-
-            else:
-                print(f"{host}: {port} is closed")
+def display(host, port, timeout, protocol, tryct, verbose):
+    if __portinputislist(port):
+        for x in range((int(str(port[0]))), (int(str(port[1]))+1)):
+            t = Thread(target=scanner, args=(host, x, timeout, protocol, tryct, verbose))
+            t.start()
+            thread_pool.append(t)
 
     else:
-        raise Exception('Error: Unknown protocol specified')
+        scanner(host, port, timeout, protocol, tryct, verbose)
+
+    if len(thread_pool) != 0:
+        for threads in thread_pool:
+            threads.join()

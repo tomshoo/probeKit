@@ -88,7 +88,7 @@ def run(module, options):
                     if lport == '':
                         raise Exception(FALERT+'Error: value for LPORT')
 
-                    ports.scanner(lhost, lport, timeout, protocol, tryct, verbose)
+                    ports.display(lhost, lport, timeout, protocol, tryct, verbose)
                     return 0
 
                 elif module == 'osprobe':
