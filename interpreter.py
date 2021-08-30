@@ -222,7 +222,7 @@ def main():
                                     print(f'TPORT => {args(cmdSplit, 2)}')
                                     OPTIONS[1] = args(cmdSplit, 2)
 
-                            elif args(cmdSplit, 1) in ['PROTO', 'proto']:
+                            elif args(cmdSplit, 1) in ['PROTO', 'proto', 'protocol', "PROTOCOL"]:
                                 print(f'PROTO => {args(cmdSplit, 2)}')
                                 OPTIONS[2] = args(cmdSplit, 2)
 
@@ -278,7 +278,7 @@ def main():
                             print(f'{FALERT}unset TPORT')
                             OPTIONS[1] = ''
 
-                        elif args(cmdSplit, 1) in ['PROTO', 'proto']:
+                        elif args(cmdSplit, 1) in ['PROTO', 'proto', 'protocol', 'PROTOCOL']:
                             print(f'{FALERT}unset PROTO')
                             OPTIONS[2] = ''
 
