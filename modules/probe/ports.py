@@ -11,7 +11,7 @@ from modules.utils import datevalue, timestamp
 BALERT = colors.BALERT
 FSUCCESS = colors.FSUCCESS
 FNORMAL = colors.FNORMAL
-FURGENT = colors.FURGENT
+BURGENT = colors.BURGENT
 FALERT = colors.FALERT
 BNORMAL = colors.BNORMAL
 
@@ -98,26 +98,24 @@ def scanner(host, port, timeout, protocol, tryct, verbose=False):
         if __tscanner(host, port, timeout, verbose):
             serv = __getServbyPort(port, 'tcp')
             return f'{FSUCCESS}[+] {protocol}: {host}: {port} is open, service: {serv}{FNORMAL}'
-        elif verbose:
+        else:
             return f'{FALERT}[-] {protocol}: {host}: {port} is closed{FNORMAL}'
 
     elif protocol in ['udp', 'UDP']:
         if __uscanner(host, port, timeout, tryct, verbose):
             serv = __getServbyPort(port, 'udp')
             return f'{FSUCCESS}[+] {protocol}: {host}: {port} is open, service: {serv}{FNORMAL}'
-        elif verbose:
+        else:
             return f'{FALERT}[-] {protocol}: {host}: {port} is closed{FNORMAL}'
 
 # Displays the output
 # Also provides multithreading it the port input is a list
 def display(host, port, timeout, protocol, tryct, verbose):
-
     # Check if the specified protocol is valid
     if protocol in valid_protocols:
-
         executor = concurrent.futures.ThreadPoolExecutor()
         # check if input is a single port or a range
-        print(f'{FURGENT}[**] Scan started at {datevalue()}{FNORMAL}')
+        print(f'{BURGENT}[**] Scan started at {datevalue()}{BNORMAL}')
         start = timestamp()
         if __portinputislist(port):
             try:
@@ -127,7 +125,6 @@ def display(host, port, timeout, protocol, tryct, verbose):
                 # Initiate multi-threaded process
                 output = [ executor.submit(scanner, host, x, timeout, protocol, tryct, verbose) for x in range(p_begin, p_end) ]
                 for f in concurrent.futures.as_completed(output):
-
                     # Prevents unnecessary output if verbose is set to false
                     if f.result():
                         results.append(f.result())
@@ -140,22 +137,24 @@ def display(host, port, timeout, protocol, tryct, verbose):
                         print(x)
 
                     print('-'*60)
-
                     for y in openports:
                         print(y)
 
                 else:
                     for x in results:
-                        print(x)
-
-                results.clear()
+                        if 'open' in x:
+                            print(x)
+                        else:
+                            print(x, end='\r')
                 end = timestamp()
 
-                print(f'{FURGENT}[**] Scan took about {round(end-start, 5)} sec(s).')
+                print(f'{BURGENT}[**] Scan took about {round(end-start, 5)} sec(s).{BNORMAL}')
 
             except KeyboardInterrupt:
                 print(f'{FALERT}Keyboard interrupt received, quitting!!')
                 executor.shutdown(wait=False, cancel_futures=True)
+
+            results.clear()
 
         else:
             portstatus = scanner(host, int(port), timeout, protocol, tryct, verbose)

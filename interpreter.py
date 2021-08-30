@@ -10,11 +10,17 @@ import platform
 import csv
 import os
 import subprocess
-import modules.data.AboutList as aboutList
+
 import modules.utils as utils
+
+print(f'Importing custom modules', end='\r')
+start = utils.timestamp()
+import modules.data.AboutList as aboutList
 from modules.data.OptInfHelp import PromptHelp, Options, Info
 from config import colors, variables, aliases
 from modules.led import start_editor
+end = utils.timestamp()
+print(f'modules took {round(end-start, 7)} sec(s). to load')
 
 # Setup Utils
 banner = utils.banner
@@ -359,11 +365,17 @@ def main():
                             print(f'{FALERT}[-] Error: no such alias \'{FURGENT}{args(cmdSplit, 1)}{FALERT}\' exists')
                             exitStatus = 1
                     elif verb in ['cd', 'chdir', 'set-location']:
-                        os.chdir(args(cmdSplit, 1))
+                        fpath = args(cmdSplit, 1)
+                        if os.path.exists(fpath) and os.path.isdir(fpath):
+                            os.chdir(fpath)
+                            print(f'dir: {fpath}')
+
+                        else:
+                            print(f'{FALERT}[-] Error: no such directory: \'{fpath}\'')
 
                     else:
                         try:
-                            subprocess.call((cmdSplit))
+                            subprocess.call((cmdSplit), shell=True)
                         except FileNotFoundError:
                             print(f'{FALERT}Error: Invalid command \'{verb}\'')
 
