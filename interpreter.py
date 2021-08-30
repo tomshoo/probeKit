@@ -375,9 +375,16 @@ def main():
 
                     else:
                         try:
-                            subprocess.call((cmdSplit), shell=True)
+                            if 'Windows' not in platform.platform():
+                                exitStatus = subprocess.call((cmdSplit))
+                            else:
+                                exitStatus = subprocess.run(commands, shell=True)
+                        
                         except FileNotFoundError:
                             print(f'{FALERT}Error: Invalid command \'{verb}\'')
+                        
+                        except KeyboardInterrupt:
+                            exitStatus = 130
 
             # Write the date and time when the session was ended to the history
             # Helps in finding those specific commands we try to remember
