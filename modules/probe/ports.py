@@ -5,11 +5,15 @@
 import socket
 import concurrent.futures
 from config import colors
+from modules.utils import datevalue, timestamp
 
 # Additional colors
-FALERT = colors.FALERT
+BALERT = colors.BALERT
 FSUCCESS = colors.FSUCCESS
 FNORMAL = colors.FNORMAL
+FURGENT = colors.FURGENT
+FALERT = colors.FALERT
+BNORMAL = colors.BNORMAL
 
 # Lists for presenting output
 results: list = []
@@ -36,7 +40,8 @@ def __tscanner(host, port, timeout, verbose):
         return True
 
     except Exception as exp:
-        print(FALERT, port, exp, FNORMAL)
+        if verbose:
+            print(FALERT, port, exp, FNORMAL)
         return False
 
     finally:
@@ -59,7 +64,8 @@ def __uscanner(host, port, timeout, tryct, verbose):
             serv = __getServbyPort(port, 'udp')
 
             if not serv:
-                print(f'{FALERT}[*] Error: Service on port: {port} not found{FNORMAL}')
+                if verbose:
+                    print(f'{BALERT}[*] Error: Service on port: {port} not found{BNORMAL}')
                 portstatus = False
             else:
                 portstatus = True
@@ -109,19 +115,47 @@ def display(host, port, timeout, protocol, tryct, verbose):
     # Check if the specified protocol is valid
     if protocol in valid_protocols:
 
+        executor = concurrent.futures.ThreadPoolExecutor()
         # check if input is a single port or a range
+        print(f'{FURGENT}[**] Scan started at {datevalue()}{FNORMAL}')
+        start = timestamp()
         if __portinputislist(port):
-            p_begin: int = int(port[0])
-            p_end: int = int(port[1])+1
+            try:
+                p_begin: int = int(port[0])
+                p_end: int = int(port[1])+1
 
-            # Initiate multi-threaded process
-            executor = concurrent.futures.ThreadPoolExecutor()
-            output = [ executor.submit(scanner, host, x, timeout, protocol, tryct, verbose) for x in range(p_begin, p_end) ]
-            for f in concurrent.futures.as_completed(output):
+                # Initiate multi-threaded process
+                output = [ executor.submit(scanner, host, x, timeout, protocol, tryct, verbose) for x in range(p_begin, p_end) ]
+                for f in concurrent.futures.as_completed(output):
 
-                # Prevents unnecessary output if verbose is set to false
-                if f.result():
-                    results.append(f.result())
+                    # Prevents unnecessary output if verbose is set to false
+                    if f.result():
+                        results.append(f.result())
+
+                # Finally print the value on the basis of what value was set to verbose
+                if verbose:
+                    for x in results:
+                        if 'open' in x:
+                            openports.append(x)
+                        print(x)
+
+                    print('-'*60)
+
+                    for y in openports:
+                        print(y)
+
+                else:
+                    for x in results:
+                        print(x)
+
+                results.clear()
+                end = timestamp()
+
+                print(f'{FURGENT}[**] Scan took about {round(end-start, 5)} sec(s).')
+
+            except KeyboardInterrupt:
+                print(f'{FALERT}Keyboard interrupt received, quitting!!')
+                executor.shutdown(wait=False, cancel_futures=True)
 
         else:
             portstatus = scanner(host, int(port), timeout, protocol, tryct, verbose)
@@ -131,21 +165,5 @@ def display(host, port, timeout, protocol, tryct, verbose):
             else:
                 print(f'{protocol}: {host}: {port} is closed')
 
-        # Finally print the value on the basis of what value was set to verbose
-        if verbose:
-            for x in results:
-                if 'open' in x:
-                    openports.append(x)
-                print(x)
-
-            print('-'*60)
-
-            for y in openports:
-                print(y)
-
-        else:
-            for x in results:
-                print(x)
-
     else:
-        print(f'{FALERT}[-] Error: Unknown protocol specified{FNORMAL}')
+        print(f'{BALERT}[-] Error: Unknown protocol specified{BNORMAL}')
