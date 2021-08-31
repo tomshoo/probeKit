@@ -5,7 +5,7 @@
 import socket
 import concurrent.futures
 from config import colors
-from modules.utils import datevalue, timestamp
+from modules.util.utils import datevalue, timestamp
 
 # Additional colors
 BALERT = colors.BALERT

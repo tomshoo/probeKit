@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import os
-from modules.utils import os, args
+from modules.util.utils import args
 
 class start_editor():
     def __init__(self, argslist: list):

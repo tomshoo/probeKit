@@ -11,25 +11,23 @@ import csv
 import os
 import subprocess
 
-import modules.utils as utils
+import modules.util.utils as utils
 
 print(f'Importing custom modules', end='\r')
 start = utils.timestamp()
 import modules.data.AboutList as aboutList
+import modules.util.exec as exec
 from modules.data.OptInfHelp import PromptHelp, Options, Info
 from config import colors, variables, aliases
-from modules.led import start_editor
+from modules.util.led import start_editor
 end = utils.timestamp()
 print(f'modules took {round(end-start, 7)} sec(s). to load')
 
 # Setup Utils
-banner = utils.banner
 args = utils.args
-trim = utils.trim
 ExitException = utils.ExitException
 datevalue = utils.datevalue
 register_history = utils.register_history
-run = utils.run
 
 # Setting up colors (edit these in config.py)
 FSUCCESS = colors.FSUCCESS
@@ -40,7 +38,7 @@ FSTYLE = colors.FPROMPT
 
 # Display time during statup
 print(f'current session started at {datevalue()}')
-banner()
+utils.banner()
 
 # Checks if history file already exists or not
 if 'Linux' in platform.platform():
@@ -50,26 +48,25 @@ if 'Linux' in platform.platform():
 
 if 'Windows' in platform.platform():
     print(f'{FURGENT}[**] Warning: system commands will not run in windows based system')
-# Variables also known as options to the user
-OPTIONS : list = [
-    variables.THOST
-    , variables().tport()
-    , variables().PROTOCOL
-    , variables().timeout()
-    , variables().trycount()
-    , variables().Nmap()
-    , variables().Verbose()
-    , variables().Threading()
-   ]
 
 # Session starts over here
 # Not the best way to do it but it works so...
-
 if 'Windows' not in platform.platform():
     if os.getuid() != 0:
         print(f'{FURGENT}[**] Warning: You won\'t be able to use the osprbe module without root access.')
 
 def main():
+    # Variables also known as options to the user
+    OPTIONS : list = [
+        variables.THOST
+        , variables().tport()
+        , variables().PROTOCOL
+        , variables().timeout()
+        , variables().trycount()
+        , variables().Nmap()
+        , variables().Verbose()
+        , variables().Threading()
+       ]
     # Initial module is set to blank
     # Set it to any other module if you want a default module at startup
     MODULE = variables.MODULE
@@ -107,7 +104,7 @@ def main():
                 # Check if the given input was a comment
                 if '#' in inputval:
                     inputlist = inputval.split('#')
-                    inputval = trim(inputlist.pop(0))
+                    inputval = utils.trim(inputlist.pop(0))
                 else:
                     pass
 
@@ -124,7 +121,7 @@ def main():
                     verb = ''
                     cmdSplit = []
 
-                    commands = trim(commands)
+                    commands = utils.trim(commands)
 
                     aliasedcommand : list = commands.split()
                     calledAlias = args(aliasedcommand, 0)
@@ -146,7 +143,7 @@ def main():
 
                     # Henceforth starts the if... elif... else for command based output
                     elif verb == "banner":
-                        banner()
+                        utils.banner()
                         exitStatus = 0
 
                     elif verb == 'help':
@@ -208,129 +205,23 @@ def main():
 
                     elif verb == 'run':
                         try:
-                            exitStatus = run(MODULE, OPTIONS)
+                            exitStatus = exec.run(MODULE, OPTIONS)
                         except Exception as e:
                             print(e)
 
                     # Verb(or command) to set options
                     elif verb == 'set':
-                        # if the first argument is 'all' all values default to those specified in config.py
-                        if args(cmdSplit, 2) and args(cmdSplit, 1) != 'all':
-                            if args(cmdSplit, 1) in ['THOST', 'thost']:
-                                print(f'THOST => {args(cmdSplit, 2)}')
-                                OPTIONS[0] = args(cmdSplit, 2)
-
-                            elif args(cmdSplit, 1) in ['TPORT', 'tport']:
-                                if '/' in args(cmdSplit, 2):
-                                    OPTIONS[1] = args(cmdSplit, 2).split('/')
-                                    print(f'TPORT => {OPTIONS[1]}')
-
-                                else:
-                                    print(f'TPORT => {args(cmdSplit, 2)}')
-                                    OPTIONS[1] = args(cmdSplit, 2)
-
-                            elif args(cmdSplit, 1) in ['PROTO', 'proto', 'protocol', "PROTOCOL"]:
-                                print(f'PROTO => {args(cmdSplit, 2)}')
-                                OPTIONS[2] = args(cmdSplit, 2)
-
-                            elif args(cmdSplit ,1) in ['TMOUT', 'tmout']:
-                                print(f'TMOUT => {args(cmdSplit, 2)}')
-                                OPTIONS[3] = args(cmdSplit, 2)
-
-                            elif args(cmdSplit, 1) in ['TRYCT', 'tryct']:
-                                print(f'TRYCT => {args(cmdSplit, 2)}')
-                                OPTIONS[4] = int(args(cmdSplit, 2))
-
-                            elif args(cmdSplit, 1) in ['NMAP', 'nmap']:
-                                print(f'NMAP  => {args(cmdSplit, 2)}')
-                                OPTIONS[5] = int(args(cmdSplit, 2))
-
-                            elif args(cmdSplit, 1) in ['VERBOSE', 'verbose']:
-                                if args(cmdSplit, 2) not in ['true', 'false']:
-                                    print(FALERT+'Error: Invalid value provided')
-                                elif args(cmdSplit, 2) == 'true':
-                                    OPTIONS[6] = True
-                                    print(f'VERBOSE => {OPTIONS[6]}')
-                                elif args(cmdSplit, 2) == 'false':
-                                    OPTIONS[6] = False
-                                    print(f'VERBOSE => {OPTIONS[6]}')
-
-                            elif args(cmdSplit, 1) in ['THREADING', 'threading']:
-                                if args(cmdSplit, 2) not in ['true', 'True', 'false', 'False']:
-                                    print(f'{FALERT}Error: Invalid value provided')
-                                elif args(cmdSplit, 2) in ['true', 'True']:
-                                    OPTIONS[7] = True
-                                else:
-                                    OPTIONS[7] = False
-                                print(f'THREADING => {OPTIONS[7]}')
-
-                            else:
-                                print(FALERT+'[-] Error: Invalid option')
-
-                        # If there are no values in the config.py then,
-                        # this is same as `unset all`
-                        elif args(cmdSplit, 1) == 'all':
-                            OPTIONS[0] = variables.THOST
-                            OPTIONS[1] = variables.tport()
-                            OPTIONS[2] = variables.PROTOCOL
-                            OPTIONS[3] = variables.timeout()
-                            OPTIONS[4] = variables.trycount()
-                            OPTIONS[5] = variables.Nmap()
-                            OPTIONS[6] = variables.Verbose()
-                            OPTIONS[7] = variables.Threading()
-
-                        elif not args(cmdSplit, 2):
-                            print(f'{FALERT}[-] Error: no value provided to option')
-
-                        else:
-                            print(f"{FALERT}[-] Error: Invalid value provided to option")
-
+                        OPTIONS = exec.set(OPTIONS, args(cmdSplit, 1), args(cmdSplit, 2))
+                        if args(OPTIONS, 8):
+                            exitStatus = OPTIONS[8]
+                            OPTIONS.pop(8)
                     # Verb(or command) to unset options
                     elif verb == 'unset':
-                        if args(cmdSplit, 1) in ['THOST', 'thost']:
-                            print(f'{FALERT}unset THOST')
-                            OPTIONS[0] = ''
-
-                        elif args(cmdSplit, 1) in ['TPORT', 'tport']:
-                            print(f'{FALERT}unset TPORT')
-                            OPTIONS[1] = ''
-
-                        elif args(cmdSplit, 1) in ['PROTO', 'proto', 'protocol', 'PROTOCOL']:
-                            print(f'{FALERT}unset PROTO')
-                            OPTIONS[2] = ''
-
-                        elif args(cmdSplit, 1) in ['TMOUT', 'tmout']:
-                            print(f'{FALERT}unset TMOUT')
-                            OPTIONS[3] = 1
-
-                        elif args(cmdSplit, 1) in ['TRYCT', 'tryct']:
-                            print(f'{FALERT}unset TRYCT')
-                            OPTIONS[4] = 1
-
-                        elif args(cmdSplit, 1) in ['NMAP', 'nmap']:
-                            print(f'{FALERT}unset NMAP')
-                            OPTIONS[5] = 0
-
-                        elif args(cmdSplit, 1) in ['VERBOSE', 'verbose']:
-                            print(f'{FALERT}unset VERBOSE')
-                            OPTIONS[6] = ''
-
-                        elif args(cmdSplit, 1) in ['THREADING', 'threading']:
-                            print(f'{FALERT}unset THREADING')
-                            OPTIONS[7] = ''
-
-                        elif args(cmdSplit, 1) == 'all':
-                            OPTIONS[0] = ''
-                            OPTIONS[1] = ''
-                            OPTIONS[2] = ''
-                            OPTIONS[3] = 1
-                            OPTIONS[4] = 1
-                            OPTIONS[5] = 0
-                            OPTIONS[6] = ''
-                            OPTIONS[7] = ''
-                        else:
-                            print(FALERT+'Error: Invalid option')
-
+                        OPTIONS = exec.unset(OPTIONS, args(cmdSplit, 1))
+                        if args(OPTIONS, 8):
+                            exitStatus = OPTIONS[8]
+                            OPTIONS.pop(8)
+                    
                     elif verb == 'use':
                         if args(cmdSplit, 1):
                             if args(cmdSplit, 1) in aboutList.moduleHelp.modules:
