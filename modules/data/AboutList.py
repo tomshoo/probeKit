@@ -3,6 +3,7 @@ from config import colors
 FSUCCESS = colors.FSUCCESS
 FALERT = colors.FALERT
 FNORMAL = colors.FNORMAL
+FURGENT = colors.FURGENT
 
 class moduleHelp():
 
@@ -47,6 +48,10 @@ class moduleHelp():
             print('\t\t                          | UDP(udp)\n')
             print('\tVERBOSE => show complete output')
             print('\t\t | Available Options are true/false\n')
+            print('\tTHREADING => use threading for port scanning')
+            print('\t\t | Recommended if the port list is huge, to improve performance of scan')
+            print(f'\t\t | {FURGENT}do not use if the scan is not taking a long time')
+            print(f'{FSUCCESS}\t\t | Available options are true (or) false\n')
 
         elif moduleName == 'osprobe':
             print(FALERT+f'\nName:\t\t{moduleName}')

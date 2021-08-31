@@ -59,6 +59,7 @@ OPTIONS : list = [
     , variables().trycount()
     , variables().Nmap()
     , variables().Verbose()
+    , variables().Threading()
    ]
 
 # Session starts over here
@@ -254,6 +255,15 @@ def main():
                                     OPTIONS[6] = False
                                     print(f'VERBOSE => {OPTIONS[6]}')
 
+                            elif args(cmdSplit, 1) in ['THREADING', 'threading']:
+                                if args(cmdSplit, 2) not in ['true', 'True', 'false', 'False']:
+                                    print(f'{FALERT}Error: Invalid value provided')
+                                elif args(cmdSplit, 2) in ['true', 'True']:
+                                    OPTIONS[7] = True
+                                else:
+                                    OPTIONS[7] = False
+                                print(f'THREADING => {OPTIONS[7]}')
+
                             else:
                                 print(FALERT+'[-] Error: Invalid option')
 
@@ -261,12 +271,13 @@ def main():
                         # this is same as `unset all`
                         elif args(cmdSplit, 1) == 'all':
                             OPTIONS[0] = variables.THOST
-                            OPTIONS[1] = variables.TPORT
+                            OPTIONS[1] = variables.tport()
                             OPTIONS[2] = variables.PROTOCOL
-                            OPTIONS[3] = variables.TIMEOUT
-                            OPTIONS[4] = variables.TRYCT
-                            OPTIONS[5] = variables.NMAP
-                            OPTIONS[6] = variables.VERBOSE
+                            OPTIONS[3] = variables.timeout()
+                            OPTIONS[4] = variables.trycount()
+                            OPTIONS[5] = variables.Nmap()
+                            OPTIONS[6] = variables.Verbose()
+                            OPTIONS[7] = variables.Threading()
 
                         elif not args(cmdSplit, 2):
                             print(f'{FALERT}[-] Error: no value provided to option')
@@ -290,7 +301,7 @@ def main():
 
                         elif args(cmdSplit, 1) in ['TMOUT', 'tmout']:
                             print(f'{FALERT}unset TMOUT')
-                            OPTIONS[3] = '1'
+                            OPTIONS[3] = 1
 
                         elif args(cmdSplit, 1) in ['TRYCT', 'tryct']:
                             print(f'{FALERT}unset TRYCT')
@@ -304,6 +315,10 @@ def main():
                             print(f'{FALERT}unset VERBOSE')
                             OPTIONS[6] = ''
 
+                        elif args(cmdSplit, 1) in ['THREADING', 'threading']:
+                            print(f'{FALERT}unset THREADING')
+                            OPTIONS[7] = ''
+
                         elif args(cmdSplit, 1) == 'all':
                             OPTIONS[0] = ''
                             OPTIONS[1] = ''
@@ -312,6 +327,7 @@ def main():
                             OPTIONS[4] = 1
                             OPTIONS[5] = 0
                             OPTIONS[6] = ''
+                            OPTIONS[7] = ''
                         else:
                             print(FALERT+'Error: Invalid option')
 

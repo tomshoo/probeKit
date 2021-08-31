@@ -97,6 +97,8 @@ class Info():
             print(FNORMAL+f'\t[*] TRYCT => number of tries to perform while performing UDP scan(set to \'1\' by default)(TRYCT => tryct)\n')
             print(FNORMAL+f'\t[*] VERBOSE => Provide a verbose output or not(VERBOSE => verbose)')
             print(f'\t                     | Available options are true (or) false\n')
+            print(f'{FNORMAL}\t[*] THREADING => Allow threading while scanning ports(THREADING => threading)')
+            print(f'\t                     | Available options are true (or) false\n')
             return 0
 
         elif module == 'osprobe':
@@ -123,33 +125,38 @@ class Options():
         self.tryct = OPTIONS[4]
         self.nmap = OPTIONS[5]
         self.verbose = OPTIONS[6]
+        self.threading = OPTIONS[7]
 
     def showOptions(self):
         if self.module == 'probe':
             if self.thost != '':
-                print(FSUCCESS+'\n\t[+] '+f'THOST => {self.thost}')
+                print(FSUCCESS+'\n\t[+] '+f'THOST   => {self.thost}')
             else:
-                print(FALERT+'\n\t[-] '+f'THOST => {self.thost}')
+                print(FALERT+'\n\t[-] '+f'THOST   => {self.thost}')
 
             if self.tport != '':
-                print(FSUCCESS+f'\t[+] '+f'TPORT => {self.tport}')
+                print(FSUCCESS+f'\t[+] '+f'TPORT   => {self.tport}')
             else:
-                print(FALERT+'\t[-] '+f'TPORT => {self.tport}')
+                print(FALERT+'\t[-] '+f'TPORT   => {self.tport}')
 
             if self.proto != '':
-                print(FSUCCESS+'\t[+] '+f'PROTO => {self.proto}')
+                print(FSUCCESS+'\t[+] '+f'PROTO   => {self.proto}')
             else:
-                print(FALERT+'\t[-] '+f'PROTO => {self.proto}')
+                print(FALERT+'\t[-] '+f'PROTO   => {self.proto}')
 
-            print(FSUCCESS+f'\t[*] TRYCT => {self.tryct}')
+            print(FSUCCESS+f'\t[*] TRYCT   => {self.tryct}')
 
-            print(FSUCCESS+f'\t[*] TMOUT => {self.timeout}')
+            print(FSUCCESS+f'\t[*] TMOUT   => {self.timeout}')
 
             if self.verbose != '':
-                print(FSUCCESS+'\t[+] '+f'VERBOSE => {self.verbose}\n')
+                print(FSUCCESS+'\t[+] '+f'VERBOSE   => {self.verbose}')
             else:
-                print(FALERT+'\t[-] '+f'VERBOSE => {self.verbose}\n')
+                print(FALERT+'\t[-] '+f'VERBOSE   => {self.verbose}')
 
+            if self.threading != '':
+                print(FSUCCESS+'\t[+] '+f'THREADING => {self.threading}\n')
+            else:
+                print(FALERT+'\t[-] '+f'THREADING => {self.threading}\n')
 
         elif self.module == 'osprobe':
             if self.thost != '':
@@ -181,6 +188,11 @@ class Options():
             print(FSUCCESS+f'\t[*] TMOUT => {self.timeout}')
 
             if self.verbose != '':
-                print(FSUCCESS+'\t[+] '+f'VERBOSE => {self.verbose}\n')
+                print(FSUCCESS+'\t[+] '+f'VERBOSE   => {self.verbose}')
             else:
-                print(FALERT+'\t[-] '+f'VERBOSE => {self.verbose}\n')
+                print(FALERT+'\t[-] '+f'VERBOSE   => {self.verbose}')
+
+            if self.threading != '':
+                print(FSUCCESS+'\t[+] '+f'THREADING => {self.threading}\n')
+            else:
+                print(FALERT+'\t[-] '+f'THREADING => {self.threading}\n')

@@ -28,6 +28,7 @@ class variables():
     TRYCT    : str = '1'
     NMAP     : str = '0'
     VERBOSE  : str = ''
+    THREADING: str = ''
 
     # This group of funtions will process the value and return it
     # in the required form
@@ -63,7 +64,16 @@ class variables():
         verbose = self.VERBOSE
         if verbose in ['true', 'True']:
             return True
-        elif verbose != '':
+        elif verbose in ['false', 'False']:
+            return False
+        else:
+            return ''
+
+    def Threading(self):
+        threading = self.THREADING
+        if threading in ['true', 'True']:
+            return True
+        elif threading in ['false', 'False']:
             return False
         else:
             return ''

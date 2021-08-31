@@ -88,6 +88,7 @@ def run(module, options):
             tryct    = options[4]
             nmap     = options[5]
             verbose  = options[6]
+            threading= options[7]
             try:
                 if lhost == '':
                     print(FALERT+'Error: Invalid value for LHOST')
@@ -96,7 +97,7 @@ def run(module, options):
                         if lport == '':
                             print(FALERT+'Error: value for LPORT')
 
-                        ports.display(lhost, lport, timeout, protocol, tryct, verbose)
+                        ports.display(lhost, lport, timeout, protocol, tryct, verbose, threading)
                         return 0
 
                     elif module == 'osprobe':

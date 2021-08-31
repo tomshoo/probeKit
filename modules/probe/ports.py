@@ -110,7 +110,7 @@ def scanner(host, port, timeout, protocol, tryct, verbose=False):
 
 # Displays the output
 # Also provides multithreading it the port input is a list
-def display(host, port, timeout, protocol, tryct, verbose):
+def display(host, port, timeout, protocol, tryct, verbose, threading):
     # Check if the specified protocol is valid
     if protocol in valid_protocols:
         executor = concurrent.futures.ThreadPoolExecutor()
@@ -123,12 +123,17 @@ def display(host, port, timeout, protocol, tryct, verbose):
                 p_end: int = int(port[1])+1
 
                 # Initiate multi-threaded process
-                output = [ executor.submit(scanner, host, x, timeout, protocol, tryct, verbose) for x in range(p_begin, p_end) ]
-                for f in concurrent.futures.as_completed(output):
-                    # Prevents unnecessary output if verbose is set to false
-                    if f.result():
-                        results.append(f.result())
-
+                if threading:
+                    output = [ executor.submit(scanner, host, x, timeout, protocol, tryct, verbose) for x in range(p_begin, p_end) ]
+                    for f in concurrent.futures.as_completed(output):
+                        # Prevents unnecessary output if verbose is set to false
+                        if f.result():
+                            results.append(f.result())
+                else:
+                    output = [ scanner(host, x, timeout, protocol, tryct, verbose) for x in range(p_begin, p_end) ]
+                    for x in output:
+                        if x:
+                            results.append(x)
                 # Finally print the value on the basis of what value was set to verbose
                 if verbose:
                     for x in results:
@@ -152,7 +157,8 @@ def display(host, port, timeout, protocol, tryct, verbose):
 
             except KeyboardInterrupt:
                 print(f'{FALERT}Keyboard interrupt received, quitting!!')
-                executor.shutdown(wait=False, cancel_futures=True)
+                if threading:
+                    executor.shutdown(wait=False, cancel_futures=True)
 
             results.clear()
 
