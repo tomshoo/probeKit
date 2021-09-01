@@ -43,6 +43,8 @@ This is the help shown:
 Usage: [verb] [options]
 Available verbs are: set, help, exit, back, clear, run
 
+	use		 use an available module(*)
+
     show        shows information on provided argument(*)
 
     set         assignes values to available options(*)

@@ -18,7 +18,8 @@ class PromptHelp():
         # Checks whether the shell is module interpreter or module selector session
         if command == '':
             print(FSUCCESS+'\nUsage: [verb] [options]')
-            print('Available verbs are: set, help, exit, back, clear, run\n')
+            print('Available verbs are:\n')
+            print('\t use\t\t use an available module(*)\n')
             print('\t show\t\t shows information on provided argument(*)\n')
             print('\t set\t\t assignes values to available options(*)\n')
             print('\t help\t\t prints this help message\n')
@@ -66,6 +67,11 @@ class PromptHelp():
         elif command == 'unalias':
             print(f'{FSUCCESS}\nunalias:\t unset a pre-existing alias')
             print('\t\t | Usage: unalias [alias_name]\n')
+            return 0
+
+        elif command == 'use':
+            print(f'{FSUCCESS}\nuse: \t use an available module')
+            print('\t | Usage: use [module_name]\n')
             return 0
 
         elif command in ['exit', 'back', 'help', 'clear', 'run', 'list']:
