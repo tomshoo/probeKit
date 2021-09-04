@@ -1,3 +1,11 @@
+"""
+OS-prober module using scapy and python-nmap.
+
+- check for the TTL in the ICMP ping response,
+- check the os via an nmap scan if nmap is enabled.
+"""
+
+# Imports
 from scapy.all import *
 import nmap
 import socket
@@ -9,6 +17,9 @@ FGREEN = colors.FSUCCESS
 FYELLOW = colors.FURGENT
 
 def checkTTL(target, iterator):
+    """
+    Function to check the TTL value in an ICMP ping response.
+    """
     pkt = IP(dst=target)/ICMP(seq=9999)
     ttllist = []
 
@@ -23,6 +34,9 @@ def checkTTL(target, iterator):
     return ttllist
 
 class checkOS():
+    """
+    Driver class where the output of checkTTL will be processed along with the nmap(if enabled) result.
+    """
     nmapscanner = nmap.PortScanner()
     def __init__(self, target, iterator, ifnmap):
         self.target = target
@@ -55,6 +69,9 @@ class checkOS():
                     print(data[i])
 
     def scanner(self):
+        """
+        Take the values and provide the processed output.
+        """
         print("Running TTL check on host")
         print("Please wait...")
 

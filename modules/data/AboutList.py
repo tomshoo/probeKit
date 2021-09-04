@@ -6,14 +6,16 @@ FNORMAL = colors.FNORMAL
 FURGENT = colors.FURGENT
 
 class moduleHelp():
+    """Set of functions containing the description of available modules"""
 
-    modules = ['probe', 'osprobe']
+    modules: list = ['probe', 'osprobe']
+    #A list containing names of available modules
 
     def __init__(self, MODULE):
         self.module = MODULE
 
     def listmodules(self):
-        # Checks if there is any active module
+        """Checks if there is any active module"""
         if self.module != '':
             print('Currently activated module: '+FALERT+f'[{self.module}]')
 
@@ -25,8 +27,9 @@ class moduleHelp():
 
         return 0
 
-    # Prints data about a give module will print data without argument if a module is active
     def aboutModule(self, moduleName):
+        """Prints data about a give module will print data without argument if a module is active"""
+
         if moduleName == 'probe':
             print(FALERT+f'\nName:\t\t{moduleName}')
             print('Type:\t\tRecon')

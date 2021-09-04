@@ -7,12 +7,13 @@ FALERT = colors.FALERT
 FNORMAL = colors.FNORMAL
 FURGENT = colors.FURGENT
 
-# This class prints help for the interpreter
 class PromptHelp():
+    """This class prints help for the interpreter."""
     def __init__(self, command : str):
         self.command = command
 
     def showHelp(self):
+        """Show the actual help."""
         command = self.command
 
         # Checks whether the shell is module interpreter or module selector session
@@ -83,12 +84,13 @@ class PromptHelp():
             return 1
 
 
-# List available options for a selected module
 class Info():
+    """List available options for a selected module"""
     def __init__(self, MODULE):
         self.module = MODULE
 
     def showInfo(self):
+        """Display the options for available modules."""
         module = self.module
 
         if module == 'probe':
@@ -120,8 +122,8 @@ class Info():
             print(FALERT+'Error: Invalid module')
             return 1
 
-# List values assigned to various options of the module
 class Options():
+    """List values assigned to various options of the module"""
     def __init__(self, MODULE, OPTIONS):
         self.module  = MODULE
         self.thost   = OPTIONS[0]
@@ -134,6 +136,11 @@ class Options():
         self.threading = OPTIONS[7]
 
     def showOptions(self):
+        """
+        Display values assigned to each options in a module.
+        
+        If no module is selected display values assigned to all options.
+        """
         if self.module == 'probe':
             if self.thost != '':
                 print(FSUCCESS+'\n\t[+] '+f'THOST   => {self.thost}')

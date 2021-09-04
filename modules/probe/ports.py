@@ -22,16 +22,18 @@ openports: list = []
 # List of valid protocols to be used with this module
 valid_protocols: list = ['tcp', 'tcp/ip', 'TCP', 'TCP/IP', 'udp', 'UDP']
 
-# Get the service name based on the port
 def __getServbyPort(port, protocol):
+    """Get the service name based on the port."""
+
     try:
         name = socket.getservbyport(int(port), protocol)
         return name
     except:
         return False
 
-# TCP port scanner function
 def __tscanner(host, port, timeout, verbose):
+    """TCP port scanner function."""
+
     socktcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     TMOUT = int(timeout)
     try:
@@ -47,8 +49,8 @@ def __tscanner(host, port, timeout, verbose):
     finally:
         socktcp.close()
 
-# UDP port scanner function
 def __uscanner(host, port, timeout, tryct, verbose):
+    """UDP port scanner function."""
     TMOUT = int(timeout)
     portstatus = False
     sockudp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
@@ -79,9 +81,13 @@ def __uscanner(host, port, timeout, tryct, verbose):
 
     return portstatus
 
-# Checks if the given port input was in form of list or string
-# if port input is list the first element will be first port and the second element will be the last port
 def __portinputislist(port):
+    """
+    Checks if the given port input was in form of list or string.
+
+    If port input is list the first element will be first port and the second element will be the last port in the range.
+    """
+
     if 'list' in str(type(port)):
         return True
 
@@ -92,8 +98,9 @@ def __portinputislist(port):
         exception = TypeError(f'{FALERT}[*] Error: Unknown input type{FNORMAL}')
         return exception
 
-# Starts the actual scanner session
 def scanner(host, port, timeout, protocol, tryct, verbose=False):
+    """Starts the actual scanner session"""
+
     if protocol in ['tcp', 'tcp/ip', 'TCP', 'TCP/IP']:
         if __tscanner(host, port, timeout, verbose):
             serv = __getServbyPort(port, 'tcp')
@@ -108,11 +115,14 @@ def scanner(host, port, timeout, protocol, tryct, verbose=False):
         elif verbose:
             return f'{FALERT}[-] {protocol}: {host}: {port} is closed{FNORMAL}'
 
-# Displays the output
-# Also provides multithreading it the port input is a list
 def display(host, port, timeout, protocol, tryct, verbose, threading):
-    # Check if the specified protocol is valid
+    """
+    Displays the output.
+    Also provides multithreading it the port input is a list.
+    """
+
     if protocol in valid_protocols:
+        # Check if the specified protocol is valid
         executor = concurrent.futures.ThreadPoolExecutor()
         # check if input is a single port or a range
         print(f'{BURGENT}[**] Scan started at {datevalue()}{BNORMAL}')
@@ -122,20 +132,21 @@ def display(host, port, timeout, protocol, tryct, verbose, threading):
                 p_begin: int = int(port[0])
                 p_end: int = int(port[1])+1
 
-                # Initiate multi-threaded process
                 if threading:
+                    # Initiate multi-threaded process
                     output = [ executor.submit(scanner, host, x, timeout, protocol, tryct, verbose) for x in range(p_begin, p_end) ]
                     for f in concurrent.futures.as_completed(output):
-                        # Prevents unnecessary output if verbose is set to false
                         if f.result():
+                            # Prevents unnecessary output if verbose is set to false
                             results.append(f.result())
                 else:
                     output = [ scanner(host, x, timeout, protocol, tryct, verbose) for x in range(p_begin, p_end) ]
                     for x in output:
                         if x:
                             results.append(x)
-                # Finally print the value on the basis of what value was set to verbose
+
                 if verbose:
+                    # Finally print the value on the basis of what value was set to verbose
                     for x in results:
                         if 'open' in x:
                             openports.append(x)

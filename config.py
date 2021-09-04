@@ -15,9 +15,12 @@ class colors():
     BNORMAL  : str = Back.BLACK
     BURGENT  : str = Back.YELLOW
 
-# provide defaults for all the options for a module
-# These values will be overridden if user tends to unset the value
 class variables():
+    """
+    Provide defaults for all the options for a module
+    These values will be overridden if user tends to unset the value
+    """
+
 
     # Please configure the values over here
     MODULE   : str = ''

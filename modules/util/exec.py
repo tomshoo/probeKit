@@ -1,3 +1,11 @@
+"""
+Module containing the functions for execution,
+
+- `run` function to run the assigned module,
+- `set` function to assign a given value to the asked option,
+- `unset` function to unassign values from an asked option.
+"""
+
 from modules.data.AboutList import moduleHelp
 from config import colors, variables
 
@@ -7,6 +15,7 @@ BNORMAL = colors.BNORMAL
 
 
 def run(module, options):
+    """Function to run the assigned module"""
     import modules.probe.ports as ports
     import modules.probe.osprobe as osprobe
     if module in moduleHelp(module).modules:
@@ -47,8 +56,10 @@ def run(module, options):
         return 1
 
 def set(option_list: list, option: str, value: str):
-    # if the first argument is 'all' all values default to those specified in config.py
+    """Function to assign a given value to the asked option."""
+
     if value and option != 'all':
+        # if the first argument is 'all' all values default to those specified in config.py
         if option in ['THOST', 'thost']:
             print(f'THOST => {value}')
             option_list[0] = value
@@ -102,9 +113,9 @@ def set(option_list: list, option: str, value: str):
             print(FALERT+'[-] Error: Invalid option')
             option_list.append(1)
 
-    # If there are no values in the config.py then,
-    # this is same as `unset all`
     elif option == 'all':
+        # If there are no values in the config.py then,
+        # this is same as `unset all`
         option_list[0] = variables.THOST
         option_list[1] = variables.tport()
         option_list[2] = variables.PROTOCOL
@@ -125,6 +136,7 @@ def set(option_list: list, option: str, value: str):
     return option_list
 
 def unset(option_list: list, option: str):
+    """Function to unassign values from an asked option."""
     if option in ['THOST', 'thost']:
         print(f'{FALERT}unset THOST')
         option_list[0] = ''
