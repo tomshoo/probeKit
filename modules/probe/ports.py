@@ -98,14 +98,14 @@ def scanner(host, port, timeout, protocol, tryct, verbose=False):
         if __tscanner(host, port, timeout, verbose):
             serv = __getServbyPort(port, 'tcp')
             return f'{FSUCCESS}[+] {protocol}: {host}: {port} is open, service: {serv}{FNORMAL}'
-        else:
+        elif verbose:
             return f'{FALERT}[-] {protocol}: {host}: {port} is closed{FNORMAL}'
 
     elif protocol in ['udp', 'UDP']:
         if __uscanner(host, port, timeout, tryct, verbose):
             serv = __getServbyPort(port, 'udp')
             return f'{FSUCCESS}[+] {protocol}: {host}: {port} is open, service: {serv}{FNORMAL}'
-        else:
+        elif verbose:
             return f'{FALERT}[-] {protocol}: {host}: {port} is closed{FNORMAL}'
 
 # Displays the output
@@ -147,10 +147,7 @@ def display(host, port, timeout, protocol, tryct, verbose, threading):
 
                 else:
                     for x in results:
-                        if 'open' in x:
-                            print(x)
-                        else:
-                            print(x, end='\r')
+                        print(x)
                 end = timestamp()
 
                 print(f'{BURGENT}[**] Scan took about {round(end-start, 5)} sec(s).{BNORMAL}')
