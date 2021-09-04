@@ -18,7 +18,7 @@ OS: Unix based operating system(macOS, Linux, etc.), Windows 10.
 ``` bash
 git clone https://theEndurance-del/probeKit.git && cd ./probeKit
 sudo apt install nmap python-pip python3-wheel python3-dev
-pip install scapy python-nmap
+pip install -r requirements.txt
 ```
 
 ### Arch based distributions
@@ -26,7 +26,7 @@ pip install scapy python-nmap
 ``` bash
 git clone https://theEndurance-del/probeKit.git && cd ./probeKit
 sudo pacman -Syu nmap python-pip
-pip install scapy python-nmap
+pip install -r requirements.txt
 ```
 
 ## Usage
