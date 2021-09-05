@@ -285,7 +285,7 @@ def main():
                             if 'Windows' not in platform.platform():
                                 exitStatus = subprocess.call((cmdSplit))
                             else:
-                                exitStatus = subprocess.run(commands, shell=True)
+                                exitStatus = subprocess.run(commands, shell=True).returncode
                         
                         except FileNotFoundError:
                             print(f'{FALERT}Error: Invalid command \'{verb}\'')
