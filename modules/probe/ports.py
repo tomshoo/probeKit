@@ -125,25 +125,45 @@ def display(host, port, timeout, protocol, tryct, verbose, threading):
         # Check if the specified protocol is valid
         executor = concurrent.futures.ThreadPoolExecutor()
         # check if input is a single port or a range
+        type = port['type']
         print(f'{BURGENT}[**] Scan started at {datevalue()}{BNORMAL}')
         start = timestamp()
-        if __portinputislist(port):
+
+        if type == 'single':
+            portstatus = scanner(host, int(port['value']), timeout, protocol, tryct, verbose)
+            if portstatus:
+                print(portstatus)
+            else:
+                print(f'{protocol}: {host}: {port} is closed')
+
+        else:
             try:
-                p_begin: int = int(port[0])
-                p_end: int = int(port[1])+1
+                if type == 'range':
+                    p_begin: int = int(port['value'][0])
+                    p_end: int = int(port['value'][1])+1
 
                 if threading:
                     # Initiate multi-threaded process
-                    output = [ executor.submit(scanner, host, x, timeout, protocol, tryct, verbose) for x in range(p_begin, p_end) ]
+                    if type == 'range':
+                        output = [ executor.submit(scanner, host, x, timeout, protocol, tryct, verbose) for x in range(p_begin, p_end) ]
+                    else:
+                        output = [ executor.submit(scanner, host, x, timeout, protocol, tryct, verbose) for x in port['value'] ]
+
                     for f in concurrent.futures.as_completed(output):
                         if f.result():
                             # Prevents unnecessary output if verbose is set to false
                             results.append(f.result())
                 else:
-                    output = [ scanner(host, x, timeout, protocol, tryct, verbose) for x in range(p_begin, p_end) ]
+                    if type == 'range':
+                        output = [ scanner(host, x, timeout, protocol, tryct, verbose) for x in range(p_begin, p_end) ]
+                    else:
+                        output = [ scanner(host, int(x), timeout, protocol, tryct, verbose) for x in port['value'] ]
+
                     for x in output:
                         if x:
                             results.append(x)
+
+                    output.clear()
 
                 if verbose:
                     # Finally print the value on the basis of what value was set to verbose
@@ -156,10 +176,14 @@ def display(host, port, timeout, protocol, tryct, verbose, threading):
                     for y in openports:
                         print(y)
 
+                    results.clear()
+                    openports.clear()
+
                 else:
                     for x in results:
                         print(x)
                 end = timestamp()
+                results.clear()
 
                 print(f'{BURGENT}[**] Scan took about {round(end-start, 5)} sec(s).{BNORMAL}')
 
@@ -167,16 +191,6 @@ def display(host, port, timeout, protocol, tryct, verbose, threading):
                 print(f'{FALERT}Keyboard interrupt received, quitting!!')
                 if threading:
                     executor.shutdown(wait=False, cancel_futures=True)
-
-            results.clear()
-
-        else:
-            portstatus = scanner(host, int(port), timeout, protocol, tryct, verbose)
-            print(portstatus)
-            if portstatus:
-                print(portstatus)
-            else:
-                print(f'{protocol}: {host}: {port} is closed')
 
     else:
         print(f'{BALERT}[-] Error: Unknown protocol specified{BNORMAL}')

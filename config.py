@@ -37,10 +37,22 @@ class variables():
     # in the required form
     def tport(self):
         Tport = self.TPORT
+        tdict = {
+            'value': '',
+            'type': ''
+        }
         if '/' in Tport:
-            return Tport.split('/')
+            tdict['value'] = Tport.split('/')
+            tdict['type'] = 'range'
+        elif ',' in Tport:
+            tdict['value'] = Tport.split(',')
+            tdict['type'] = 'group'
+
         else:
-            return Tport
+            tdict['value'] = Tport
+            tdict['type'] = 'single'
+        
+        return tdict
 
     def timeout(self):
         tmout = self.TIMEOUT

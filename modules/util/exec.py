@@ -66,12 +66,24 @@ def set(option_list: list, option: str, value: str):
 
         elif option in ['TPORT', 'tport']:
             if '/' in value:
-                option_list[1] = value.split('/')
-                print(f'TPORT => {option_list[1]}')
+                option_list[1]['value'] = value.split('/')
+                option_list[1]['type'] = 'range'
+                display = option_list[1]['value']
+                print(f'TPORT => {display}')
+
+            elif ',' in value:
+                option_list[1]['value'] = value.split(',')
+                option_list[1]['type'] = 'group'
+                display = option_list[1]['value']
+                print(f'TPORT => {display}')
+
 
             else:
                 print(f'TPORT => {value}')
-                option_list[1] = value
+                option_list[1]['value'] = int(value)
+                option_list[1]['type'] = 'single'
+                display = option_list[1]['value']
+                print(f'TPORT => {display}')
 
         elif option in ['PROTO', 'proto', 'protocol', "PROTOCOL"]:
             print(f'PROTO => {value}')
@@ -143,7 +155,8 @@ def unset(option_list: list, option: str):
 
     elif option in ['TPORT', 'tport']:
         print(f'{FALERT}unset TPORT')
-        option_list[1] = ''
+        option_list[1]['value'] = ''
+        option_list[1]['type'] = ''
 
     elif option in ['PROTO', 'proto', 'protocol', 'PROTOCOL']:
         print(f'{FALERT}unset PROTO')
@@ -171,7 +184,8 @@ def unset(option_list: list, option: str):
 
     elif option == 'all':
         option_list[0] = ''
-        option_list[1] = ''
+        option_list[1]['value'] = ''
+        option_list[1]['type'] = ''
         option_list[2] = ''
         option_list[3] = 1
         option_list[4] = 1

@@ -127,7 +127,7 @@ class Options():
     def __init__(self, MODULE, OPTIONS):
         self.module  = MODULE
         self.thost   = OPTIONS[0]
-        self.tport   = OPTIONS[1]
+        self.tport   = OPTIONS[1]['value']
         self.proto   = OPTIONS[2]
         self.timeout = OPTIONS[3]
         self.tryct = OPTIONS[4]
