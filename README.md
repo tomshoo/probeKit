@@ -9,7 +9,7 @@ Python: `3.x`, Python `3.x` compatible pip, nmap, python-scapy, python-nmap, rea
 OS: Unix based operating system(macOS, Linux, etc.), Windows 10.
 - note: the history feature would not work as expected on macOS
 - note: install [npcap](https://nmap.org/npcap/#download) before using this tool on Windows
-	- Also powershell commands feature would not work in windows
+    - Also powershell commands feature would not work in windows
 
 ## Installation
 
@@ -43,7 +43,7 @@ This is the help shown:
 Usage: [verb] [options]
 Available verbs are: set, help, exit, back, clear, run
 
-	use		 use an available module(*)
+    use      use an available module(*)
 
     show        shows information on provided argument(*)
 
