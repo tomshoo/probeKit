@@ -81,24 +81,7 @@ def __uscanner(host, port, timeout, tryct, verbose):
 
     return portstatus
 
-def __portinputislist(port):
-    """
-    Checks if the given port input was in form of list or string.
-
-    If port input is list the first element will be first port and the second element will be the last port in the range.
-    """
-
-    if 'list' in str(type(port)):
-        return True
-
-    elif 'str' in str(type(port)):
-        return False
-
-    else:
-        exception = TypeError(f'{FALERT}[*] Error: Unknown input type{FNORMAL}')
-        return exception
-
-def scanner(host, port, timeout, protocol, tryct, verbose=False):
+def __scanner(host, port, timeout, protocol, tryct, verbose=False):
     """Starts the actual scanner session"""
 
     if protocol in ['tcp', 'tcp/ip', 'TCP', 'TCP/IP']:
@@ -130,7 +113,7 @@ def display(host, port, timeout, protocol, tryct, verbose, threading):
         start = timestamp()
 
         if type == 'single':
-            portstatus = scanner(host, int(port['value']), timeout, protocol, tryct, verbose)
+            portstatus = __scanner(host, int(port['value']), timeout, protocol, tryct, verbose)
             if portstatus:
                 print(portstatus)
             else:
@@ -145,9 +128,9 @@ def display(host, port, timeout, protocol, tryct, verbose, threading):
                 if threading:
                     # Initiate multi-threaded process
                     if type == 'range':
-                        output = [ executor.submit(scanner, host, x, timeout, protocol, tryct, verbose) for x in range(p_begin, p_end) ]
+                        output = [ executor.submit(__scanner, host, x, timeout, protocol, tryct, verbose) for x in range(p_begin, p_end) ]
                     else:
-                        output = [ executor.submit(scanner, host, x, timeout, protocol, tryct, verbose) for x in port['value'] ]
+                        output = [ executor.submit(__scanner, host, x, timeout, protocol, tryct, verbose) for x in port['value'] ]
 
                     for f in concurrent.futures.as_completed(output):
                         if f.result():
@@ -155,9 +138,9 @@ def display(host, port, timeout, protocol, tryct, verbose, threading):
                             results.append(f.result())
                 else:
                     if type == 'range':
-                        output = [ scanner(host, x, timeout, protocol, tryct, verbose) for x in range(p_begin, p_end) ]
+                        output = [ __scanner(host, x, timeout, protocol, tryct, verbose) for x in range(p_begin, p_end) ]
                     else:
-                        output = [ scanner(host, int(x), timeout, protocol, tryct, verbose) for x in port['value'] ]
+                        output = [ __scanner(host, int(x), timeout, protocol, tryct, verbose) for x in port['value'] ]
 
                     for x in output:
                         if x:

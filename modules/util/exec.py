@@ -20,8 +20,8 @@ def run(module, options):
     import modules.probe.osprobe as osprobe
     if module in moduleHelp(module).modules:
         try:
-            lhost    = options[0]
-            lport    = options[1]
+            thost    = options[0]
+            tport    = options[1]
             protocol = options[2]
             timeout  = options[3]
             tryct    = options[4]
@@ -29,18 +29,18 @@ def run(module, options):
             verbose  = options[6]
             threading= options[7]
             try:
-                if lhost == '':
-                    print(FALERT+'Error: Invalid value for LHOST')
+                if thost == '':
+                    print(FALERT+'Error: Invalid value for THOST')
                 else:
                     if module == 'probe':
-                        if lport == '':
-                            print(FALERT+'Error: value for LPORT')
+                        if tport == '':
+                            print(FALERT+'Error: Invalid value for TPORT')
 
-                        ports.display(lhost, lport, timeout, protocol, tryct, verbose, threading)
+                        ports.display(thost, tport, timeout, protocol, tryct, verbose, threading)
                         return 0
 
                     elif module == 'osprobe':
-                        osprobe.checkOS(lhost, tryct, nmap).scanner()
+                        osprobe.checkOS(thost, tryct, nmap).scanner()
                         return 0
 
             except Exception as e:

@@ -96,7 +96,10 @@ class Info():
         if module == 'probe':
             print(f'\n\t[*] THOST => hosts ip4 address(required)(THOST => thost)')
             print(f'\t[*] TPORT => ports to scan on host(required)(TPORT => tport)')
-            print(FALERT+f'\t             | values can be set as [portnumber(single portscan)] or [startport/endport(multiple portscan)]\n')
+            print(FALERT+f'\t             | values can be set as:')
+            print('\t                                   | [portnumber] (single port scan)')
+            print('\t                                   | [startport/endport] (port range)')
+            print('\t                                   | [port1,port2,port3,...] (port group)\n')
             print(FNORMAL+f'\t[*] PROTO => protocol to use for scanning(required)(PROTO => proto)')
             print(FALERT+f'\t             | Available protocols: ')
             print(f'\t                                  | [TCP => tcp => TCP/IP => tcp/ip]')
