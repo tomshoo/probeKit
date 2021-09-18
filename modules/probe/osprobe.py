@@ -6,7 +6,7 @@ OS-prober module using scapy and python-nmap.
 """
 
 # Imports
-from scapy.all import *
+from scapy.all import IP,ICMP,sr1
 import nmap
 import socket
 from config import colors

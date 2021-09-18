@@ -119,7 +119,8 @@ def main():
                 # Interate everything for commands stored in the commanlist
                 for commands in commadlist:
                     verb = ''
-                    cmdSplit = []
+                    cmdSplit: list = []
+                    cmdSplit_quote_delimeter: list = []
 
                     commands = utils.trim(commands)
 
@@ -130,9 +131,10 @@ def main():
 
                     # split the input to obtain command arguments
                     if commands  not in ['', None]:
-                        cmdSplit: list = []
+                        cmdSplit_quote_delimeter = []
                         for l in csv.reader([commands], delimiter=' ', quotechar='"'):
-                            cmdSplit = l
+                            cmdSplit_quote_delimeter = l
+                        cmdSplit = commands.split()
                         verb = args(cmdSplit, 0)
 
                     # Check if given input is blank

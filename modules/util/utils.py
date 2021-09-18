@@ -41,6 +41,23 @@ def args(value, pos):
     except Exception:
         return ''
 
+def isFloat(value: str):
+    """
+    Check if a given string is a float value
+    """
+    valsplit = value.split('.')
+    length: int = len(valsplit)
+    isfloat: list = []
+    if (0 < length <= 2):
+        for x in valsplit:
+            isfloat.append(x.isdecimal())
+        if False in isfloat:
+            return False
+        else:
+            return True
+    else:
+        return False
+
 def trim(string):
     """Function to remove extra white spaces from the string"""
 

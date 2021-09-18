@@ -8,12 +8,12 @@ from config import colors
 from modules.util.utils import datevalue, timestamp
 
 # Additional colors
-BALERT = colors.BALERT
-FSUCCESS = colors.FSUCCESS
-FNORMAL = colors.FNORMAL
-BURGENT = colors.BURGENT
-FALERT = colors.FALERT
-BNORMAL = colors.BNORMAL
+BALERT:   str = colors.BALERT
+FSUCCESS: str = colors.FSUCCESS
+FNORMAL:  str = colors.FNORMAL
+BURGENT:  str = colors.BURGENT
+FALERT:   str = colors.FALERT
+BNORMAL:  str = colors.BNORMAL
 
 # Lists for presenting output
 results: list = []
@@ -31,13 +31,12 @@ def __getServbyPort(port, protocol):
     except:
         return False
 
-def __tscanner(host, port, timeout, verbose):
+def __tscanner(host: str, port: int, timeout: float, verbose: bool):
     """TCP port scanner function."""
 
     socktcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    TMOUT = int(timeout)
     try:
-        socktcp.settimeout(TMOUT)
+        socktcp.settimeout(timeout)
         socktcp.connect((host, port))
         return True
 
@@ -49,9 +48,8 @@ def __tscanner(host, port, timeout, verbose):
     finally:
         socktcp.close()
 
-def __uscanner(host, port, timeout, tryct, verbose):
+def __uscanner(host: str, port: int, timeout: float, tryct: str, verbose: bool):
     """UDP port scanner function."""
-    TMOUT = int(timeout)
     portstatus = False
     sockudp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     sockicmp = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_ICMP)
@@ -59,7 +57,7 @@ def __uscanner(host, port, timeout, tryct, verbose):
     for _ in range(tryct):
         try:
             sockudp.sendto(bytes('This is a test', 'utf-8'), (host, port))
-            sockicmp.settimeout(TMOUT)
+            sockicmp.settimeout(timeout)
             sockicmp.recvfrom(1024)
 
         except socket.timeout:
@@ -85,20 +83,20 @@ def __scanner(host, port, timeout, protocol, tryct, verbose=False):
     """Starts the actual scanner session"""
 
     if protocol in ['tcp', 'tcp/ip', 'TCP', 'TCP/IP']:
-        if __tscanner(host, port, timeout, verbose):
+        if __tscanner(host, port, float(timeout), verbose):
             serv = __getServbyPort(port, 'tcp')
             return f'{FSUCCESS}[+] {protocol}: {host}: {port} is open, service: {serv}{FNORMAL}'
         elif verbose:
             return f'{FALERT}[-] {protocol}: {host}: {port} is closed{FNORMAL}'
 
     elif protocol in ['udp', 'UDP']:
-        if __uscanner(host, port, timeout, tryct, verbose):
+        if __uscanner(host, port, float(timeout), tryct, verbose):
             serv = __getServbyPort(port, 'udp')
             return f'{FSUCCESS}[+] {protocol}: {host}: {port} is open, service: {serv}{FNORMAL}'
         elif verbose:
             return f'{FALERT}[-] {protocol}: {host}: {port} is closed{FNORMAL}'
 
-def display(host, port, timeout, protocol, tryct, verbose, threading):
+def display(host, port, timeout, protocol, tryct, verbose, threading=False):
     """
     Displays the output.
     Also provides multithreading it the port input is a list.

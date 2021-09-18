@@ -8,6 +8,7 @@ Module containing the functions for execution,
 
 from modules.data.AboutList import moduleHelp
 from config import colors, variables
+from modules.util.utils import isFloat
 
 FALERT = colors.FALERT
 BALERT = colors.BALERT
@@ -90,16 +91,25 @@ def set(option_list: list, option: str, value: str):
             option_list[2] = value
 
         elif option in ['TMOUT', 'tmout']:
-            print(f'TMOUT => {value}')
-            option_list[3] = value
+            if isFloat(value):
+                print(f'TMOUT => {value}')
+                option_list[3] = value
+            else:
+                print(f'{FALERT}Error: Invalid value provided')
 
         elif option in ['TRYCT', 'tryct']:
-            print(f'TRYCT => {value}')
-            option_list[4] = int(value)
+            if value.isdigit():
+                print(f'TRYCT => {value}')
+                option_list[4] = int(value)
+            else:
+                print(f'{FALERT}Error: Invalid value provided')
 
         elif option in ['NMAP', 'nmap']:
-            print(f'NMAP  => {value}')
-            option_list[5] = int(value)
+            if value.isdigit():
+                print(f'NMAP  => {value}')
+                option_list[5] = int(value)
+            else:
+                print(f'{FALERT}Error: Invalid value provided')
 
         elif option in ['VERBOSE', 'verbose']:
             if value not in ['true', 'false']:
