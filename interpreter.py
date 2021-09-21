@@ -29,6 +29,15 @@ ExitException = utils.ExitException
 datevalue = utils.datevalue
 register_history = utils.register_history
 
+#Setting up tab completion(experimental)
+def completion(text, state):
+    commands = ["use", "show", "set", "help", "exit", "back", "clear", "run", "about", "list", "banner", "alias", "unalias", "unset"]
+    options = [i for i in commands if i.startswith(text)]
+    if state < len(options):
+        return options[state]
+    else:
+        return None
+
 # Setting up colors (edit these in config.py)
 FSUCCESS = colors.FSUCCESS
 FALERT = colors.FALERT
@@ -79,6 +88,8 @@ def main():
     exitStatus = 0
     try:
         while (True):
+            readline.set_completer(completion)
+            readline.parse_and_bind("tab: complete")
 
             if exitStatus == 0:
                 COLOR = colors.FSUCCESS
