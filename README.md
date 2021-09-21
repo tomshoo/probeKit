@@ -28,6 +28,7 @@ git clone https://theEndurance-del/probeKit.git && cd ./probeKit
 sudo pacman -Syu nmap python-pip
 pip install -r requirements.txt
 ```
+ * Note: If possible try installing the dependencies listted in `requirements.txt` via `pacman`, since installing it via pip might break future pacman installations.*
 
 ## Usage
 
