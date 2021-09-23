@@ -1,19 +1,37 @@
 from colorama import Fore, Back
 
 # configure colors in this class
-class colors():
+class light():
+    #Foreground Colors
+    FALERT   : str = Fore.RED
+    FSUCCESS : str = Fore.GREEN
+    FNORMAL  : str = Fore.BLACK
+    FURGENT  : str = Fore.YELLOW
+    FPROMPT  : str = Fore.BLUE
+
+    #Background Colors
+    BALERT   : str = Back.RED
+    BSUCCESS : str = Back.GREEN
+    BNORMAL  : str = Back.WHITE
+    BURGENT  : str = Back.YELLOW
+
+
+class dark():
+    #Foreground Colors
     FALERT   : str = Fore.RED
     FSUCCESS : str = Fore.GREEN
     FNORMAL  : str = Fore.WHITE
     FURGENT  : str = Fore.YELLOW
     FPROMPT  : str = Fore.BLUE
 
-    # Background colors (still do not have any use)
-
+    #Background Colors
     BALERT   : str = Back.RED
     BSUCCESS : str = Back.GREEN
     BNORMAL  : str = Back.BLACK
     BURGENT  : str = Back.YELLOW
+
+# Chose color scheme(light or dark)
+colors = dark
 
 class variables():
     """
