@@ -20,37 +20,27 @@ def run(module, options):
     import modules.probe.ports as ports
     import modules.probe.osprobe as osprobe
     if module in moduleHelp(module).modules:
-        try:
-            thost    = options[0]
-            tport    = options[1]
-            protocol = options[2]
-            timeout  = options[3]
-            tryct    = options[4]
-            nmap     = options[5]
-            verbose  = options[6]
-            threading= options[7]
-            try:
-                if thost == '':
-                    print(FALERT+'Error: Invalid value for THOST')
-                else:
-                    if module == 'probe':
-                        if tport == '':
-                            print(FALERT+'Error: Invalid value for TPORT')
+        thost    = options[0]
+        tport    = options[1]
+        protocol = options[2]
+        timeout  = options[3]
+        tryct    = options[4]
+        nmap     = options[5]
+        verbose  = options[6]
+        threading= options[7]
+        if thost == '':
+            print(FALERT+'Error: Invalid value for THOST')
+        else:
+            if module == 'probe':
+                if tport == '':
+                    print(FALERT+'Error: Invalid value for TPORT')
 
-                        ports.display(thost, tport, timeout, protocol, tryct, verbose, threading)
-                        return 0
+                ports.display(thost, tport, timeout, protocol, tryct, verbose, threading)
+                return 0
 
-                    elif module == 'osprobe':
-                        osprobe.checkOS(thost, tryct, nmap).scanner()
-                        return 0
-
-            except Exception as e:
-                print(e)
-                return 1
-
-        except KeyboardInterrupt:
-            print(FALERT+'\nalert: KeyboardInterrupt detected\n')
-            return 2
+            elif module == 'osprobe':
+                osprobe.checkOS(thost, tryct, nmap).scanner()
+                return 0
 
     else:
         print(f'{BALERT}[-] Error: Invalid module \'{module}\'{BNORMAL}')

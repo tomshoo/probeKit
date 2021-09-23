@@ -24,7 +24,7 @@ def checkTTL(target, iterator):
     ttllist = []
 
     if iterator == 0:
-        raise Exception(f'{FRED}Error: invalid try count specified: {iterator}{FWHITE}')
+        print(f'{FRED}Error: invalid try count specified: {iterator}{FWHITE}')
 
     for _ in range(iterator):
         rpkt = sr1(pkt)
@@ -86,4 +86,4 @@ class checkOS():
             print(f'{FYELLOW}Alert: Skipping nmap scan')
 
         else:
-            raise Exception(f'{FRED}Error: invalid condition for nmap: {self.ifnmap}{FWHITE}')
+            print(f'{FRED}Error: invalid condition for nmap: {self.ifnmap}{FWHITE}')
