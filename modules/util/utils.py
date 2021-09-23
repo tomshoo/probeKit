@@ -41,6 +41,19 @@ def args(value, pos):
     except Exception:
         return ''
 
+#Setting up tab completion(experimental)
+class completer:
+    def __init__(self, commands):
+        self.commands = commands
+    def completion(self, text, state):
+        commands = self.commands
+        options = [i for i in commands if i.startswith(text)]
+        if state < len(options):
+            return options[state]
+        else:
+            return None
+
+
 def isFloat(value: str):
     """
     Check if a given string is a float value

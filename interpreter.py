@@ -28,15 +28,24 @@ args = utils.args
 ExitException = utils.ExitException
 datevalue = utils.datevalue
 register_history = utils.register_history
+completion_list: list = [
+    "use", 
+    "show", 
+    "set", 
+    "help", 
+    "exit", 
+    "back", 
+    "clear", 
+    "run", 
+    "about", 
+    "list", 
+    "banner", 
+    "alias", 
+    "unalias", 
+    "unset"
+]
+completer = utils.completer(completion_list)
 
-#Setting up tab completion(experimental)
-def completion(text, state):
-    commands = ["use", "show", "set", "help", "exit", "back", "clear", "run", "about", "list", "banner", "alias", "unalias", "unset"]
-    options = [i for i in commands if i.startswith(text)]
-    if state < len(options):
-        return options[state]
-    else:
-        return None
 
 # Setting up colors (edit these in config.py)
 FSUCCESS = colors.FSUCCESS
@@ -64,7 +73,8 @@ if 'Windows' not in platform.platform():
     if os.getuid() != 0:
         print(f'{FURGENT}[**] Warning: You won\'t be able to use the osprbe module without root access.')
 
-def main():
+def main(exitStatus: int = 0):
+    check = 1 if args(sys.argv, 1) else 0
     # Variables also known as options to the user
     OPTIONS : list = [
         variables.THOST
@@ -85,10 +95,9 @@ def main():
         print(f'{FALERT}[-] No such module: \'{MODULE}\'{FNORMAL}')
         sys.exit(1)
 
-    exitStatus = 0
     try:
         while (True):
-            readline.set_completer(completion)
+            readline.set_completer(completer.completion)
             readline.parse_and_bind("tab: complete")
 
             if exitStatus == 0:
@@ -99,10 +108,14 @@ def main():
                 COLOR = colors.FALERT
 
             # Checks if module is activated or not
-            if MODULE == '':
-                inputval = input(f'{FNORMAL}[probkit]: {COLOR}{exitStatus}{FNORMAL}$> ')
+            if check == 0:
+                if MODULE == '':
+                    inputval = input(f'{FNORMAL}[probkit]: {COLOR}{exitStatus}{FNORMAL}$> ')
+                else:
+                    inputval = input(f'{FNORMAL}probeKit: {FSTYLE}[{MODULE}]: {COLOR}{exitStatus}{FSUCCESS}$>{FNORMAL} ')
             else:
-                inputval = input(f'{FNORMAL}probeKit: {FSTYLE}[{MODULE}]: {COLOR}{exitStatus}{FSUCCESS}$>{FNORMAL} ')
+                inputval = ' '.join(sys.argv[1].split('\ '))
+                check = 0
 
             # Call the register_history class to write history
             # Adds time stamp to each command after the session has ended
@@ -210,11 +223,15 @@ def main():
                     elif verb == 'clear':
                         if 'Windows' in platform.platform():
                             os.system('cls')
+                            exitStatus = 0
                         else:
                             print(chr(27)+'2[j')
                             print('\033c')
                             print('\x1bc')
                             exitStatus = 0
+
+                        if args(cmdSplit, 1) == '-e':
+                            sys.exit(exitStatus)
 
                     elif verb == 'run':
                         try:
@@ -302,6 +319,7 @@ def main():
                         
                         except FileNotFoundError:
                             print(f'{FALERT}Error: Invalid command \'{verb}\'')
+                            exitStatus = 1
                         
                         except KeyboardInterrupt:
                             exitStatus = 130
@@ -314,7 +332,7 @@ def main():
                         fp.write('# session ended at: ' + datevalue() + ' # \n')
                         pass
                 print(e)
-                sys.exit(0)
+                sys.exit(exitStatus)
 
             # Except the index error in the main try block and pass an idle exit status
             # Helps in keeping the session active even if no input was given before enter
@@ -334,7 +352,8 @@ def main():
 
     # Handles keyboard interupt by exiting and "not" wrinting `session ended at` to history
     except KeyboardInterrupt:
-        print(f'\n{FALERT}probeKit: exiting session{FNORMAL}')
+        print(f'\n')
+        main(exitStatus=3)
         pass
 
 if __name__ == '__main__':

@@ -5,7 +5,18 @@ It is a very basic and minimal text editor working on line based editing.
 """
 
 import os
-from modules.util.utils import args
+import readline
+from modules.util.utils import args, completer
+
+completion_list: list = [
+    "i", "insert",
+    "w", "write",
+    "c", "change",
+    "p", "print",
+    "n", "lineprint",
+    "q", "quit",
+]
+completer = completer(completion_list)
 
 class start_editor():
     def __init__(self, argslist: list):
@@ -85,6 +96,8 @@ class start_editor():
 
             while(True):
                 if mode == 'normal':
+                    readline.parse_and_bind('tab: complete')
+                    readline.set_completer(completer.completion)
                     c = input(f'{mode}> ')
                 else:
                     c = input()
@@ -133,4 +146,6 @@ class start_editor():
                     else:
                         mode = 'normal'
         except EOFError:
+            pass
+        except KeyboardInterrupt:
             pass
