@@ -198,10 +198,6 @@ def main(exitStatus: int = 0):
                                 info = Info(MODULE)
                                 exitStatus = info.showInfo()
 
-                            elif args(cmdSplit, 1) == 'status':
-                                print(exitStatus)
-                                exitStatus = 0
-
                             else:
                                 print(f'{FALERT}[-] Error: Invalid argument provided')
                                 exitStatus = 1
@@ -327,13 +323,8 @@ def main(exitStatus: int = 0):
             # Write the date and time when the session was ended to the history
             # Helps in finding those specific commands we try to remember
             except ExitException as e:
-                if 'Linux' in platform.platform():
-                    with open(histfile, 'a') as fp:
-                        fp.write('# session ended at: ' + datevalue() + ' # \n')
-                        pass
                 print(e)
-                sys.exit(exitStatus)
-
+                utils.Exit(exitStatus, histfile, platform.platform())
             # Except the index error in the main try block and pass an idle exit status
             # Helps in keeping the session active even if no input was given before enter
             except IndexError:
@@ -342,13 +333,8 @@ def main(exitStatus: int = 0):
 
     # Does the same as ExitException nothing new
     except EOFError as E:
-        if 'Linux' in platform.platform():
-          with open(histfile, 'a') as fp:
-            fp.write('# session ended at: ' + datevalue() + ' # \n')
-            pass
-
         print(f'\n{FALERT}probeKit: exiting session{FNORMAL}')
-        pass
+        utils.Exit(exitStatus, histfile, platform.platform())
 
     # Handles keyboard interupt by exiting and "not" wrinting `session ended at` to history
     except KeyboardInterrupt:

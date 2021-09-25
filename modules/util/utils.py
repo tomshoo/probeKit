@@ -10,6 +10,7 @@ file and later import it from here.
 from datetime import datetime
 import time
 import os
+import sys
 
 def banner():
     """Function to print the introductory banner"""
@@ -41,11 +42,12 @@ def args(value, pos):
     except Exception:
         return ''
 
-#Setting up tab completion(experimental)
 class completer:
+    """tab completion class(experimental)"""
     def __init__(self, commands):
         self.commands = commands
     def completion(self, text, state):
+        """return valid commands from the list of commands provided"""
         commands = self.commands
         options = [i for i in commands if i.startswith(text)]
         if state < len(options):
@@ -85,6 +87,16 @@ def datevalue():
     """Function to get immediate time at a point"""
 
     return datetime.now().strftime('%a %F %H:%M:%S')
+
+def Exit(exitStatus: int, histfile: str, platform: str):
+    """End the session and append the date and time to the end of the history file."""
+    
+    if 'Linux' in platform:
+        with open(histfile, 'a') as fp:
+            fp.write('# session ended at: ' + datevalue() + ' # \n')
+            pass
+    sys.exit(exitStatus)
+
 
 def timestamp():
     """To get total time taken by things to load and run"""

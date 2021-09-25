@@ -114,11 +114,7 @@ class variables():
 
 # Aliases for the user's comfort
 aliases : dict = {
-    'exec': 'run',
     'execute': 'run',
-    'c': 'clear',
-    'probe': 'use probe',
     'info': 'show info',
     'options': 'show options',
-    'getstatus': 'show status'
 }
