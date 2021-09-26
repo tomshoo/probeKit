@@ -1,7 +1,4 @@
-#! /usr/bin/env python3
-"""
-Interpreter for the entire probeKit
-"""
+#!/usr/bin/env python3
 
 # Imports
 import sys
@@ -73,274 +70,263 @@ if 'Windows' not in platform.platform():
     if os.getuid() != 0:
         print(f'{FURGENT}[**] Warning: You won\'t be able to use the osprbe module without root access.')
 
-def main(exitStatus: int = 0):
-    check = 1 if args(sys.argv, 1) else 0
-    # Variables also known as options to the user
-    OPTIONS : list = [
-        variables.THOST
-        , variables().tport()
-        , variables().PROTOCOL
-        , variables().timeout()
-        , variables().trycount()
-        , variables().Nmap()
-        , variables().Verbose()
-        , variables().Threading()
-       ]
-    # Initial module is set to blank
-    # Set it to any other module if you want a default module at startup
-    MODULE = variables.MODULE
-    if MODULE in aboutList.moduleHelp.modules or MODULE == '':
-        pass
-    else:
-        print(f'{FALERT}[-] No such module: \'{MODULE}\'{FNORMAL}')
-        sys.exit(1)
-
-    try:
-        while (True):
-            readline.set_completer(completer.completion)
-            readline.parse_and_bind("tab: complete")
-
-            if exitStatus == 0:
-                COLOR = colors.FSUCCESS
-            elif exitStatus == 3:
-                COLOR = colors.FURGENT
+class input_parser:
+    
+    def __init__(self):
+        self.exit_code = 0
+        # Variables also known as options to the user
+        self.OPTIONS : list = [
+            variables.THOST
+            , variables().tport()
+            , variables().PROTOCOL
+            , variables().timeout()
+            , variables().trycount()
+            , variables().Nmap()
+            , variables().Verbose()
+            , variables().Threading()
+           ]
+        
+        self.MODULE = variables.MODULE
+    
+    def parser(self, value: str):
+        if '#' in value:
+            vallist = value.split('#')
+            value = utils.trim(vallist.pop(0))
+        else:
+            pass
+    
+        if value[-1] != ';':
+            vallist = list(value)
+            vallist.append(';')
+            value = ''.join(vallist)
+        
+        commandlist: list = value.split(';')
+        commandlist.pop(-1)
+    
+        for command in commandlist:
+            command = utils.trim(command)
+            alias_cmd: list = command.split()
+            alias = alias_cmd[0]
+            alias_cmd[0] = aliases.get(alias, alias)
+            command = ' '.join(alias_cmd)
+            if ';' in command:
+                for x in command.split(';'):
+                    executor(utils.trim(x))
+                    continue
             else:
-                COLOR = colors.FALERT
+                self.executor(command)
+    
+    def executor(self, command: str):
+        OPTIONS = self.OPTIONS
+        cmd_split: list = command.split()
+        for l in csv.reader([command], delimiter=' ', quotechar='"'):
+            cmd_split_quoted = l
+    
+        verb = cmd_split[0]
+    
 
-            # Checks if module is activated or not
-            if check == 0:
-                if MODULE == '':
-                    inputval = input(f'{FNORMAL}[probkit]: {COLOR}{exitStatus}{FNORMAL}$> ')
+        if verb == "banner":
+            utils.banner()
+            self.exit_code = 0
+
+        elif verb == 'help':
+            if not args(cmd_split, 1):
+                Data = PromptHelp('')
+                self.exit_code = Data.showHelp()
+            else:
+                Data = PromptHelp(args(cmd_split, 1))
+                self.exit_code = Data.showHelp()
+
+        elif verb == 'led':
+            init_editor = start_editor(cmd_split)
+            init_editor.start_led()
+
+        elif verb == 'list':
+            self.exit_code = aboutList.moduleHelp(self.MODULE).listmodules()
+
+        elif verb == 'show':
+            if args(cmd_split, 1):
+                if args(cmd_split, 1) == 'options':
+                    options = Options(self.MODULE, OPTIONS)
+                    options.showOptions()
+                    self.exit_code = 0
+
+                elif args(cmd_split, 1) == 'info':
+                    info = Info(self.MODULE)
+                    self.exit_code = info.showInfo()
+
                 else:
-                    inputval = input(f'{FNORMAL}probeKit: {FSTYLE}[{MODULE}]: {COLOR}{exitStatus}{FSUCCESS}$>{FNORMAL} ')
+                    print(f'{FALERT}[-] Error: Invalid argument provided')
+                    self.exit_code = 1
             else:
-                inputval = ' '.join(sys.argv[1].split('\ '))
-                check = 0
+                print(f'{FALERT}[-] Error: no argument provided')
+                self.exit_code = 1
 
-            # Call the register_history class to write history
-            # Adds time stamp to each command after the session has ended
-            register_history(inputval).write_history()
+        elif verb == 'back':
+            if self.MODULE == '':
+                raise ExitException(f'{FALERT}probeKit: exiting session')
+            else:
+                self.MODULE = ''
+                self.exit_code = 0
 
-            # Split the command using a ';' helps in scripting support (or)
-            # multiple commands in a single line
-            # does not work if ';' is after a '#' tho
+        # Create an exception which exits the try block and then exits the session
+        elif verb == 'exit':
+            raise ExitException(f'{FALERT}probeKit: exiting session{FNORMAL}')
+
+        elif verb == 'clear':
+            if 'Windows' in platform.platform():
+                os.system('cls')
+                self.exit_code = 0
+            else:
+                print(chr(27)+'2[j')
+                print('\033c')
+                print('\x1bc')
+                self.exit_code = 0
+
+            if args(cmd_split, 1) == '-e':
+                sys.exit(self.exit_code)
+
+        elif verb == 'run':
             try:
-                # Check if the given input was a comment
-                if '#' in inputval:
-                    inputlist = inputval.split('#')
-                    inputval = utils.trim(inputlist.pop(0))
-                else:
-                    pass
-
-                if inputval[len(inputval)-1::] != ';':
-                    valsplit = list(inputval)
-                    valsplit.append(';')
-                    inputval = ''.join(valsplit)
-
-                commadlist : list = inputval.split(';')
-                commadlist.pop(len(commadlist)-1)
-
-                # Interate everything for commands stored in the commanlist
-                for commands in commadlist:
-                    verb = ''
-                    cmdSplit: list = []
-                    cmdSplit_quote_delimeter: list = []
-
-                    commands = utils.trim(commands)
-
-                    aliasedcommand : list = commands.split()
-                    calledAlias = args(aliasedcommand, 0)
-                    aliasedcommand[0] = aliases.get(str(calledAlias), str(calledAlias))
-                    commands = ' '.join(aliasedcommand)
-
-                    # split the input to obtain command arguments
-                    if commands  not in ['', None]:
-                        cmdSplit_quote_delimeter = []
-                        for l in csv.reader([commands], delimiter=' ', quotechar='"'):
-                            cmdSplit_quote_delimeter = l
-                        cmdSplit = commands.split()
-                        verb = args(cmdSplit, 0)
-
-                    # Check if given input is blank
-                    # Helps in maintaining comments
-                    # Need to find a better less messy way to handle comments
-                    if commands in ['', None]:
-                        exitStatus = 0
-
-                    # Henceforth starts the if... elif... else for command based output
-                    elif verb == "banner":
-                        utils.banner()
-                        exitStatus = 0
-
-                    elif verb == 'help':
-                      if not args(cmdSplit, 1):
-                        Data = PromptHelp('')
-                        exitStatus = Data.showHelp()
-                      else:
-                        Data = PromptHelp(args(cmdSplit, 1))
-                        exitStatus = Data.showHelp()
-
-                    elif verb == 'led':
-                        init_editor = start_editor(cmdSplit)
-                        init_editor.start_led()
-
-                    elif verb == 'list':
-                        exitStatus = aboutList.moduleHelp(MODULE).listmodules()
-
-                    elif verb == 'show':
-                        if args(cmdSplit, 1):
-                            if args(cmdSplit, 1) == 'options':
-                                options = Options(MODULE, OPTIONS)
-                                options.showOptions()
-                                exitStatus = 0
-
-                            elif args(cmdSplit, 1) == 'info':
-                                info = Info(MODULE)
-                                exitStatus = info.showInfo()
-
-                            else:
-                                print(f'{FALERT}[-] Error: Invalid argument provided')
-                                exitStatus = 1
-                        else:
-                            print(f'{FALERT}[-] Error: no argument provided')
-                            exitStatus = 1
-
-                    elif verb == 'back':
-                        if MODULE == '':
-                            raise ExitException(f'{FALERT}probeKit: exiting session')
-                        else:
-                            MODULE = ''
-                            exitStatus = 0
-
-                    # Create an exception which exits the try block and then exits the session
-                    elif verb == 'exit':
-                        raise ExitException(f'{FALERT}probeKit: exiting session{FNORMAL}')
-
-                    elif verb == 'clear':
-                        if 'Windows' in platform.platform():
-                            os.system('cls')
-                            exitStatus = 0
-                        else:
-                            print(chr(27)+'2[j')
-                            print('\033c')
-                            print('\x1bc')
-                            exitStatus = 0
-
-                        if args(cmdSplit, 1) == '-e':
-                            sys.exit(exitStatus)
-
-                    elif verb == 'run':
-                        try:
-                            exitStatus = exec.run(MODULE, OPTIONS)
-                        except Exception as e:
-                            print(e)
-
-                    # Verb(or command) to set options
-                    elif verb == 'set':
-                        OPTIONS = exec.set(OPTIONS, args(cmdSplit, 1), args(cmdSplit, 2))
-                        if args(OPTIONS, 8):
-                            exitStatus = OPTIONS[8]
-                            OPTIONS.pop(8)
-                    # Verb(or command) to unset options
-                    elif verb == 'unset':
-                        OPTIONS = exec.unset(OPTIONS, args(cmdSplit, 1))
-                        if args(OPTIONS, 8):
-                            exitStatus = OPTIONS[8]
-                            OPTIONS.pop(8)
-                    
-                    elif verb == 'use':
-                        if args(cmdSplit, 1):
-                            if args(cmdSplit, 1) in aboutList.moduleHelp.modules:
-                                MODULE = args(cmdSplit, 1)
-                                print(FURGENT+f'MODULE => {MODULE}')
-                                exitStatus = 0
-                            else:
-                                print(f'{FALERT}Error: Invalid module specified: \'{args(cmdSplit, 1)}\'')
-                                exitStatus = 1
-                        else:
-                            print(FALERT+'Error: No module specified')
-                            exitStatus = 1
-
-                    elif verb == 'about':
-                        if args(cmdSplit, 1):
-                            mod = args(cmdSplit, 1)
-                            aboutList.moduleHelp(mod).aboutModule(mod)
-                        else:
-                            aboutList.moduleHelp(MODULE).aboutModule(MODULE)
-
-                    elif verb == 'alias':
-                        if not args(cmdSplit, 1):
-                            exitStatus = 0
-                            for x in aliases:
-                                print(x,":",aliases[x])
-
-                        elif args(cmdSplit, 1) and len(commands.split('=')) == 2:
-                            splitCommand = commands.split('=')
-                            assignedCommand = splitCommand[1]
-                            alias = splitCommand[0].split()[1]
-                            if not assignedCommand or assignedCommand == '':
-                                print(f'{FALERT}[-] Error: please provide a command to alias')
-                                exitStatus = 1
-                            else:
-                                print(alias, "=>",assignedCommand)
-                                aliases[alias]=assignedCommand
-                                exitStatus = 0
-
-                        else:
-                            print(f'{FALERT}[-] Error: Invalid Syntax')
-                            exitStatus = 1
-
-                    elif verb == 'unalias':
-                        if args(cmdSplit, 1) and args(cmdSplit, 1) in aliases:
-                            del aliases[args(cmdSplit, 1)]
-                            exitStatus = 0
-                        else:
-                            print(f'{FALERT}[-] Error: no such alias \'{FURGENT}{args(cmdSplit, 1)}{FALERT}\' exists')
-                            exitStatus = 1
-                    elif verb in ['cd', 'chdir', 'set-location']:
-                        fpath = args(cmdSplit, 1)
-                        if os.path.exists(fpath) and os.path.isdir(fpath):
-                            os.chdir(fpath)
-                            print(f'dir: {fpath}')
-
-                        else:
-                            print(f'{FALERT}[-] Error: no such directory: \'{fpath}\'')
-
-                    else:
-                        try:
-                            if 'Windows' not in platform.platform():
-                                exitStatus = subprocess.call((cmdSplit))
-                            else:
-                                exitStatus = subprocess.run(commands, shell=True).returncode
-                        
-                        except FileNotFoundError:
-                            print(f'{FALERT}Error: Invalid command \'{verb}\'')
-                            exitStatus = 1
-                        
-                        except KeyboardInterrupt:
-                            exitStatus = 130
-
-            # Write the date and time when the session was ended to the history
-            # Helps in finding those specific commands we try to remember
-            except ExitException as e:
+                self.exit_code = exec.run(self.MODULE, OPTIONS)
+            except Exception as e:
                 print(e)
-                utils.Exit(exitStatus, histfile, platform.platform())
-            # Except the index error in the main try block and pass an idle exit status
-            # Helps in keeping the session active even if no input was given before enter
-            except IndexError:
-                exitStatus = 3
-                pass
 
-    # Does the same as ExitException nothing new
-    except EOFError as E:
-        print(f'\n{FALERT}probeKit: exiting session{FNORMAL}')
-        utils.Exit(exitStatus, histfile, platform.platform())
+        # Verb(or command) to set options
+        elif verb == 'set':
+            OPTIONS = exec.set(OPTIONS, args(cmd_split, 1), args(cmd_split, 2))
+            if args(OPTIONS, 8):
+                self.exit_code = OPTIONS[8]
+                OPTIONS.pop(8)
+        # Verb(or command) to unset options
+        elif verb == 'unset':
+            OPTIONS = exec.unset(OPTIONS, args(cmd_split, 1))
+            if args(OPTIONS, 8):
+                self.exit_code = OPTIONS[8]
+                OPTIONS.pop(8)
+                    
+        elif verb == 'use':
+            if args(cmd_split, 1):
+                if args(cmd_split, 1) in aboutList.moduleHelp.modules:
+                    self.MODULE = args(cmd_split, 1)
+                    print(FURGENT+f'MODULE => {self.MODULE}')
+                    self.exit_code = 0
+                else:
+                    print(f'{FALERT}Error: Invalid module specified: \'{args(cmd_split, 1)}\'')
+                    self.exit_code = 1
+            else:
+                print(FALERT+'Error: No module specified')
+                self.exit_code = 1
 
-    # Handles keyboard interupt by exiting and "not" wrinting `session ended at` to history
-    except KeyboardInterrupt:
-        print(f'\n')
-        main(exitStatus=3)
-        pass
+        elif verb == 'about':
+            if args(cmd_split, 1):
+                mod = args(cmd_split, 1)
+                aboutList.moduleHelp(mod).aboutModule(mod)
+            else:
+                aboutList.moduleHelp(self.MODULE).aboutModule(self.MODULE)
 
+        elif verb == 'alias':
+            if not args(cmd_split, 1):
+                self.exit_code = 0
+                for x in aliases:
+                    print(x,":",aliases[x])
+
+            elif args(cmd_split, 1) and len(commands.split('=')) == 2:
+                splitCommand = commands.split('=')
+                assignedCommand = splitCommand[1]
+                alias = splitCommand[0].split()[1]
+                if not assignedCommand or assignedCommand == '':
+                    print(f'{FALERT}[-] Error: please provide a command to alias')
+                    self.exit_code = 1
+                else:
+                    print(alias, "=>",assignedCommand)
+                    aliases[alias]=assignedCommand
+                    self.exit_code = 0
+
+            else:
+                print(f'{FALERT}[-] Error: Invalid Syntax')
+                self.exit_code = 1
+
+        elif verb == 'unalias':
+            if args(cmd_split, 1) and args(cmd_split, 1) in aliases:
+                del aliases[args(cmd_split, 1)]
+                self.exit_code = 0
+            else:
+                print(f'{FALERT}[-] Error: no such alias \'{FURGENT}{args(cmd_split, 1)}{FALERT}\' exists')
+                self.exit_code = 1
+        
+        elif verb in ['cd', 'chdir', 'set-location']:
+            fpath = args(cmd_split, 1)
+            if os.path.exists(fpath) and os.path.isdir(fpath):
+                os.chdir(fpath)
+                print(f'dir: {fpath}')
+
+            else:
+                print(f'{FALERT}[-] Error: no such directory: \'{fpath}\'')
+
+        else:
+            try:
+                if 'Windows' not in platform.platform():
+                    self.exit_code = subprocess.call((cmd_split))
+                else:
+                    self.exit_code = subprocess.run(commands, shell=True).returncode
+                        
+            except FileNotFoundError:
+                print(f'{FALERT}Error: Invalid command \'{verb}\'')
+                self.exit_code = 1
+
+
+    def main(self):
+        check = 1 if args(sys.argv, 1) else 0
+        
+        readline.set_completer(completer.completion)
+        readline.parse_and_bind("tab: complete")
+        
+        # Initial module is set to blank
+        # Set it to any other module if you want a default module at startup
+        
+        if self.MODULE in aboutList.moduleHelp.modules or self.MODULE == '':
+            pass
+        else:
+            print(f'{FALERT}[-] No such module: \'{self.MODULE}\'{FNORMAL}')
+            sys.exit(1)
+
+        try:
+            while(True):
+                if self.exit_code == 0:
+                    COLOR = colors.FSUCCESS
+                elif self.exit_code == 3:
+                    COLOR = colors.FURGENT
+                else:
+                    COLOR = colors.FALERT
+            
+                if check == 0:
+                    if self.MODULE == '':
+                        prompt_str: str = f'{FNORMAL}[probkit]: {COLOR}{self.exit_code}{FNORMAL}$> '
+                    else:
+                        prompt_str: str = f'{FNORMAL}probeKit: {FSTYLE}[{self.MODULE}]: {COLOR}{self.exit_code}{FNORMAL}$> '
+                
+                    value = input(prompt_str)
+            
+                else:
+                    inputval = ' '.join(sys.argv[1].split('\ '))
+                    check = 0
+
+                if value != '':
+                    self.parser(value)
+                else:
+                    print('No value [x]')
+        except EOFError:
+            pass
+    
+        except KeyboardInterrupt:
+            self.exit_code = 130
+            print('\n')
+            self.main()
+            
+        except ExitException as e:
+            print(e)
+            utils.Exit(self.exit_code, histfile, platform.platform())
+    
 if __name__ == '__main__':
-    main()
+    input_parser().main()
