@@ -13,7 +13,7 @@ import modules.util.utils as utils
 print(f'Importing custom modules', end='\r')
 start = utils.timestamp()
 import modules.data.AboutList as aboutList
-import modules.util.exec as exec
+from commands import run, set as setval, unset
 from modules.data.OptInfHelp import PromptHelp, Options, Info
 from config import colors, variables, aliases
 from modules.util.led import start_editor
@@ -188,19 +188,19 @@ class input_parser:
 
         elif verb == 'run':
             try:
-                self.exit_code = exec.run(self.MODULE, OPTIONS)
+                self.exit_code = run.run(self.MODULE, OPTIONS)
             except Exception as e:
                 print(e)
 
         # Verb(or command) to set options
         elif verb == 'set':
-            OPTIONS = exec.set(OPTIONS, args(cmd_split, 1), args(cmd_split, 2))
+            OPTIONS = setval.run(OPTIONS, args(cmd_split, 1), args(cmd_split, 2))
             if args(OPTIONS, 8):
                 self.exit_code = OPTIONS[8]
                 OPTIONS.pop(8)
         # Verb(or command) to unset options
         elif verb == 'unset':
-            OPTIONS = exec.unset(OPTIONS, args(cmd_split, 1))
+            OPTIONS = unset.run(OPTIONS, args(cmd_split, 1))
             if args(OPTIONS, 8):
                 self.exit_code = OPTIONS[8]
                 OPTIONS.pop(8)
