@@ -7,9 +7,12 @@ A simple tool written in Python for basic reconnaissance
 Python: `3.x`, Python `3.x` compatible pip, nmap, python-scapy, python-nmap, readline
 
 OS: Unix based operating system(macOS, Linux, etc.), Windows 10.
+
 - note: the history feature would not work as expected on macOS
 - note: install [npcap](https://nmap.org/npcap/#download) before using this tool on Windows
     - Also powershell commands feature would not work in windows
+
+---
 
 ## Installation
 
@@ -29,6 +32,8 @@ sudo pacman -Syu nmap python-pip
 pip install -r requirements.txt
 ```
  *Note: If possible try installing the dependencies listed in `requirements.txt` via `pacman`, since installing it via pip might break future pacman installations.*
+
+---
 
 ## Usage
 
@@ -74,6 +79,8 @@ Available verbs are: set, help, exit, back, clear, run
 
 Run `help [command]` for more information(only the commands marked with `(*)` have a seperate help)
 
+---
+
 ## Customization
 
 This toolkit has it's own default set of colors.
@@ -88,10 +95,15 @@ blue => default prompt color
 Also there is an option to provide default values to options.
 
 Please edit `config.py` file to change color settings or option settings.
- *If your terminal has a light background then please change `FNORMAL = Fore.WHITE` to `FNORMAL = Fore.BLACK` in `config.py` to provide more visibility*
+
+The config also provides a `light` and a `dark` theme.
+
+---
 
 ## Note
 
 This project is still not completed as a whole and still requires a lot of rewriting any suggestions for improvement are kindly accepted but may require some time to be worked upon
+
+---
 
 ## Thank You
