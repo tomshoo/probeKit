@@ -84,14 +84,22 @@ def __scanner(host, port, timeout, protocol, tryct, verbose=False):
 
     if protocol in ['tcp', 'tcp/ip', 'TCP', 'TCP/IP']:
         if __tscanner(host, port, float(timeout), verbose):
-            serv = __getServbyPort(port, 'tcp')
+            if __getServbyPort(port, 'tcp'):
+                serv = __getServbyPort(port, 'tcp')
+            else:
+                serv = 'Unidentified'
+
             return f'{FSUCCESS}[+] {protocol}: {host}: {port} is open, service: {serv}{FNORMAL}'
         elif verbose:
             return f'{FALERT}[-] {protocol}: {host}: {port} is closed{FNORMAL}'
 
     elif protocol in ['udp', 'UDP']:
         if __uscanner(host, port, float(timeout), tryct, verbose):
-            serv = __getServbyPort(port, 'udp')
+            if __getServbyPort(port, 'udp'):
+                serv = __getServbyPort(port, 'tcp')
+            else:
+                serv = 'Unidentified'
+                
             return f'{FSUCCESS}[+] {protocol}: {host}: {port} is open, service: {serv}{FNORMAL}'
         elif verbose:
             return f'{FALERT}[-] {protocol}: {host}: {port} is closed{FNORMAL}'
