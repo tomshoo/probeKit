@@ -23,6 +23,7 @@ class PromptHelp():
             print('\t use\t\t use an available module(*)')
             print('\t show\t\t shows information on provided argument(*)')
             print('\t set\t\t assignes values to available options(*)')
+            print('\t unset\t unassigns value from the provided option(*)')
             print('\t help\t\t prints this help message')
             print('\t exit\t\t exits the whole interpreter')
             print('\t back\t\t moves back to the module selector')
@@ -38,29 +39,38 @@ class PromptHelp():
             return 0
 
         elif command == 'show':
-            print(f'{FSUCCESS}\n show:\t shows information on provided argument')
+            print(f'{FSUCCESS}\n show:\t Shows information on provided argument')
             print('\t Usage: show [argument]')
-            print('\t | Available arguments are:')
+            print('\t Available arguments are:')
             print('\t\t | options: shows values assigned to the options available for the selected module')
-            print('\t\t\t | shows all assigned values if no module is selected\n')
+            print('\t\t\t - shows all assigned values if no module is selected\n')
             print('\t\t | info: shows available options for selected module\n')
             print('\t\t | status: prints exit status of previous command\n')
             return 0
 
         elif command == 'set':
-            print(f'{FSUCCESS}\n set:\t sets the provided value to the provided option')
-            print('\t | Usage: set [option] [value]')
-            print('\t | refer the [show] command to get options\n')
+            print(f'{FSUCCESS}\n set:\t Sets the provided value to the provided option')
+            print('\t Usage: set [option1]=[value1] [option2]=[value2] ...')
+            print('\t Example: > set thost=127.0.0.1 tport=443,5432,8000 proto=tcp')
+            print('\t          > set thost=127.0.0.1 tport=1/8000')
+            print('\t          > set proto=tcp')
+            print('\t | Refer to [show] command to get options\n')
+            return 0
+        
+        elif command == 'unset':
+            print(f'{FSUCCESS}\n unset:\t Unassigns any value provided to the given option')
+            print('\t Usage: unset [option1] [option2] ...')
+            print('\t | Note: It also unassigns the values defined in [config.py]\n')
             return 0
 
         elif command == 'about':
-            print(f'{FSUCCESS}\n about:\t displays information about the provided module')
+            print(f'{FSUCCESS}\n about:\t Displays information about the provided module')
             print('\t Usage: about [module_name]')
             print('\t\t | If no argument is provided it takes the selected module as argument\n')
             return 0
 
         elif command == 'alias':
-            print(f'{FSUCCESS}\n alias:\t set an alias for a command')
+            print(f'{FSUCCESS}\n alias:\t Set an alias for a command')
             print('\t Usage: alias [alias_name]=[command]')
             print('\t Example: > alias thost=set thost')
             print('\t          > thost 127.0.0.1')
@@ -68,13 +78,13 @@ class PromptHelp():
             return 0
 
         elif command == 'unalias':
-            print(f'{FSUCCESS}\nunalias:\t unset a pre-existing alias')
+            print(f'{FSUCCESS}\nunalias:\t Unset a pre-existing alias')
             print('\t\t | Usage: unalias [alias_name]\n')
             return 0
 
         elif command == 'use':
-            print(f'{FSUCCESS}\nuse: \t use an available module')
-            print('\t | Usage: use [module_name]\n')
+            print(f'{FSUCCESS}\nuse: \t Use an available module')
+            print('\t Usage: use [module_name]\n')
             return 0
 
         elif command in ['exit', 'back', 'help', 'clear', 'run', 'list']:

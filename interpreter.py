@@ -194,13 +194,15 @@ class input_parser:
 
         # Verb(or command) to set options
         elif verb == 'set':
-            OPTIONS = setval.run(OPTIONS, args(cmd_split, 1), args(cmd_split, 2))
+            new_set = setval.set_class(OPTIONS, cmd_split[1::])
+            OPTIONS = new_set.run()
             if args(OPTIONS, 8):
                 self.exit_code = OPTIONS[8]
                 OPTIONS.pop(8)
         # Verb(or command) to unset options
         elif verb == 'unset':
-            OPTIONS = unset.run(OPTIONS, args(cmd_split, 1))
+            new_unset = unset.unset_val(OPTIONS, cmd_split[1::])
+            OPTIONS = new_unset.run()
             if args(OPTIONS, 8):
                 self.exit_code = OPTIONS[8]
                 OPTIONS.pop(8)
