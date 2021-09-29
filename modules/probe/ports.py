@@ -119,11 +119,12 @@ def display(host, port, timeout, protocol, tryct, verbose, threading=False):
         start = timestamp()
 
         if type == 'single':
-            portstatus = __scanner(host, int(port['value']), timeout, protocol, tryct, verbose)
+            single_port: int = port['value']
+            portstatus = __scanner(host, single_port, timeout, protocol, tryct)
             if portstatus:
                 print(portstatus)
             else:
-                print(f'{protocol}: {host}: {port} is closed')
+                print(f'{protocol}: {host}: {single_port} is closed')
 
         else:
             try:
@@ -171,15 +172,15 @@ def display(host, port, timeout, protocol, tryct, verbose, threading=False):
                 else:
                     for x in results:
                         print(x)
-                end = timestamp()
                 results.clear()
-
-                print(f'{BURGENT}[**] Scan took about {round(end-start, 5)} sec(s).{BNORMAL}')
 
             except KeyboardInterrupt:
                 print(f'{FALERT}Keyboard interrupt received, quitting!!')
                 if threading:
                     executor.shutdown(wait=False, cancel_futures=True)
-
+        
+        end = timestamp()            
+        print(f'{BURGENT}[**] Scan took about {round(end-start, 5)} sec(s).{BNORMAL}')
+        
     else:
         print(f'{BALERT}[-] Error: Unknown protocol specified{BNORMAL}')
