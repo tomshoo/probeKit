@@ -1,4 +1,4 @@
-from config import colors as _colors
+from config import colors as _colors, variables as _variables
 
 _FALERT = _colors.FALERT
 
@@ -112,14 +112,14 @@ class set_class:
         elif option == 'all':
             # If there are no values in the config.py then,
             # this is same as `unset all`
-            self.option_list[0] = variables.THOST
-            self.option_list[1] = variables.tport()
-            self.option_list[2] = variables.PROTOCOL
-            self.option_list[3] = variables.timeout()
-            self.option_list[4] = variables.trycount()
-            self.option_list[5] = variables.Nmap()
-            self.option_list[6] = variables.Verbose()
-            self.option_list[7] = variables.Threading()
+            self.option_list[0] = _variables.THOST
+            self.option_list[1] = _variables.tport()
+            self.option_list[2] = _variables.PROTOCOL
+            self.option_list[3] = _variables.timeout()
+            self.option_list[4] = _variables.trycount()
+            self.option_list[5] = _variables.Nmap()
+            self.option_list[6] = _variables.Verbose()
+            self.option_list[7] = _variables.Threading()
 
         elif not value:
             print(f'{_FALERT}[-] Error: no value provided to option')

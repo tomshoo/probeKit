@@ -13,7 +13,7 @@ import modules.util.utils as utils
 print(f'Importing custom modules', end='\r')
 start = utils.timestamp()
 import modules.data.AboutList as aboutList
-from commands import run, set as setval, unset
+from commands import run, set as setval, unset, alias
 from modules.data.OptInfHelp import PromptHelp, Options, Info
 from config import colors, variables, aliases
 from modules.util.led import start_editor
@@ -87,6 +87,7 @@ class input_parser:
            ]
         
         self.MODULE = variables.MODULE
+        self.aliases = aliases
     
     def parser(self, value: str):
         if '#' in value:
@@ -119,8 +120,7 @@ class input_parser:
     def executor(self, command: str):
         OPTIONS = self.OPTIONS
         cmd_split: list = command.split()
-        for l in csv.reader([command], delimiter=' ', quotechar='"'):
-            cmd_split_quoted = l
+        cmd_split_quoted = utils.split_and_quote('"', command)
     
         verb = cmd_split[0]
     
@@ -228,26 +228,10 @@ class input_parser:
                 aboutList.moduleHelp(self.MODULE).aboutModule(self.MODULE)
 
         elif verb == 'alias':
-            if not args(cmd_split, 1):
-                self.exit_code = 0
-                for x in aliases:
-                    print(x,":",aliases[x])
-
-            elif args(cmd_split, 1) and len(commands.split('=')) == 2:
-                splitCommand = commands.split('=')
-                assignedCommand = splitCommand[1]
-                alias = splitCommand[0].split()[1]
-                if not assignedCommand or assignedCommand == '':
-                    print(f'{FALERT}[-] Error: please provide a command to alias')
-                    self.exit_code = 1
-                else:
-                    print(alias, "=>",assignedCommand)
-                    aliases[alias]=assignedCommand
-                    self.exit_code = 0
-
-            else:
-                print(f'{FALERT}[-] Error: Invalid Syntax')
-                self.exit_code = 1
+            new_alias = alias.alias(cmd_split, self.aliases)
+            ret_list = new_alias.run()
+            aliases = ret_list[0]
+            self.exit_code = ret_list[1]
 
         elif verb == 'unalias':
             if args(cmd_split, 1) and args(cmd_split, 1) in aliases:
@@ -271,7 +255,7 @@ class input_parser:
                 if 'Windows' not in platform.platform():
                     self.exit_code = subprocess.call((cmd_split))
                 else:
-                    self.exit_code = subprocess.run(commands, shell=True).returncode
+                    self.exit_code = subprocess.run(command, shell=True).returncode
                         
             except FileNotFoundError:
                 print(f'{FALERT}Error: Invalid command \'{verb}\'')
@@ -314,10 +298,12 @@ class input_parser:
                     inputval = ' '.join(sys.argv[1].split('\ '))
                     check = 0
 
-                if value != '':
+                if value:
                     self.parser(value)
-                else:
-                    print('No value [x]')
+                    if 'Windows' not in platform.platform():
+                        hist = utils.register_history(value)
+                        hist.write_history()
+
         except EOFError:
             pass
     

@@ -11,6 +11,7 @@ from datetime import datetime
 import time
 import os
 import sys
+import csv
 
 def banner():
     """Function to print the introductory banner"""
@@ -30,6 +31,11 @@ def banner():
 
     -- by theEndurance-del
     ''')
+    
+def split_and_quote(key: str, string: str) -> list:
+    for l in csv.reader([string], delimiter=key, quotechar='"'):
+        split_quoted = l
+    return split_quoted
 
 def args(value, pos):
     """
