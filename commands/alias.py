@@ -1,5 +1,5 @@
 from config import colors as _colors
-from modules.util.utils import split_and_quote, args
+from modules.util.utils import split_and_quote, args, trim
 
 class alias:
     def __init__(self, get_cmd: list, aliases: dict):
@@ -31,8 +31,12 @@ class alias:
                 print(x,":",aliases[x])
         
         else:
+            alias = trim(alias)
+            command = trim(command)
             print(alias, ":",command)
             aliases[alias]=command
             ret_list[1] = 0
+            
+        ret_list[0] = aliases
         
         return ret_list

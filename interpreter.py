@@ -106,10 +106,15 @@ class input_parser:
     
         for command in commandlist:
             command = utils.trim(command)
-            alias_cmd: list = command.split()
-            alias = alias_cmd[0]
-            alias_cmd[0] = aliases.get(alias, alias)
-            command = ' '.join(alias_cmd)
+            if '$' in command:
+                alias_cmd: list = command.split('$')
+                emp_list: list = []
+                for x in alias_cmd:
+                    if ' ' not in x and x:
+                        possible_macro = self.aliases.get(x, x)
+                        x = possible_macro
+                    emp_list.append(x)
+                command = ''.join(emp_list)
             if ';' in command:
                 for x in command.split(';'):
                     executor(utils.trim(x))
@@ -195,10 +200,9 @@ class input_parser:
         # Verb(or command) to set options
         elif verb == 'set':
             new_set = setval.set_class(OPTIONS, cmd_split[1::])
-            OPTIONS = new_set.run()
-            if args(OPTIONS, 8):
-                self.exit_code = OPTIONS[8]
-                OPTIONS.pop(8)
+            ret_list = new_set.run()
+            OPTIONS = ret_list[0]
+            self.exit_code = ret_list[1]
         # Verb(or command) to unset options
         elif verb == 'unset':
             new_unset = unset.unset_val(OPTIONS, cmd_split[1::])
@@ -230,7 +234,7 @@ class input_parser:
         elif verb == 'alias':
             new_alias = alias.alias(cmd_split, self.aliases)
             ret_list = new_alias.run()
-            aliases = ret_list[0]
+            self.aliases = ret_list[0]
             self.exit_code = ret_list[1]
 
         elif verb == 'unalias':
