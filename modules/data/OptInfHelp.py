@@ -73,9 +73,11 @@ class PromptHelp():
             print(f'{FSUCCESS}\n alias:\t Set an alias for a command')
             print('\t Usage: alias [alias_name]<-[command]')
             print('\t Example: > alias u<use')
-            print('\t          > u')
-            print('\t          > alias oprobe<use osprobe')
-            print('\t          > oprobe')
+            print('\t          > u$')
+            print('\t          > alias thost<set thost')
+            print('\t          > thost$=127.0.0.1')
+            print('\t          > alias localhost<127.0.0.1')
+            print('\t          > set thost=$localhost$')
             print('\t | If ran without argument it lists all the available aliases\n')
             return 0
 
