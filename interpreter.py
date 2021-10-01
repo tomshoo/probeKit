@@ -4,7 +4,6 @@
 import sys
 import readline
 import platform
-import csv
 import os
 import subprocess
 
@@ -13,7 +12,7 @@ import modules.util.utils as utils
 print(f'Importing custom modules', end='\r')
 start = utils.timestamp()
 import modules.data.AboutList as aboutList
-from commands import run, set as setval, unset, alias
+from commands import run, set as setval, unset, alias, unalias
 from modules.data.OptInfHelp import PromptHelp, Options, Info
 from config import colors, variables, aliases
 from modules.util.led import start_editor
@@ -73,7 +72,7 @@ if 'Windows' not in platform.platform():
 class input_parser:
     
     def __init__(self):
-        self.exit_code = 0
+        self.exit_code: int = 0
         # Variables also known as options to the user
         self.OPTIONS : list = [
             variables.THOST
@@ -118,7 +117,7 @@ class input_parser:
                     command = ''.join(emp_list)
                 if ';' in command:
                     for x in command.split(';'):
-                        executor(utils.trim(x))
+                        self.executor(utils.trim(x))
                         continue
                 else:
                     self.executor(command)
@@ -240,13 +239,11 @@ class input_parser:
             self.aliases = ret_list[0]
             self.exit_code = ret_list[1]
 
-        elif verb == 'unalias':
-            if args(cmd_split, 1) and args(cmd_split, 1) in aliases:
-                del aliases[args(cmd_split, 1)]
-                self.exit_code = 0
-            else:
-                print(f'{FALERT}[-] Error: no such alias \'{FURGENT}{args(cmd_split, 1)}{FALERT}\' exists')
-                self.exit_code = 1
+        elif verb == 'unalias':            
+            new_unalias = unalias.unalias(self.aliases, cmd_split[1::])
+            ret_list = new_unalias.run()
+            self.aliases = ret_list[0]
+            self.exit_code = ret_list[1]
         
         elif verb in ['cd', 'chdir', 'set-location']:
             fpath = args(cmd_split, 1)
@@ -260,7 +257,7 @@ class input_parser:
         else:
             try:
                 if 'Windows' not in platform.platform():
-                    self.exit_code = subprocess.call((cmd_split))
+                    self.exit_code = subprocess.call((cmd_split_quoted))
                 else:
                     self.exit_code = subprocess.run(command, shell=True).returncode
                         
@@ -302,7 +299,7 @@ class input_parser:
                     value = input(prompt_str)
             
                 else:
-                    inputval = ' '.join(sys.argv[1].split('\ '))
+                    value = ' '.join(sys.argv[1].split('\ '))
                     check = 0
 
                 if value:
