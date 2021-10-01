@@ -95,32 +95,35 @@ class input_parser:
             value = utils.trim(vallist.pop(0))
         else:
             pass
-    
-        if value[-1] != ';':
-            vallist = list(value)
-            vallist.append(';')
-            value = ''.join(vallist)
         
-        commandlist: list = value.split(';')
-        commandlist.pop(-1)
+        try:
+            if value[-1] != ';':
+                vallist = list(value)
+                vallist.append(';')
+                value = ''.join(vallist)
+        
+            commandlist: list = value.split(';')
+            commandlist.pop(-1)
     
-        for command in commandlist:
-            command = utils.trim(command)
-            if '$' in command:
-                alias_cmd: list = command.split('$')
-                emp_list: list = []
-                for x in alias_cmd:
-                    if ' ' not in x and x:
-                        possible_macro = self.aliases.get(x, x)
-                        x = possible_macro
-                    emp_list.append(x)
-                command = ''.join(emp_list)
-            if ';' in command:
-                for x in command.split(';'):
-                    executor(utils.trim(x))
-                    continue
-            else:
-                self.executor(command)
+            for command in commandlist:
+                command = utils.trim(command)
+                if '$' in command:
+                    alias_cmd: list = command.split('$')
+                    emp_list: list = []
+                    for x in alias_cmd:
+                        if ' ' not in x and x:
+                            possible_macro = self.aliases.get(x, x)
+                            x = possible_macro
+                        emp_list.append(x)
+                    command = ''.join(emp_list)
+                if ';' in command:
+                    for x in command.split(';'):
+                        executor(utils.trim(x))
+                        continue
+                else:
+                    self.executor(command)
+        except IndexError:
+            pass
     
     def executor(self, command: str):
         OPTIONS = self.OPTIONS
@@ -204,13 +207,13 @@ class input_parser:
             OPTIONS = ret_list[0]
             self.exit_code = ret_list[1]
         # Verb(or command) to unset options
+    
         elif verb == 'unset':
             new_unset = unset.unset_val(OPTIONS, cmd_split[1::])
-            OPTIONS = new_unset.run()
-            if args(OPTIONS, 8):
-                self.exit_code = OPTIONS[8]
-                OPTIONS.pop(8)
-                    
+            ret_list = new_unset.run()
+            OPTIONS = ret_list[0]
+            self.exit_code = ret_list[1]
+                                
         elif verb == 'use':
             if args(cmd_split, 1):
                 if args(cmd_split, 1) in aboutList.moduleHelp.modules:

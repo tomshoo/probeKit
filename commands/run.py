@@ -1,11 +1,3 @@
-"""
-Module containing the functions for execution,
-
-- `run` function to run the assigned module,
-- `set` function to assign a given value to the asked option,
-- `unset` function to unassign values from an asked option.
-"""
-
 from modules.data.AboutList import moduleHelp
 from config import colors, variables
 from modules.util.utils import isFloat
