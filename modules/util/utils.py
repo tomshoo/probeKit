@@ -8,29 +8,21 @@ file and later import it from here.
 
 # Imports
 from datetime import datetime
+from random import randint
 import time
 import os
 import sys
 import csv
+import pyfiglet
 
 def banner():
     """Function to print the introductory banner"""
+    fontstyle = pyfiglet.FigletFont.getFonts()[randint(0,425)]
+    print(f'Using figletFont {fontstyle}')
+    fig = pyfiglet.Figlet(font=fontstyle)
+    print(fig.renderText('EYE-P <*>'))
 
-    print('''
-                          *               *    *          *
-                          *               *   *     *     *
-                          *               *  *            *
-    * ***   * **   ****   * ***    ****   * *      **    ****
-    **   *   *    *    *  **   *  *    *  **        *     *
-    *    *   *    *    *  *    *  ******  * *       *     *
-    **   *   *    *    *  *    *  *       *  *      *     *
-    * ***    *    *    *  **   *  *    *  *   *     *     *  *
-    *        *     ****   * ***    ****   *    *  *****    **
-    *
-    *
-
-    -- by theEndurance-del
-    ''')
+    print('-- by theEndurance-del')
     
 def split_and_quote(key: str, string: str) -> list:
     for l in csv.reader([string], delimiter=key, quotechar='"'):
