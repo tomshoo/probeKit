@@ -23,7 +23,7 @@ class PromptHelp():
             print('\t use\t\t use an available module(*)')
             print('\t show\t\t shows information on provided argument(*)')
             print('\t set\t\t assignes values to available options(*)')
-            print('\t unset\t unassigns value from the provided option(*)')
+            print('\t unset\t\t unassigns value from the provided option(*)')
             print('\t help\t\t prints this help message')
             print('\t exit\t\t exits the whole interpreter')
             print('\t back\t\t moves back to the module selector')

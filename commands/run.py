@@ -7,7 +7,7 @@ BALERT = colors.BALERT
 BNORMAL = colors.BNORMAL
 
 
-def run(module, options):
+def run(module, options) -> int:
     """Function to run the assigned module"""
     import modules.probe.ports as ports
     import modules.probe.osprobe as osprobe
