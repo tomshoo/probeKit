@@ -20,7 +20,7 @@ def banner():
     fontstyle = pyfiglet.FigletFont.getFonts()[randint(0,425)]
     print(f'Using figletFont {fontstyle}')
     fig = pyfiglet.Figlet(font=fontstyle)
-    print(fig.renderText('EYE-P <*>'))
+    print(fig.renderText('PROBEKIT ~~'))
 
     print('-- by theEndurance-del')
     
