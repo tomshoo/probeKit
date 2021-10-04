@@ -267,7 +267,7 @@ class input_parser:
 
 
     def main(self):
-        check = 1 if args(sys.argv, 1) else 0
+        check: int = 1 if args(sys.argv, 1) else 0
         
         readline.set_completer(completer.completion)
         readline.parse_and_bind("tab: complete")

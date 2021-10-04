@@ -20,9 +20,11 @@ class alias:
         ret_list: list = [{}, 0]
 
         if bool(command) ^ bool(alias):
+            check_c: str = 'x' if bool(command) else '?'
+            check_a: str = 'x' if bool(alias) else '?'
             print(f'{_colors.FALERT}Error: required value missing: {_colors.FNORMAL}')
-            print(f'command: {bool(command)}')
-            print(f'alias:   {bool(alias)}')
+            print(f'command: {check_c}')
+            print(f'alias:   {check_a}')
             ret_list[1] = 1
 
         elif not (command and alias):
