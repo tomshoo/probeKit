@@ -127,7 +127,7 @@ class input_parser:
     def executor(self, command: str):
         OPTIONS = self.OPTIONS
         cmd_split: list = command.split()
-        cmd_split_quoted = utils.split_and_quote(' ', command)
+        cmd_split_quoted = utils.split_and_quote(' ', '"', command)
     
         verb = cmd_split[0]
     

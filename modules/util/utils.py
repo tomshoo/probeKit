@@ -24,8 +24,8 @@ def banner():
 
     print('-- by theEndurance-del')
     
-def split_and_quote(key: str, string: str) -> list:
-    for l in csv.reader([string], delimiter=key, quotechar='"'):
+def split_and_quote(key: str, quotekey: str, string: str) -> list:
+    for l in csv.reader([string], delimiter=key, quotechar=quotekey):
         split_quoted = l
     return split_quoted
 

@@ -8,7 +8,7 @@ class unalias:
     def run(self) -> list:
         if not self.alias_list:
             self.ret_list[1] = 1
-            print(f'{_colors.FALERT}[-] Error: no imput provided')
+            print(f'{_colors.FALERT}[-] Error: no input provided')
             return self.ret_list
 
         for alias in self.alias_list:
