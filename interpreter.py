@@ -12,7 +12,7 @@ import modules.util.utils as utils
 print(f'Importing custom modules', end='\r')
 start = utils.timestamp()
 import modules.data.AboutList as aboutList
-from commands import run, set as setval, unset, alias, unalias
+from commands import run, set as setval, unset, alias, unalias, use
 from modules.data.OptInfHelp import PromptHelp, Options, Info
 from config import colors, variables, aliases
 from modules.util.led import start_editor
@@ -221,17 +221,10 @@ class input_parser:
             self.exit_code = ret_list[1]
                                 
         elif verb == 'use':
-            if args(cmd_split, 1):
-                if args(cmd_split, 1) in aboutList.moduleHelp.modules:
-                    self.MODULE = args(cmd_split, 1)
-                    print(FURGENT+f'MODULE => {self.MODULE}')
-                    self.exit_code = 0
-                else:
-                    print(f'{FALERT}Error: Invalid module specified: \'{args(cmd_split, 1)}\'')
-                    self.exit_code = 1
-            else:
-                print(FALERT+'Error: No module specified')
-                self.exit_code = 1
+            new_use = use.use(cmd_split[1::])
+            ret_list = new_use.run()
+            self.MODULE = ret_list[0]
+            self.exit_code = ret_list[1]
 
         elif verb == 'about':
             if args(cmd_split, 1):
