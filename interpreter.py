@@ -101,8 +101,8 @@ class input_parser:
                 vallist.append(';')
                 value = ''.join(vallist)
                 
-            if '\;' in value:
-                value = value.replace('\;', '\semicolon')
+            if '\\;' in value:
+                value = value.replace('\\;', '\\semicolon')
         
             commandlist: list = value.split(';')
             commandlist.pop(-1)
@@ -120,13 +120,13 @@ class input_parser:
                     command = ''.join(emp_list)
                 if ';' in command:
                     for x in command.split(';'):
-                        if '\semicolon' in command:
-                            command = command.replace('\semicolon', ';')
+                        if '\\semicolon' in command:
+                            command = command.replace('\\semicolon', ';')
                         self.executor(utils.trim(x))
                         continue
                 else:
-                    if '\semicolon' in command:
-                        command = command.replace('\semicolon', ';')
+                    if '\\semicolon' in command:
+                        command = command.replace('\\semicolon', ';')
                     self.executor(command)
         except IndexError:
             pass
