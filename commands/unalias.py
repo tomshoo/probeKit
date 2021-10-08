@@ -1,5 +1,8 @@
 from config import colors as _colors
 
+_FALERT = _colors.FALERT
+_FURGENT = _colors.FURGENT
+
 class unalias:
     def __init__(self, aliases: dict ,alias_list: list):
         self.alias_list = alias_list
@@ -8,7 +11,7 @@ class unalias:
     def run(self) -> list:
         if not self.alias_list:
             self.ret_list[1] = 1
-            print(f'{_colors.FALERT}[-] Error: no input provided')
+            print(f'{_FALERT}[-] Error: no input provided')
             return self.ret_list
 
         for alias in self.alias_list:
@@ -25,7 +28,7 @@ class unalias:
             exit_code = 0
 
         else:
-            print(f'{_colors.FALERT}[-] Error: no such alias \'{_colors.FURGENT}{alias}{_colors.FALERT}\' exists')
+            print(f'{_FALERT}[-] Error: no such alias \'{_FURGENT}{alias}{_FALERT}\' exists')
             exit_code = 1
 
         self.ret_list[0] = aliases

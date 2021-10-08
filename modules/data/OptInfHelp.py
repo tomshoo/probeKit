@@ -56,7 +56,7 @@ class PromptHelp():
             print('\t          > set proto=tcp')
             print('\t | Refer to [show] command to get options\n')
             return 0
-        
+
         elif command == 'unset':
             print(f'{FSUCCESS}\n unset:\t Unassigns any value provided to the given option')
             print('\t Usage: unset [option1] [option2] ...')

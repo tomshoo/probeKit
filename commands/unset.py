@@ -7,7 +7,7 @@ class unset_val:
         ret_list: list = [option_list, 0]
         self.ret_list = ret_list
         self.options = options
-        
+
     def run(self):
         for option in self.options:
             self.unassign(option)
@@ -60,10 +60,10 @@ class unset_val:
             option_list[5] = 0
             option_list[6] = ''
             option_list[7] = ''
-    
+
         else:
             print(_FALERT+'Error: Invalid option')
             exit_code = 1
-            
+
         self.ret_list[0] = option_list
         self.ret_list[1] = exit_code

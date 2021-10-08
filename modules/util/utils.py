@@ -23,7 +23,7 @@ def banner():
     print(fig.renderText('PROBEKIT ~~'))
 
     print('-- by theEndurance-del')
-    
+
 def split_and_quote(key: str, quotekey: str, string: str) -> list:
     for l in csv.reader([string], delimiter=key, quotechar=quotekey):
         split_quoted = l
@@ -88,7 +88,7 @@ def datevalue():
 
 def Exit(exitStatus: int, histfile: str, platform: str):
     """End the session and append the date and time to the end of the history file."""
-    
+
     if 'Linux' in platform:
         with open(histfile, 'a') as fp:
             fp.write('# session ended at: ' + datevalue() + ' # \n')

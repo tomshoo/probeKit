@@ -99,7 +99,7 @@ def __scanner(host, port, timeout, protocol, tryct, verbose=False):
                 serv = __getServbyPort(port, 'tcp')
             else:
                 serv = 'Unidentified'
-                
+
             return f'{FSUCCESS}[+] {protocol}: {host}: {port} is open, service: {serv}{FNORMAL}'
         elif verbose:
             return f'{FALERT}[-] {protocol}: {host}: {port} is closed{FNORMAL}'
@@ -178,9 +178,9 @@ def display(host, port, timeout, protocol, tryct, verbose, threading=False):
                 print(f'{FALERT}Keyboard interrupt received, quitting!!')
                 if threading:
                     executor.shutdown(wait=False, cancel_futures=True)
-        
+
         end = timestamp()            
         print(f'{BURGENT}[**] Scan took about {round(end-start, 5)} sec(s).{BNORMAL}')
-        
+
     else:
         print(f'{BALERT}[-] Error: Unknown protocol specified{BNORMAL}')

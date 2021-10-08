@@ -1,5 +1,5 @@
 from config import colors as _colors, variables as _variables
-from modules.util.utils import trim as _trim
+from modules.util.utils import trim as _trim, args as _args
 
 _FALERT = _colors.FALERT
 
@@ -8,29 +8,26 @@ class set_class:
         ret_list: list = [option_list, 0]
         self.ret_list = ret_list
         self.options = options
-        
+
     def run(self) -> list:
         options: str = ' '.join(self.options)
-        exit_code = self.ret_list[1]
-        try:
-            if ' ' in options:
-                assignment = options.split(' ')
-                for data in assignment:
-                    option = data.split('=')[0]
-                    value = data.split('=')[1]
-                    self.assign(option, value)
-            else:
-                options = options.split('=')
-                self.assign(_trim(options[0]), _trim(options[1]))
-        
-        except IndexError:
-            print(f'{_FALERT}Error: Something went wrong!! Please check your syntax')
-            exit_code = 1
-        
-        finally:
-            self.ret_list[1] = exit_code
-            return self.ret_list
-        
+
+        if ' ' in options:
+            assignment = options.split(' ')
+            for data in assignment:
+                option = _args(data.split('='), 0)
+                value = _args(data.split('='), 1)
+                self.assign(option, value)
+
+        else:
+            options = options.split('=')
+            option = _args(options, 0)
+            value = _args(options, 1)
+
+            self.assign(_trim(option), _trim(value))
+
+        return self.ret_list
+
     def assign(self, option: str, value: str) -> None:
         """Function to assign a given value to the asked option."""
 
@@ -69,6 +66,7 @@ class set_class:
                 if isFloat(value):
                     print(f'TMOUT => {value}')
                     option_list[3] = value
+
                 else:
                     print(f'{_FALERT}Error: Invalid value provided')
                     exit_code=1
@@ -77,6 +75,7 @@ class set_class:
                 if value.isdigit():
                     print(f'TRYCT => {value}')
                     option_list[4] = int(value)
+
                 else:
                     print(f'{_FALERT}Error: Invalid value provided')
                     exit_code=1
@@ -85,6 +84,7 @@ class set_class:
                 if value.isdigit():
                     print(f'NMAP  => {value}')
                     option_list[5] = int(value)
+
                 else:
                     print(f'{_FALERT}Error: Invalid value provided')
                     exit_code=1
@@ -93,9 +93,11 @@ class set_class:
                 if value not in ['true', 'false']:
                     print(_FALERT+'Error: Invalid value provided')
                     exit_code=1
+
                 elif value == 'true':
                     option_list[6] = True
                     print(f'VERBOSE => {option_list[6]}')
+
                 elif value == 'false':
                     option_list[6] = False
                     print(f'VERBOSE => {option_list[6]}')
@@ -104,10 +106,13 @@ class set_class:
                 if value not in ['true', 'True', 'false', 'False']:
                     print(f'{_FALERT}Error: Invalid value provided')
                     exit_code = 1
+
                 elif value in ['true', 'True']:
                     option_list[7] = True
+
                 else:
                     option_list[7] = False
+
                 print(f'THREADING => {option_list[7]}')
 
             else:
@@ -133,5 +138,6 @@ class set_class:
         else:
             print(f"{_FALERT}[-] Error: Invalid value provided to option")
             exit_code = 1
-            
+
         self.ret_list[0] = option_list
+        self.ret_list[1] = exit_code

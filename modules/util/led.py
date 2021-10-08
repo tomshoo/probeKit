@@ -27,7 +27,7 @@ class start_editor():
     def args(self, pos=None):
         """
         Retrieve arguments from the interpreter.
-        
+
         This function is not related to utils.args in any sense.
         """
         if pos:
@@ -88,7 +88,7 @@ class start_editor():
 
     def led(self):
         """Start the interpreter for the interpreter."""
-        
+
         try:
             mode: str = 'normal'
             led_buffer: list = self.read_file()
@@ -101,7 +101,7 @@ class start_editor():
                     c = input(f'{mode}> ')
                 else:
                     c = input()
-            
+
                 cmd = c.split()
                 if mode == 'normal':
                     if c in [None, '']:

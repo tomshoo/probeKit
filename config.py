@@ -31,7 +31,7 @@ class dark():
     BURGENT  : str = Back.YELLOW
 
 # Chose color scheme(light or dark)
-colors = dark
+colors = light;
 
 class variables():
     """

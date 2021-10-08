@@ -7,9 +7,9 @@ _FALERT = _colors.FALERT
 _BALERT = _colors.BALERT
 _BNORMAL = _colors.BNORMAL
 
-
 def run(module, options) -> int:
     """Function to run the assigned module"""
+
     if module in _modulehelp(module).modules:
         thost    = options[0]
         tport    = options[1]
@@ -19,8 +19,10 @@ def run(module, options) -> int:
         nmap     = options[5]
         verbose  = options[6]
         threading= options[7]
+
         if thost == '':
             print(_FALERT+'Error: Invalid value for THOST')
+
         else:
             if module == 'probe':
                 if tport == '':

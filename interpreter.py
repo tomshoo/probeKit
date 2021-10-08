@@ -70,7 +70,7 @@ if 'Windows' not in platform.platform():
         print(f'{FURGENT}[**] Warning: You won\'t be able to use the osprbe module without root access.')
 
 class input_parser:
-    
+
     def __init__(self):
         self.exit_code: int = 0
         # Variables also known as options to the user
@@ -84,17 +84,17 @@ class input_parser:
             , variables().Verbose()
             , variables().Threading()
            ]
-        
+
         self.MODULE = variables.MODULE
         self.aliases = aliases
-    
+
     def parser(self, value: str):
         if '#' in value:
             vallist = value.split('#')
             value = utils.trim(vallist.pop(0))
         else:
             pass
-        
+
         try:
             if value[-1] != ';':
                 vallist = list(value)
@@ -103,10 +103,10 @@ class input_parser:
                 
             if '\\;' in value:
                 value = value.replace('\\;', '\\semicolon')
-        
+
             commandlist: list = value.split(';')
             commandlist.pop(-1)
-    
+
             for command in commandlist:
                 command = utils.trim(command)
                 if '$' in command:
@@ -130,14 +130,13 @@ class input_parser:
                     self.executor(command)
         except IndexError:
             pass
-    
+
     def executor(self, command: str):
         OPTIONS = self.OPTIONS
         cmd_split: list = command.split()
         cmd_split_quoted = utils.split_and_quote(' ', '"', command)
-    
+
         verb = cmd_split[0]
-    
 
         if verb == "banner":
             utils.banner()
@@ -213,13 +212,13 @@ class input_parser:
             OPTIONS = ret_list[0]
             self.exit_code = ret_list[1]
         # Verb(or command) to unset options
-    
+
         elif verb == 'unset':
             new_unset = unset.unset_val(OPTIONS, cmd_split[1::])
             ret_list = new_unset.run()
             OPTIONS = ret_list[0]
             self.exit_code = ret_list[1]
-                                
+
         elif verb == 'use':
             new_use = use.use(cmd_split[1::])
             ret_list = new_use.run()
@@ -244,7 +243,7 @@ class input_parser:
             ret_list = new_unalias.run()
             self.aliases = ret_list[0]
             self.exit_code = ret_list[1]
-        
+
         elif verb in ['cd', 'chdir', 'set-location']:
             fpath = args(cmd_split, 1)
             if os.path.exists(fpath) and os.path.isdir(fpath):
@@ -265,16 +264,15 @@ class input_parser:
                 print(f'{FALERT}Error: Invalid command \'{verb}\'')
                 self.exit_code = 1
 
-
     def main(self):
         check: int = 1 if args(sys.argv, 1) else 0
-        
+
         readline.set_completer(completer.completion)
         readline.parse_and_bind("tab: complete")
-        
+
         # Initial module is set to blank
         # Set it to any other module if you want a default module at startup
-        
+
         if self.MODULE in aboutList.moduleHelp.modules or self.MODULE == '':
             pass
         else:
@@ -295,9 +293,9 @@ class input_parser:
                         prompt_str: str = f'{FNORMAL}[probkit]: {COLOR}{self.exit_code}{FNORMAL}$> '
                     else:
                         prompt_str: str = f'{FNORMAL}probeKit: {FSTYLE}[{self.MODULE}]: {COLOR}{self.exit_code}{FNORMAL}$> '
-                
+
                     value = input(prompt_str)
-            
+
                 else:
                     value = ' '.join(sys.argv[1].split('\ '))
                     check = 0
@@ -315,7 +313,7 @@ class input_parser:
             self.exit_code = 130
             print('\n')
             self.main()
-            
+
         except ExitException as e:
             print(e)
             utils.Exit(self.exit_code, histfile, platform.platform())
