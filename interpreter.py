@@ -316,6 +316,8 @@ class input_parser:
 
         except ExitException as e:
             print(e)
+            if 'Windows' in platform.platform():
+                utils.Exit(self.exit_code)
             utils.Exit(self.exit_code, histfile, platform.platform())
     
 if __name__ == '__main__':

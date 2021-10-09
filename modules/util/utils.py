@@ -14,10 +14,11 @@ import os
 import sys
 import csv
 import pyfiglet
+from multipledispatch import dispatch
 
 def banner():
     """Function to print the introductory banner"""
-    fontstyle = pyfiglet.FigletFont.getFonts()[randint(0,425)]
+    fontstyle: str = pyfiglet.FigletFont.getFonts()[randint(0,425)]
     print(f'Using figletFont {fontstyle}')
     fig = pyfiglet.Figlet(font=fontstyle)
     print(fig.renderText('PROBEKIT ~~'))
@@ -86,6 +87,11 @@ def datevalue():
 
     return datetime.now().strftime('%a %F %H:%M:%S')
 
+@dispatch(int)
+def Exit(exitStatus: int):
+    sys.exit(exitStatus)
+
+@dispatch(int, str, str)
 def Exit(exitStatus: int, histfile: str, platform: str):
     """End the session and append the date and time to the end of the history file."""
 
