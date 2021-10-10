@@ -55,19 +55,20 @@ print(f'current session started at {datevalue()}')
 utils.banner()
 
 # Checks if history file already exists or not
-if 'Linux' in platform.platform():
+if 'Windows' not in platform.platform():
     histfile : str = os.path.join(os.path.expanduser('~'), '.probeKit.history')
     if os.path.exists(histfile):
         readline.read_history_file(histfile)
 
-if 'Windows' in platform.platform():
+    if os.getuid() != 0:
+        print(f'{FURGENT}[**] Warning: You won\'t be able to use the osprbe module without root access.')
+        
+else:
     print(f'{FURGENT}[**] Warning: system commands will not run in windows based system')
+
 
 # Session starts over here
 # Not the best way to do it but it works so...
-if 'Windows' not in platform.platform():
-    if os.getuid() != 0:
-        print(f'{FURGENT}[**] Warning: You won\'t be able to use the osprbe module without root access.')
 
 class input_parser:
 
@@ -318,7 +319,7 @@ class input_parser:
             print(e)
             if 'Windows' in platform.platform():
                 utils.Exit(self.exit_code)
-            utils.Exit(self.exit_code, histfile, platform.platform())
+            utils.Exit(self.exit_code, histfile)
     
 if __name__ == '__main__':
     new_parser = input_parser()

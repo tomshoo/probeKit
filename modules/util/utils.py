@@ -91,14 +91,13 @@ def datevalue():
 def Exit(exitStatus: int):
     sys.exit(exitStatus)
 
-@dispatch(int, str, str)
-def Exit(exitStatus: int, histfile: str, platform: str):
+@dispatch(int, str)
+def Exit(exitStatus: int, histfile: str):
     """End the session and append the date and time to the end of the history file."""
 
-    if 'Linux' in platform:
-        with open(histfile, 'a') as fp:
-            fp.write('# session ended at: ' + datevalue() + ' # \n')
-            pass
+    with open(histfile, 'a') as fp:
+        fp.write('# session ended at: ' + datevalue() + ' # \n')
+        pass
     sys.exit(exitStatus)
 
 
