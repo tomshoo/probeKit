@@ -5,6 +5,7 @@ import sys
 import readline
 import platform
 import os
+import ctypes
 import subprocess
 
 import modules.util.utils as utils
@@ -62,7 +63,7 @@ if 'Windows' not in platform.platform():
 
     if os.getuid() != 0:
         print(f'{FURGENT}[**] Warning: You won\'t be able to use the osprbe module without root access.')
-        
+
 else:
     print(f'{FURGENT}[**] Warning: system commands will not run in windows based system')
 
@@ -84,7 +85,7 @@ class input_parser:
             , variables().Nmap()
             , variables().Verbose()
             , variables().Threading()
-           ]
+        ]
 
         self.MODULE = variables.MODULE
         self.aliases = aliases
@@ -201,10 +202,7 @@ class input_parser:
                 sys.exit(self.exit_code)
 
         elif verb == 'run':
-            try:
-                self.exit_code = run.run(self.MODULE, OPTIONS)
-            except Exception as e:
-                print(e)
+            self.exit_code = run.run(self.MODULE, OPTIONS)
 
         # Verb(or command) to set options
         elif verb == 'set':
@@ -256,10 +254,16 @@ class input_parser:
 
         else:
             try:
-                if 'Windows' not in platform.platform():
-                    self.exit_code = subprocess.call((cmd_split_quoted))
+                if utils.isAdmin():
+                    if 'Windows' not in platform.platform():
+                        self.exit_code = subprocess.call((cmd_split_quoted))
+
+                    else:
+                        self.exit_code = subprocess.run(command, shell=True).returncode
+                        
                 else:
-                    self.exit_code = subprocess.run(command, shell=True).returncode
+                    print(f'{FALERT}Error: Invalid command \'{verb}\'')
+                    self.exit_code = 1
                         
             except FileNotFoundError:
                 print(f'{FALERT}Error: Invalid command \'{verb}\'')
@@ -308,6 +312,7 @@ class input_parser:
                         hist.write_history()
 
         except EOFError:
+            print()
             pass
     
         except KeyboardInterrupt:
@@ -317,10 +322,8 @@ class input_parser:
 
         except ExitException as e:
             print(e)
-            if 'Windows' in platform.platform():
-                utils.Exit(self.exit_code)
-            utils.Exit(self.exit_code, histfile)
-    
+            utils.Exit(self.exit_code) if 'Windows' in platform.platform() else utils.Exit(self.exit_code, histfile)
+
 if __name__ == '__main__':
     new_parser = input_parser()
     new_parser.main()

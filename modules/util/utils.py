@@ -10,7 +10,7 @@ file and later import it from here.
 from datetime import datetime
 from random import randint
 import time
-import os
+import os, ctypes
 import sys
 import csv
 import pyfiglet
@@ -100,7 +100,13 @@ def Exit(exitStatus: int, histfile: str):
         pass
     sys.exit(exitStatus)
 
-
+def isAdmin():
+    try:
+        admin = ctypes.windll.shell32.IsUserAnAdmin() == 1
+        return admin
+    except AttributeError:
+        return os.getuid() == 0
+    
 def timestamp():
     """To get total time taken by things to load and run"""
 

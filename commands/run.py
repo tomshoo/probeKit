@@ -24,16 +24,22 @@ def run(module, options) -> int:
             print(_FALERT+'Error: Invalid value for THOST')
 
         else:
-            if module == 'probe':
-                if tport == '':
-                    print(_FALERT+'Error: Invalid value for TPORT')
+            try:
+                if module == 'probe':
+                    if tport == '':
+                        print(_FALERT+'Error: Invalid value for TPORT')
+                        return 1
 
-                _ports.display(thost, tport, timeout, protocol, tryct, verbose, threading)
-                return 0
+                    _ports.display(thost, tport, timeout, protocol, tryct, verbose, threading)
+                    return 0
 
-            elif module == 'osprobe':
-                _osprobe.checkOS(thost, tryct, nmap).scanner()
-                return 0
+                elif module == 'osprobe':
+                    _osprobe.checkOS(thost, tryct, nmap).scanner()
+                    return 0
+            
+            except PermissionError as e:
+                print(e)
+                return 1
 
     else:
         print(f'{_BALERT}[-] Error: Invalid module \'{module}\'{_BNORMAL}')
