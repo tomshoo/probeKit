@@ -254,7 +254,7 @@ class input_parser:
 
         else:
             try:
-                if utils.isAdmin():
+                if not utils.isAdmin():
                     if 'Windows' not in platform.platform():
                         self.exit_code = subprocess.call((cmd_split_quoted))
 
