@@ -29,10 +29,7 @@ end = utils.timestamp()
 print(f'modules took {round(end-start, 7)} sec(s). to load')
 
 # Setup Utils
-args = utils.args
 ExitException = utils.ExitException
-datevalue = utils.datevalue
-register_history = utils.register_history
 completion_list: list = [
     "use", 
     "show", 
@@ -60,7 +57,7 @@ FURGENT = colors.FURGENT
 FSTYLE = colors.FPROMPT
 
 # Display time during statup
-print(f'current session started at {datevalue()}')
+print(f'current session started at {utils.datevalue()}')
 banner.run()
 
 # Checks if history file already exists or not
@@ -152,11 +149,11 @@ class input_parser:
             self.exit_code = banner.run()
 
         elif verb == 'help':
-            if not args(cmd_split, 1):
+            if not utils.args(cmd_split, 1):
                 Data = PromptHelp('')
                 self.exit_code = Data.showHelp()
             else:
-                Data = PromptHelp(args(cmd_split, 1))
+                Data = PromptHelp(utils.args(cmd_split, 1))
                 self.exit_code = Data.showHelp()
 
         elif verb == 'led':
@@ -167,13 +164,13 @@ class input_parser:
             self.exit_code = aboutList.moduleHelp(self.MODULE).listmodules()
 
         elif verb == 'show':
-            if args(cmd_split, 1):
-                if args(cmd_split, 1) == 'options':
+            if utils.args(cmd_split, 1):
+                if utils.args(cmd_split, 1) == 'options':
                     options = Options(self.MODULE, OPTIONS)
                     options.showOptions()
                     self.exit_code = 0
 
-                elif args(cmd_split, 1) == 'info':
+                elif utils.args(cmd_split, 1) == 'info':
                     info = Info(self.MODULE)
                     self.exit_code = info.showInfo()
 
@@ -205,7 +202,7 @@ class input_parser:
                 print('\x1bc')
                 self.exit_code = 0
 
-            if args(cmd_split, 1) == '-e':
+            if utils.args(cmd_split, 1) == '-e':
                 sys.exit(self.exit_code)
 
         elif verb == 'run':
@@ -232,8 +229,8 @@ class input_parser:
             self.exit_code = ret_list[1]
 
         elif verb == 'about':
-            if args(cmd_split, 1):
-                mod = args(cmd_split, 1)
+            if utils.args(cmd_split, 1):
+                mod = utils.args(cmd_split, 1)
                 aboutList.moduleHelp(mod).aboutModule(mod)
             else:
                 aboutList.moduleHelp(self.MODULE).aboutModule(self.MODULE)
@@ -251,7 +248,7 @@ class input_parser:
             self.exit_code = ret_list[1]
 
         elif verb in ['cd', 'chdir', 'set-location']:
-            fpath = args(cmd_split, 1)
+            fpath = utils.args(cmd_split, 1)
             if os.path.exists(fpath) and os.path.isdir(fpath):
                 os.chdir(fpath)
                 print(f'dir: {fpath}')
@@ -277,7 +274,7 @@ class input_parser:
                 self.exit_code = 1
 
     def main(self):
-        check: int = 1 if args(sys.argv, 1) else 0
+        check: int = 1 if utils.args(sys.argv, 1) else 0
 
         readline.set_completer(completer.completion)
         readline.parse_and_bind("tab: complete")

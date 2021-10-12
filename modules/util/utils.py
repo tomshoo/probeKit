@@ -20,7 +20,7 @@ def split_and_quote(key: str, quotekey: str, string: str) -> list:
         split_quoted = l
     return split_quoted
 
-def args(value, pos):
+def args(value: list, pos: int) -> str:
     """
     A simple function to return values in a list and raise exception
     in such a way that the interpreter doesn't break
@@ -45,7 +45,7 @@ class completer:
             return None
 
 
-def isFloat(value: str):
+def isFloat(value: str) -> bool:
     """
     Check if a given string is a float value
     """
@@ -62,7 +62,7 @@ def isFloat(value: str):
     else:
         return False
 
-def trim(string):
+def trim(string: str) -> str:
     """Function to remove extra white spaces from the string"""
 
     strsplit : list = string.split()
@@ -72,7 +72,7 @@ class ExitException(Exception):
     """Custom "dummy" exception to exit the session"""
     pass
 
-def datevalue():
+def datevalue() -> str:
     """Function to get immediate time at a point"""
 
     return datetime.now().strftime('%a %F %H:%M:%S')
@@ -90,14 +90,14 @@ def Exit(exitStatus: int, histfile: str):
         pass
     sys.exit(exitStatus)
 
-def isAdmin():
+def isAdmin() -> bool:
     try:
         admin = ctypes.windll.shell32.IsUserAnAdmin() == 1
         return admin
     except AttributeError:
         return os.getuid() == 0
 
-def timestamp():
+def timestamp() -> float:
     """To get total time taken by things to load and run"""
 
     return time.perf_counter()

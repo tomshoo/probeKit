@@ -8,7 +8,7 @@ class unset_val:
         self.ret_list = ret_list
         self.options = options
 
-    def run(self):
+    def run(self) -> list:
         for option in self.options:
             self.unassign(option)
         return self.ret_list

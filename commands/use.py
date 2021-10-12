@@ -10,7 +10,7 @@ class use:
     def __init__(self, module: list = None):
         self.ret_list = [module, 0]
 
-    def run(self):
+    def run(self) -> list:
         module = self.ret_list[0]
         if not module:
             self.ret_list[0] = ''
