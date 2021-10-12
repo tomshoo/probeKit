@@ -13,9 +13,17 @@ import modules.util.utils as utils
 print(f'Importing custom modules', end='\r')
 start = utils.timestamp()
 import modules.data.AboutList as aboutList
-from commands import run, set as setval, unset, alias, unalias, use
-from modules.data.OptInfHelp import PromptHelp, Options, Info
-from config import colors, variables, aliases
+from commands import (
+    run,
+    set as setval,
+    unset,
+    alias,
+    unalias,
+    use,
+    banner
+)
+from modules.data.OptInfHelp import (PromptHelp, Options, Info)
+from config import (colors, variables, aliases)
 from modules.util.led import start_editor
 end = utils.timestamp()
 print(f'modules took {round(end-start, 7)} sec(s). to load')
@@ -53,7 +61,7 @@ FSTYLE = colors.FPROMPT
 
 # Display time during statup
 print(f'current session started at {datevalue()}')
-utils.banner()
+banner.run()
 
 # Checks if history file already exists or not
 if 'Windows' not in platform.platform():
@@ -141,8 +149,7 @@ class input_parser:
         verb = cmd_split[0]
 
         if verb == "banner":
-            utils.banner()
-            self.exit_code = 0
+            self.exit_code = banner.run()
 
         elif verb == 'help':
             if not args(cmd_split, 1):

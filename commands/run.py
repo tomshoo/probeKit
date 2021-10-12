@@ -22,6 +22,7 @@ def run(module, options) -> int:
 
         if thost == '':
             print(_FALERT+'Error: Invalid value for THOST')
+            return 1
 
         else:
             try:

@@ -8,22 +8,12 @@ file and later import it from here.
 
 # Imports
 from datetime import datetime
-from random import randint
 import time
-import os, ctypes
+import os
+import ctypes
 import sys
 import csv
-import pyfiglet
 from multipledispatch import dispatch
-
-def banner():
-    """Function to print the introductory banner"""
-    fontstyle: str = pyfiglet.FigletFont.getFonts()[randint(0,425)]
-    print(f'Using figletFont {fontstyle}')
-    fig = pyfiglet.Figlet(font=fontstyle)
-    print(fig.renderText('PROBEKIT ~~'))
-
-    print('-- by theEndurance-del')
 
 def split_and_quote(key: str, quotekey: str, string: str) -> list:
     for l in csv.reader([string], delimiter=key, quotechar=quotekey):
@@ -106,7 +96,7 @@ def isAdmin():
         return admin
     except AttributeError:
         return os.getuid() == 0
-    
+
 def timestamp():
     """To get total time taken by things to load and run"""
 
