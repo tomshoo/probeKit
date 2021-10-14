@@ -4,7 +4,7 @@ A simple tool written in Python for basic reconnaissance
 
 ## Requirements
 
-Python: `3.x`, Python `3.x` compatible pip, nmap, python-scapy, python-nmap, readline
+Python: `3.x<10`, Python `3.x<10` compatible pip, nmap, python-scapy, python-nmap, readline
 
 OS: Unix based operating system(macOS, Linux, etc.), Windows 10.
 
