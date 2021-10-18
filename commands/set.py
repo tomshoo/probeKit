@@ -115,6 +115,10 @@ class set_class:
 
                 print(f'THREADING => {option_list[7]}')
 
+            elif option in ['WORDLIST', 'wordlist']:
+                option_list[8] = value
+                print(f'WORDLIST => {option_list[8]}')
+
             else:
                 print(_FALERT+'[-] Error: Invalid option ', option)
                 exit_code = 1

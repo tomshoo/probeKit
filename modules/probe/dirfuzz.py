@@ -1,11 +1,13 @@
 import requests
 import os
-import time
 
-#wordlist = ['index.html', 'index.asp', 'index.php', 'css', 'js', 'node_modules', 'modules', 'static']
-def fuzz(url: str, wordlist: str, depth: int):
-    with open('C:\\Users\\tomar\\Projects\\myprojects\\Wordlist.txt', 'r') as f:
-        wordlist = f.read().splitlines()
+def fuzz(url: str, wordlist_path: str, depth: int):
+    if os.path.exists(wordlist_path):
+        with open(wordlist_path, 'r') as f:
+            wordlist = f.read().splitlines()
+    else:
+        raise FileNotFoundError(f'Error: file \'{wordlist_path}\' does not exist')
+        return 1
 
     wordlist_use = wordlist.copy()
     wordlist_b = wordlist.copy()
@@ -15,15 +17,20 @@ def fuzz(url: str, wordlist: str, depth: int):
     for x in range(depth):
         for something in wordlist_use:
             for someword in wordlist_b:
-                if someword+'/'+something not in wordlist:
+                if someword+'/'+something not in wordlist and ('index.' not in someword+something):
                     count += 1
-                    print(count, end='\r')
                     #print(someword+'/'+something)
                     wordlist.append(someword+'/'+something)
 
         wordlist_use = wordlist.copy()
 
-    print(len(wordlist_use))
+    length = len(wordlist)
+    for word in wordlist:
+        response = requests.get(url+word)
+        if response:
+            print('url: ', url+word, 'status code: ', response.status_code)
+            print(f'tried: {wordlist.index(word)}/{length}', end='\r')
+
     wordlist_use.clear()
     wordlist.clear()
     wordlist_b.clear()

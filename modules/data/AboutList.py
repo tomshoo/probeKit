@@ -8,7 +8,7 @@ FURGENT = colors.FURGENT
 class moduleHelp():
     """Set of functions containing the description of available modules"""
 
-    modules: list = ['probe', 'osprobe']
+    modules: list = ['probe', 'osprobe', 'dirfuzz']
     #A list containing names of available modules
 
     def __init__(self, MODULE):

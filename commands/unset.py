@@ -50,6 +50,10 @@ class unset_val:
             print(f'{_FALERT}unset THREADING')
             option_list[7] = ''
 
+        elif option in ['WORDLIST', 'wordlist']:
+            print((f'{_FALERT}unset WORDLIST'))
+            option_list[8] = ''
+
         elif option == 'all':
             option_list[0] = ''
             option_list[1]['value'] = ''
@@ -60,6 +64,7 @@ class unset_val:
             option_list[5] = 0
             option_list[6] = ''
             option_list[7] = ''
+            option_list[8] = ''
 
         else:
             print(_FALERT+'Error: Invalid option')

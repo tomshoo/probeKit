@@ -23,7 +23,7 @@ from commands import (
     banner
 )
 from modules.data.OptInfHelp import (PromptHelp, Options, Info)
-from config import (colors, variables, aliases)
+from config import (colors, OPTIONS, aliases, variables)
 from modules.util.led import start_editor
 end = utils.timestamp()
 print(f'modules took {round(end-start, 7)} sec(s). to load')
@@ -81,16 +81,7 @@ class input_parser:
     def __init__(self):
         self.exit_code: int = 0
         # Variables also known as options to the user
-        self.OPTIONS : list = [
-            variables.THOST
-            , variables().tport()
-            , variables().PROTOCOL
-            , variables().timeout()
-            , variables().trycount()
-            , variables().Nmap()
-            , variables().Verbose()
-            , variables().Threading()
-        ]
+        self.OPTIONS = OPTIONS
 
         self.MODULE = variables.MODULE
         self.aliases = aliases

@@ -50,6 +50,7 @@ class variables():
     NMAP     : str = '0'
     VERBOSE  : str = ''
     THREADING: str = ''
+    WORDLIST:  str = ''
 
     # This group of funtions will process the value and return it
     # in the required form
@@ -110,6 +111,18 @@ class variables():
             return False
         else:
             return ''
+
+OPTIONS : list = [
+    variables().THOST
+    , variables().tport()
+    , variables().PROTOCOL
+    , variables().timeout()
+    , variables().trycount()
+    , variables().Nmap()
+    , variables().Verbose()
+    , variables().Threading()
+    , variables().WORDLIST
+]
 
 
 # Aliases for the user's comfort
