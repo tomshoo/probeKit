@@ -35,10 +35,10 @@ class completer:
     """tab completion class(experimental)"""
     def __init__(self, commands):
         self.commands = commands
-    def completion(self, text, state):
+    def completion(self, text: str, state: int):
         """return valid commands from the list of commands provided"""
         commands = self.commands
-        options = [i for i in commands if i.startswith(text)]
+        options = [i for i in commands if i.startswith(text.lower())]
         if state < len(options):
             return options[state]
         else:

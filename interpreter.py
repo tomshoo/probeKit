@@ -143,7 +143,7 @@ class input_parser:
         cmd_split: list = command.split()
         cmd_split_quoted = utils.split_and_quote(' ', '"', command)
 
-        verb = cmd_split[0]
+        verb: str = cmd_split[0].lower()
 
         if verb == "banner":
             self.exit_code = banner.run()
