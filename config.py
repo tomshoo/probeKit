@@ -1,3 +1,5 @@
+import json
+from os import path
 from colorama import Fore, Back
 
 # configure colors in this class
@@ -123,7 +125,13 @@ OPTIONS : list = [
     , variables().Threading()
     , variables().WORDLIST
 ]
+data_path = path.expanduser('~/.config/probekit/config.json')
 
+with open(data_path, 'r') as f:
+    data_str = f.read()
+data = json.loads(data_str)
+valid_modules: list = data['modules']
+option_dict: dict = data['options']
 
 # Aliases for the user's comfort
 aliases : dict = {

@@ -1,0 +1,79 @@
+{
+    "modules": {
+        "probe": {"options": ["thost", "tport", "protocol", "timeout", "tryct", "verbose", "threading"]},
+        "osprobe": {"options": ["thost", "tryct", "nmap"]},
+        "dirfuzz": {"options": ["turl", "wordlist", "timeout"]}
+    },
+
+    "options": {
+        "thost": {
+            "RequiredBy": ["osprobe", "probe"],
+            "required": true,
+            "type": "str",
+            "value": "127.0.0.1"
+        },
+        "tport": {
+            "RequiredBy": ["probe"],
+            "required": true,
+            "type": "dict single_int range_list-int_/ group_list-int_,",
+            "value": {
+                "value": "22",
+                "type": "single"
+            }
+        },
+        "protocol": {
+            "RequiredBy": ["probe"],
+            "required": true,
+            "type": "str",
+            "value": "tcp"
+        },
+        "verbose": {
+            "RequiredBy": ["probe"],
+            "required": false,
+            "type": "bool",
+            "value": "false"
+        },
+        "threading": {
+            "RequiredBy": ["probe"],
+            "required": false,
+            "type": "bool",
+            "value": "false"
+        },
+        "nmap": {
+            "RequiredBy": ["osprobe"],
+            "required": false,
+            "type": "int",
+            "value": "0"
+        },
+        "tryct": {
+            "RequiredBy": ["osprobe"],
+            "required": false,
+            "type": "int",
+            "value": "5"
+        },
+        "timeout": {
+            "RequiredBy": ["osprobe", "probe"],
+            "required": false,
+            "type": "float",
+            "value": "2.5"
+        },
+        "depth": {
+            "RequiredBy": ["dirfuzz"],
+            "required": false,
+            "type": "int",
+            "value": "3"
+        },
+        "turl": {
+            "RequiredBy": ["dirfuzz"],
+            "required": true,
+            "type": "str",
+            "value": "https://www.example.com/"
+        },
+        "wordlist": {
+            "RequiredBy": ["dirfuzz"],
+            "required": true,
+            "type": "str",
+            "value": "/home/user/Projects/Wordlist.txt"
+        }
+    }
+}

@@ -1,12 +1,19 @@
 from config import colors as _colors, variables as _variables
-from modules.util.utils import trim as _trim, args as _args
+from modules.util.utils import trim as _trim, args as _args, optionparser as _optparser
+from multipledispatch import dispatch
 
 _FALERT = _colors.FALERT
 
 class set_class:
+    @dispatch(list, list)
     def __init__(self, option_list: list, options: list):
         ret_list: list = [option_list, 0]
         self.ret_list = ret_list
+        self.options = options
+
+    @dispatch(dict, list)
+    def __init__(self, option_dict: dict, options: list):
+        self.ret_list = [option_dict, 0]
         self.options = options
 
     def run(self) -> list:
@@ -17,17 +24,23 @@ class set_class:
             for data in assignment:
                 option = _args(data.split('='), 0)
                 value = _args(data.split('='), 1)
-                self.assign(option, value)
+                if type(self.ret_list[0]) is list:
+                    self.assign(option, value)
+                else:
+                    self.assign((option, value))
 
         else:
             options = options.split('=')
             option = _args(options, 0)
             value = _args(options, 1)
-
-            self.assign(_trim(option), _trim(value))
+            if type(self.ret_list[0]) is list:
+                self.assign(_trim(option), _trim(value))
+            else:
+                self.assign((_trim(option), _trim(value)))
 
         return self.ret_list
 
+    @dispatch(str, str)
     def assign(self, option: str, value: str) -> None:
         """Function to assign a given value to the asked option."""
 
@@ -145,3 +158,20 @@ class set_class:
 
         self.ret_list[0] = option_list
         self.ret_list[1] = exit_code
+
+    @dispatch(tuple)
+    def assign(self, args: tuple):
+        options = self.ret_list[0]
+        option = args[0]
+        value = args[1]
+        if options.get(option):
+            if options[option]['type'].split()[0] != "dict":
+                options[option]['value'] = value
+            else:
+                options[option]['value']['value'] = value
+        else:
+            print('Error: Invalid option')
+        
+        options = _optparser(options)
+        print(options[option])
+        self.option_dict = options

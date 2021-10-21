@@ -1,5 +1,7 @@
-from modules.data.AboutList import moduleHelp as _modulehelp
-from config import colors as _colors
+from config import (
+    colors as _colors,
+    valid_modules as _modules,
+)
 import modules.probe.ports as _ports
 import modules.probe.osprobe as _osprobe
 import modules.probe.dirfuzz as _dirfuzz
@@ -11,7 +13,7 @@ _BNORMAL = _colors.BNORMAL
 def run(module, options) -> int:
     """Function to run the assigned module"""
 
-    if module in _modulehelp(module).modules:
+    if module in _modules:
         thost    = options[0]
         tport    = options[1]
         protocol = options[2]

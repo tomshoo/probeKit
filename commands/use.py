@@ -1,10 +1,8 @@
-from modules.data.AboutList import moduleHelp as _modulehelp
-from config import colors as _colors
+from config import colors as _colors, valid_modules as _modules
 
 
 _FALERT = _colors.FALERT
 _FURGENT = _colors.FURGENT
-_modules = _modulehelp.modules
 
 class use:
     def __init__(self, module: list = None):

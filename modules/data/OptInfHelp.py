@@ -143,7 +143,7 @@ class Info():
 
 class Options():
     """List values assigned to various options of the module"""
-    def __init__(self, MODULE, OPTIONS):
+    def __init__(self, MODULE, OPTIONS, option_dict):
         self.module  = MODULE
         self.thost   = OPTIONS[0]
         self.tport   = OPTIONS[1]['value']
@@ -153,6 +153,7 @@ class Options():
         self.nmap = OPTIONS[5]
         self.verbose = OPTIONS[6]
         self.threading = OPTIONS[7]
+        self.option_dict = option_dict
 
     def showOptions(self):
         """
@@ -160,6 +161,9 @@ class Options():
         
         If no module is selected display values assigned to all options.
         """
+
+        print(self.option_dict)
+
         if self.module == 'probe':
             if self.thost != '':
                 print(FSUCCESS+'\n\t[+] '+f'THOST   => {self.thost}')

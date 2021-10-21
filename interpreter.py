@@ -23,7 +23,7 @@ from commands import (
     banner
 )
 from modules.data.OptInfHelp import (PromptHelp, Options, Info)
-from config import (colors, OPTIONS, aliases, variables)
+from config import (colors, OPTIONS, aliases, variables, option_dict, valid_modules as _modules)
 from modules.util.led import start_editor
 end = utils.timestamp()
 print(f'modules took {round(end-start, 7)} sec(s). to load')
@@ -82,6 +82,7 @@ class input_parser:
         self.exit_code: int = 0
         # Variables also known as options to the user
         self.OPTIONS = OPTIONS
+        self.option_dict = utils.optionparser(option_dict)
 
         self.MODULE = variables.MODULE
         self.aliases = aliases
@@ -157,7 +158,7 @@ class input_parser:
         elif verb == 'show':
             if utils.args(cmd_split, 1):
                 if utils.args(cmd_split, 1) == 'options':
-                    options = Options(self.MODULE, OPTIONS)
+                    options = Options(self.MODULE, OPTIONS, self.option_dict)
                     options.showOptions()
                     self.exit_code = 0
 
@@ -205,6 +206,9 @@ class input_parser:
             ret_list = new_set.run()
             OPTIONS = ret_list[0]
             self.exit_code = ret_list[1]
+            new_set_dict  =setval.set_class(self.option_dict, cmd_split[1::])
+            ret_list = new_set_dict.run()
+            self.option_dict = ret_list[0]
         # Verb(or command) to unset options
 
         elif verb == 'unset':
@@ -273,7 +277,7 @@ class input_parser:
         # Initial module is set to blank
         # Set it to any other module if you want a default module at startup
 
-        if self.MODULE in aboutList.moduleHelp.modules or self.MODULE == '':
+        if self.MODULE in _modules or self.MODULE == '':
             pass
         else:
             print(f'{FALERT}[-] No such module: \'{self.MODULE}\'{FNORMAL}')

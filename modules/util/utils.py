@@ -124,3 +124,64 @@ class register_history():
             with open(histfile, 'w') as fp:
                 fp.write(self.command + f' # {datevalue()} \n')
                 pass
+
+@dispatch(dict)
+def optionparser(option_dict: dict) -> dict:
+    for data in option_dict:
+        if args(option_dict[data]['type'].split(), 0) == "dict":
+            _type = option_dict[data]['type'].split()
+            value_rules = _type[1::]
+            for rule in value_rules:
+                rule = rule.split('_')
+                value_type = args(rule, 0)
+                value_dtype = args(rule, 1).split('-') if '-' in args(rule, 1) else args(rule, 1)
+                _dtype_primary = value_dtype[0]
+                _dtype_secondary = value_dtype[1]
+                if _dtype_primary == 'list':
+                    value_delm = args(rule, 2)
+                    if value_delm in option_dict[data]['value']['value']:
+                        option_dict[data]['value']['type'] = value_type
+                        option_dict[data]['value']['value'] = option_dict[data]['value']['value'].split(value_delm)
+                else:
+                    option_dict[data]['value']['type'] = value_type
+
+        else:
+            if option_dict[data]['value']:
+                if option_dict[data]['type'] == "int": 
+                    if type(option_dict[data]['value']) is not int:
+                        if option_dict[data]['value'].isdecimal():
+                            option_dict[data]['value'] = int(option_dict[data]['value'])
+                        else:
+                            option_dict[data]['value'] = ""
+                    else:
+                        pass
+                
+                elif option_dict[data]['type'] == "float": 
+                    if type(option_dict[data]['value']) is not float:
+                        if isFloat(option_dict[data]['value']):
+                            option_dict[data]['value'] = float(option_dict[data]['value'])
+                        else:
+                            option_dict[data]['value'] = ""
+                    else:
+                        pass
+                
+                elif option_dict[data]['type'] == "bool":
+                    if type(option_dict[data]['value']) is not bool:
+                        if option_dict[data]['value'].lower() in ['true', 'false']:
+                            if option_dict[data]['value'].lower() == "true":
+                                option_dict[data]['value'] = True
+                            else:
+                                option_dict[data]['value'] = False
+                        else:
+                            option_dict[data]['value'] = ""
+                    else:
+                        pass
+
+                elif option_dict[data]['type'] == "str":
+                    pass
+                else:
+                    _type = option_dict[data]['type']
+                    print(f'Error: Invalid type: {_type}')
+                    sys.exit(1)
+
+    return option_dict

@@ -21,6 +21,8 @@ OS: Unix based operating system(macOS, Linux, etc.), Windows 10.
 git clone https://theEndurance-del/probeKit.git && cd ./probeKit
 sudo apt install nmap python-pip python3-wheel python3-dev
 pip install -r requirements.txt
+mkdir ~/.config/probekit
+ln -srf ./config.json ~/.config/probekit/config.json
 ```
 
 ### Arch based distributions
@@ -29,6 +31,8 @@ pip install -r requirements.txt
 git clone https://theEndurance-del/probeKit.git && cd ./probeKit
 sudo pacman -Syu nmap python-pip
 pip install -r requirements.txt
+mkdir ~/.config/probekit
+ln -srf ./config.json ~/.config/probekit/config.json
 ```
  *Note: If possible try installing the dependencies listed in `requirements.txt` via `pacman`, since installing it via pip might break future pacman installations.*
 
