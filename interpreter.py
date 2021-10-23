@@ -23,7 +23,7 @@ from commands import (
     banner
 )
 from modules.data.OptInfHelp import (PromptHelp, Options, Info)
-from config import (colors, variables, aliases)
+from config import (colors, OPTIONS, aliases, variables, option_dict, valid_modules as _modules)
 from modules.util.led import start_editor
 end = utils.timestamp()
 print(f'modules took {round(end-start, 7)} sec(s). to load')
@@ -81,16 +81,8 @@ class input_parser:
     def __init__(self):
         self.exit_code: int = 0
         # Variables also known as options to the user
-        self.OPTIONS : list = [
-            variables.THOST
-            , variables().tport()
-            , variables().PROTOCOL
-            , variables().timeout()
-            , variables().trycount()
-            , variables().Nmap()
-            , variables().Verbose()
-            , variables().Threading()
-        ]
+        self.OPTIONS = OPTIONS
+        self.option_dict = utils.optionparser(option_dict)
 
         self.MODULE = variables.MODULE
         self.aliases = aliases
@@ -166,7 +158,7 @@ class input_parser:
         elif verb == 'show':
             if utils.args(cmd_split, 1):
                 if utils.args(cmd_split, 1) == 'options':
-                    options = Options(self.MODULE, OPTIONS)
+                    options = Options(self.MODULE, OPTIONS, self.option_dict, _modules)
                     options.showOptions()
                     self.exit_code = 0
 
@@ -206,20 +198,20 @@ class input_parser:
                 sys.exit(self.exit_code)
 
         elif verb == 'run':
-            self.exit_code = run.run(self.MODULE, OPTIONS)
+            self.exit_code = run.run(self.MODULE, self.option_dict)
 
         # Verb(or command) to set options
         elif verb == 'set':
-            new_set = setval.set_class(OPTIONS, cmd_split[1::])
+            new_set  = setval.set_class(self.option_dict, cmd_split[1::])
             ret_list = new_set.run()
-            OPTIONS = ret_list[0]
+            self.option_dict = ret_list[0]
             self.exit_code = ret_list[1]
-        # Verb(or command) to unset options
 
+        # Verb(or command) to unset options
         elif verb == 'unset':
-            new_unset = unset.unset_val(OPTIONS, cmd_split[1::])
+            new_unset = unset.unset_val(self.option_dict, cmd_split[1::])
             ret_list = new_unset.run()
-            OPTIONS = ret_list[0]
+            self.option_dict = ret_list[0]
             self.exit_code = ret_list[1]
 
         elif verb == 'use':
@@ -282,7 +274,7 @@ class input_parser:
         # Initial module is set to blank
         # Set it to any other module if you want a default module at startup
 
-        if self.MODULE in aboutList.moduleHelp.modules or self.MODULE == '':
+        if self.MODULE in _modules or self.MODULE == '':
             pass
         else:
             print(f'{FALERT}[-] No such module: \'{self.MODULE}\'{FNORMAL}')

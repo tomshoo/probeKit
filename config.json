@@ -1,0 +1,86 @@
+{
+    "modules": {
+        "probe": {"options": ["thost", "tport", "protocol", "timeout", "tryct", "verbose", "threading"]},
+        "osprobe": {"options": ["thost", "tryct", "nmap"]},
+        "dirfuzz": {"options": ["turl", "wordlist", "timeout"]}
+    },
+
+    "options": {
+        "thost": {
+            "required": true,
+            "type": "str",
+            "value": ""
+        },
+        "tport": {
+            "required": true,
+            "type": "dict",
+            "typerules": {
+                "range": {
+                    "type": "list",
+                    "dtype": "str",
+                    "identifier": "/",
+                    "delimeter": "/"
+                },
+                "group": {
+                    "type": "list",
+                    "dtype": "str",
+                    "identifier": ",",
+                    "delimeter": ","
+                },
+                "single": {
+                    "type": "str",
+                    "dtype": "int"
+                }
+            },
+            "value": {
+                "value": "",
+                "type": ""
+            }
+        },
+        "protocol": {
+            "required": true,
+            "type": "str",
+            "value": ""
+        },
+        "verbose": {
+            "required": false,
+            "type": "bool",
+            "value": ""
+        },
+        "threading": {
+            "required": false,
+            "type": "bool",
+            "value": ""
+        },
+        "nmap": {
+            "required": false,
+            "type": "int",
+            "value": ""
+        },
+        "tryct": {
+            "required": false,
+            "type": "int",
+            "value": ""
+        },
+        "timeout": {
+            "required": false,
+            "type": "float",
+            "value": ""
+        },
+        "depth": {
+            "required": false,
+            "type": "int",
+            "value": ""
+        },
+        "turl": {
+            "required": true,
+            "type": "str",
+            "value": ""
+        },
+        "wordlist": {
+            "required": true,
+            "type": "str",
+            "value": ""
+        }
+    }
+}

@@ -1,47 +1,55 @@
-from modules.data.AboutList import moduleHelp as _modulehelp
-from config import colors as _colors
+from config import (
+    colors as _colors,
+    valid_modules as _modules,
+)
 import modules.probe.ports as _ports
 import modules.probe.osprobe as _osprobe
+import modules.probe.dirfuzz as _dirfuzz
 
 _FALERT = _colors.FALERT
 _BALERT = _colors.BALERT
 _BNORMAL = _colors.BNORMAL
 
-def run(module, options) -> int:
-    """Function to run the assigned module"""
+def run(module: str, options: dict) -> int:
+    if module in _modules:
+        try:
+            if module == "probe":
+                if not options['tport']['value']['value']:
+                    print(f'{_FALERT}Error: Invalid value for tport')
+                    return 1
 
-    if module in _modulehelp(module).modules:
-        thost    = options[0]
-        tport    = options[1]
-        protocol = options[2]
-        timeout  = options[3]
-        tryct    = options[4]
-        nmap     = options[5]
-        verbose  = options[6]
-        threading= options[7]
-
-        if thost == '':
-            print(_FALERT+'Error: Invalid value for THOST')
+                _ports.display(
+                    options['thost']['value'],
+                    options['tport']['value'],
+                    options['timeout']['value'],
+                    options['protocol']['value'],
+                    options['tryct']['value'],
+                    options['verbose']['value'],
+                    options['threading']['value']
+                )
+            elif module == "osprobe":
+                _osprobe.checkOS(
+                    options['thost']['value'],
+                    options['tryct']['value'],
+                    options['nmap']['value']
+                )
+            elif module == "dirfuzz":
+                _dirfuzz.fuzz(
+                    options['turl']['value'],
+                    options['wordlist']['value'],
+                    options['depth']['value']
+                )
+        except PermissionError as e:
+            print(_FALERT+e)
             return 1
 
-        else:
-            try:
-                if module == 'probe':
-                    if tport == '':
-                        print(_FALERT+'Error: Invalid value for TPORT')
-                        return 1
+        except FileNotFoundError as e:
+            print(_FALERT+e)
+            return 1
 
-                    _ports.display(thost, tport, timeout, protocol, tryct, verbose, threading)
-                    return 0
-
-                elif module == 'osprobe':
-                    _osprobe.checkOS(thost, tryct, nmap).scanner()
-                    return 0
-            
-            except PermissionError as e:
-                print(e)
-                return 1
-
+        finally:
+            return 0
+    
     else:
         print(f'{_BALERT}[-] Error: Invalid module \'{module}\'{_BNORMAL}')
         return 1

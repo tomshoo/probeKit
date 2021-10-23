@@ -18,20 +18,43 @@ OS: Unix based operating system(macOS, Linux, etc.), Windows 10.
 ### Debian/Ubuntu
 
 ``` bash
-git clone https://theEndurance-del/probeKit.git && cd ./probeKit
+git clone https://github.com/theEndurance-del/probeKit.git && cd ./probeKit
 sudo apt install nmap python-pip python3-wheel python3-dev
 pip install -r requirements.txt
+mkdir ~/.config/probekit
+ln -srf ./config.json ~/.config/probekit/config.json
 ```
 
 ### Arch based distributions
 
 ``` bash
-git clone https://theEndurance-del/probeKit.git && cd ./probeKit
+git clone https://fithub.com/theEndurance-del/probeKit.git && cd ./probeKit
 sudo pacman -Syu nmap python-pip
 pip install -r requirements.txt
+mkdir ~/.config/probekit
+ln -srf ./config.json ~/.config/probekit/config.json
 ```
  *Note: If possible try installing the dependencies listed in `requirements.txt` via `pacman`, since installing it via pip might break future pacman installations.*
 
+---
+
+###  Windows 10
+
+- Install `nmap` and `npcap` from the [official](https://nmap.org/download.html) website.
+- Install `python3.x<10` from python's [official](https://www.python.org/downloads/) or from Micrsoft store.
+- Then copy and paste the following commands in windows powershell,
+
+``` pwsh
+git clone https://github.com/theEndurance-del/probeKit.git
+set-location .\probeKit\
+python -m pip install -r .\requirements.txt
+new-item $HOME\Documents\probeKit\ -type directory
+```
+
+- Run this as `adminstrator`:
+``` pwsh
+new-item -path $HOME\Documents\probeKit\config.json -type symboliclink -value <Path\to\probeKit\config.json>
+```
 ---
 
 ## Usage

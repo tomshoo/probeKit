@@ -143,7 +143,7 @@ class Info():
 
 class Options():
     """List values assigned to various options of the module"""
-    def __init__(self, MODULE, OPTIONS):
+    def __init__(self, MODULE, OPTIONS, option_dict: dict, modules: dict):
         self.module  = MODULE
         self.thost   = OPTIONS[0]
         self.tport   = OPTIONS[1]['value']
@@ -153,6 +153,8 @@ class Options():
         self.nmap = OPTIONS[5]
         self.verbose = OPTIONS[6]
         self.threading = OPTIONS[7]
+        self.option_dict = option_dict
+        self.modules = modules
 
     def showOptions(self):
         """
@@ -160,71 +162,54 @@ class Options():
         
         If no module is selected display values assigned to all options.
         """
-        if self.module == 'probe':
-            if self.thost != '':
-                print(FSUCCESS+'\n\t[+] '+f'THOST   => {self.thost}')
-            else:
-                print(FALERT+'\n\t[-] '+f'THOST   => {self.thost}')
 
-            if self.tport != '':
-                print(FSUCCESS+f'\t[+] '+f'TPORT   => {self.tport}')
-            else:
-                print(FALERT+'\t[-] '+f'TPORT   => {self.tport}')
+        # maxwidth = max(len(opt) for opt in self.option_dict)
+        # for data in self.option_dict:
+        #     print('{0:{2}} => {1}'.format(data, self.option_dict.get(data)['value'], maxwidth))
 
-            if self.proto != '':
-                print(FSUCCESS+'\t[+] '+f'PROTO   => {self.proto}')
-            else:
-                print(FALERT+'\t[-] '+f'PROTO   => {self.proto}')
+        values: list = []
+        for option in self.option_dict:
+            values.append(str(self.option_dict[option]['value']))
 
-            print(FSUCCESS+f'\t[*] TRYCT   => {self.tryct}')
+        maxoptwidth = max(len(val) for val in values)
+        values.clear()
+        print(FNORMAL)
 
-            print(FSUCCESS+f'\t[*] TMOUT   => {self.timeout}')
+        if self.module in self.modules:
+            maxwidth = max(len(opt) for opt in self.modules[self.module]['options'])
+            maxwidth = maxwidth if (maxwidth > len("option")) else len("option")
+            print('{0:{2}}  | {1}'.format("option", "value", maxwidth))
+            print(f'{"-"*maxwidth}--|{"-"*maxoptwidth}')
+            COLOR: str = FNORMAL
+            for option in self.modules[self.module]['options']:
+                OptionIsRequired: bool = self.option_dict[option]['required'] is (not None and True)
+                if option in self.option_dict:
+                    if self.option_dict[option]['type'] == "dict":
+                        if self.option_dict[option]['value']['value'] in [None, '']:
+                            if OptionIsRequired:
+                                COLOR = FALERT
+                            else:
+                                COLOR = FURGENT
+                        else:
+                            COLOR = FNORMAL
+                    else:
+                        if self.option_dict[option]['value'] in [None, '']:
+                            if OptionIsRequired:
+                                COLOR = FALERT
+                            else:
+                                COLOR = FURGENT
+                        else:
+                            COLOR = FNORMAL
 
-            if self.verbose != '':
-                print(FSUCCESS+'\t[+] '+f'VERBOSE   => {self.verbose}')
-            else:
-                print(FALERT+'\t[-] '+f'VERBOSE   => {self.verbose}')
+                    print('{3}{0:{2}}{4}  | {1}'.format(option, self.option_dict[option]['value'], maxwidth, COLOR, FNORMAL))
+                else:
+                    print(f'{FALERT}Error: options \'{option}\' not found{FNORMAL}')
 
-            if self.threading != '':
-                print(FSUCCESS+'\t[+] '+f'THREADING => {self.threading}\n')
-            else:
-                print(FALERT+'\t[-] '+f'THREADING => {self.threading}\n')
+        elif not self.module:
+            maxwidth = max(len(opt) for opt in self.option_dict)
+            print('{0:{2}}  | {1}'.format("option", "value", maxwidth))
+            print(f'{"-"*maxwidth}--|{"-"*maxoptwidth}')
+            for option in self.option_dict:
+                print('{0:{2}}  | {1}'.format(option, self.option_dict[option]['value'], maxwidth))
 
-        elif self.module == 'osprobe':
-            if self.thost != '':
-                print(FSUCCESS+'\n\t[+] '+f'THOST => {self.thost}')
-            else:
-                print(FALERT+'\n\t[-] '+f'THOST => {self.thost}')
-
-            print(FSUCCESS+'\t[+] '+f'NMAP  => {self.nmap}')
-            print(FSUCCESS+f'\t[*] TRYCT => {self.tryct}\n')
-
-        else:
-            if self.thost != '':
-                print(FSUCCESS+'\n\t[+] '+f'THOST => {self.thost}')
-            else:
-                print(FALERT+'\n\t[-] '+f'THOST => {self.thost}')
-
-            if self.tport != '':
-                print(FSUCCESS+f'\t[+] '+f'TPORT => {self.tport}')
-            else:
-                print(FALERT+'\t[-] '+f'TPORT => {self.tport}')
-
-            if self.proto != '':
-                print(FSUCCESS+'\t[+] '+f'PROTO => {self.proto}')
-            else:
-                print(FALERT+'\t[-] '+f'PROTO => {self.proto}')
-
-            print(FSUCCESS+'\t[+] '+f'NMAP  => {self.nmap}')
-            print(FSUCCESS+f'\t[*] TRYCT => {self.tryct}')
-            print(FSUCCESS+f'\t[*] TMOUT => {self.timeout}')
-
-            if self.verbose != '':
-                print(FSUCCESS+'\t[+] '+f'VERBOSE   => {self.verbose}')
-            else:
-                print(FALERT+'\t[-] '+f'VERBOSE   => {self.verbose}')
-
-            if self.threading != '':
-                print(FSUCCESS+'\t[+] '+f'THREADING => {self.threading}\n')
-            else:
-                print(FALERT+'\t[-] '+f'THREADING => {self.threading}\n')
+        print()

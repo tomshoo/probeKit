@@ -1,4 +1,4 @@
-from config import colors
+from config import colors, valid_modules as _modules
 
 FSUCCESS = colors.FSUCCESS
 FALERT = colors.FALERT
@@ -7,8 +7,6 @@ FURGENT = colors.FURGENT
 
 class moduleHelp():
     """Set of functions containing the description of available modules"""
-
-    modules: list = ['probe', 'osprobe']
     #A list containing names of available modules
 
     def __init__(self, MODULE):
@@ -20,7 +18,7 @@ class moduleHelp():
             print('Currently activated module: '+FALERT+f'[{self.module}]')
 
         print(FNORMAL+'Available modules are:')
-        for x in self.modules:
+        for x in _modules:
             print(FSUCCESS+"\t", x)
 
         print(FNORMAL+'type: about [Module] for more information')

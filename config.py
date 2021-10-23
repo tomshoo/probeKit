@@ -1,3 +1,6 @@
+import json
+from os import path
+from platform import platform
 from colorama import Fore, Back
 
 # configure colors in this class
@@ -50,6 +53,7 @@ class variables():
     NMAP     : str = '0'
     VERBOSE  : str = ''
     THREADING: str = ''
+    WORDLIST:  str = ''
 
     # This group of funtions will process the value and return it
     # in the required form
@@ -111,6 +115,28 @@ class variables():
         else:
             return ''
 
+OPTIONS : list = [
+    variables().THOST
+    , variables().tport()
+    , variables().PROTOCOL
+    , variables().timeout()
+    , variables().trycount()
+    , variables().Nmap()
+    , variables().Verbose()
+    , variables().Threading()
+    , variables().WORDLIST
+]
+
+if 'Windows' in platform():
+    data_path = path.expanduser('~\\Documents\\probeKit\\config.json')
+else:
+    data_path = path.expanduser('~/.config/probekit/config.json')
+
+with open(data_path, 'r') as f:
+    data_str = f.read()
+data = json.loads(data_str)
+valid_modules: dict = data['modules']
+option_dict: dict = data['options']
 
 # Aliases for the user's comfort
 aliases : dict = {
