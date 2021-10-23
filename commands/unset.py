@@ -16,7 +16,6 @@ class unset_val:
         return self.ret_list
 
     def unassign(self, option: str):
-        option: str = option[0]
         options_dict: dict = self.ret_list[0]
         if options_dict.get(option):
             if options_dict[option]['type'] != "dict":

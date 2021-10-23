@@ -1,4 +1,4 @@
-from config import colors as _colors, variables as _variables
+from config import colors as _colors
 from modules.util.utils import trim as _trim, args as _args, optionparser as _optparser
 
 _FALERT = _colors.FALERT
@@ -14,13 +14,13 @@ class set_class:
         if ' ' in options:
             assignment = options.split(' ')
             for data in assignment:
-                option = _args(data.split('='), 0)
+                option = _args(data.split('='), 0).lower()
                 value = _args(data.split('='), 1)
                 self.assign(option, value)
 
         else:
             options = options.split('=')
-            option = _args(options, 0)
+            option = _args(options, 0).lower()
             value = _args(options, 1)
             self.assign(_trim(option), _trim(value))
 
@@ -39,6 +39,6 @@ class set_class:
             return
         
         options = _optparser(options)
-        print(option, '=>', options[option]['value'])
+        print(option, '=>', value)
         self.ret_list[0] = options
         self.ret_list[1] = 0

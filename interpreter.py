@@ -23,12 +23,19 @@ from commands import (
     banner
 )
 from modules.data.OptInfHelp import (PromptHelp, Options, Info)
-from config import (colors, OPTIONS, aliases, variables, option_dict, valid_modules as _modules)
+from config import (
+    MODULE,
+    colors,
+    aliases,
+    option_dict,
+    valid_modules as _modules
+)
 from modules.util.led import start_editor
 end = utils.timestamp()
 print(f'modules took {round(end-start, 7)} sec(s). to load')
 
 # Setup Utils
+option_dict = utils.optionparser(option_dict)
 ExitException = utils.ExitException
 completion_list: list = [
     "use", 
@@ -47,7 +54,6 @@ completion_list: list = [
     "unset"
 ]
 completer = utils.completer(completion_list)
-
 
 # Setting up colors (edit these in config.py)
 FSUCCESS = colors.FSUCCESS
@@ -81,10 +87,9 @@ class input_parser:
     def __init__(self):
         self.exit_code: int = 0
         # Variables also known as options to the user
-        self.OPTIONS = OPTIONS
-        self.option_dict = utils.optionparser(option_dict)
+        self.option_dict = option_dict
 
-        self.MODULE = variables.MODULE
+        self.MODULE = MODULE
         self.aliases = aliases
 
     def parser(self, value: str):
@@ -131,7 +136,6 @@ class input_parser:
             pass
 
     def executor(self, command: str):
-        OPTIONS = self.OPTIONS
         cmd_split: list = command.split()
         cmd_split_quoted = utils.split_and_quote(' ', '"', command)
 
@@ -158,7 +162,7 @@ class input_parser:
         elif verb == 'show':
             if utils.args(cmd_split, 1):
                 if utils.args(cmd_split, 1) == 'options':
-                    options = Options(self.MODULE, OPTIONS, self.option_dict, _modules)
+                    options = Options(self.MODULE, self.option_dict, _modules)
                     options.showOptions()
                     self.exit_code = 0
 

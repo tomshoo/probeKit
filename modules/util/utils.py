@@ -75,7 +75,7 @@ class ExitException(Exception):
 def datevalue() -> str:
     """Function to get immediate time at a point"""
 
-    return datetime.now().strftime('%a %F %H:%M:%S')
+    return datetime.now().strftime('%a %Y-%m-%d %H:%M:%S')
 
 @dispatch(int)
 def Exit(exitStatus: int):
@@ -113,17 +113,32 @@ class register_history():
         self.command = command
         self.histfile : str = os.path.join(os.path.expanduser('~'), '.probeKit.history')
 
+    def __hastimestamp(self) -> bool:
+        command: str = self.command
+        if '#' in command:
+            comment_index: str = command.index('#')
+            comment = command[comment_index+1::]
+            comment = trim(comment)
+            try:
+                time.strptime(comment, "%a %Y-%m-%d %H:%M:%S")
+                return True
+            except ValueError:
+                return False
+        else:
+            return False
+
     def write_history(self):
         """write the history to $HOME/.probeKit.history"""
         histfile = self.histfile
-        if os.path.exists(histfile):
-            with open(histfile, 'a') as fp:
-                fp.write(self.command + f' # {datevalue()} \n')
-                pass
-        else:
-            with open(histfile, 'w') as fp:
-                fp.write(self.command + f' # {datevalue()} \n')
-                pass
+        if not self.__hastimestamp():
+            if os.path.exists(histfile):
+                with open(histfile, 'a') as fp:
+                    fp.write(self.command + f' # {datevalue()} \n')
+                    pass
+            else:
+                with open(histfile, 'w') as fp:
+                    fp.write(self.command + f' # {datevalue()} \n')
+                    pass
 
 @dispatch(dict)
 def optionparser(option_dict: dict) -> dict:
@@ -173,8 +188,8 @@ def optionparser(option_dict: dict) -> dict:
                     else:
                         try:
                             __dictparser()
-                        except TypeError:
-                            print('Something went wrong...')
+                        except TypeError as e:
+                            print(f'Something went wrong... => {e}')
                 pass
 
             elif option_dict[data]['type'] == "int": 

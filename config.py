@@ -36,97 +36,16 @@ class dark():
 # Chose color scheme(light or dark)
 colors = dark
 
-class variables():
-    """
-    Provide defaults for all the options for a module
-    These values will be overridden if user tends to unset the value
-    """
+#Assign what module to use at startup
+MODULE = ""
 
+#Assign values to options at startup
+OPTIONS = {
+    "thost": "127.0.0.1",
+    "tport": "1/8000"
+}
 
-    # Please configure the values over here
-    MODULE   : str = ''
-    THOST    : str = ''
-    TPORT    : str = ''
-    PROTOCOL : str = ''
-    TIMEOUT  : str = '1'
-    TRYCT    : str = '1'
-    NMAP     : str = '0'
-    VERBOSE  : str = ''
-    THREADING: str = ''
-    WORDLIST:  str = ''
-
-    # This group of funtions will process the value and return it
-    # in the required form
-    def tport(self):
-        Tport = self.TPORT
-        tdict = {
-            'value': '',
-            'type': ''
-        }
-        if '/' in Tport:
-            tdict['value'] = Tport.split('/')
-            tdict['type'] = 'range'
-        elif ',' in Tport:
-            tdict['value'] = Tport.split(',')
-            tdict['type'] = 'group'
-
-        else:
-            tdict['value'] = Tport
-            tdict['type'] = 'single'
-        
-        return tdict
-
-    def timeout(self):
-        tmout = self.TIMEOUT
-        if tmout != '':
-            return int(tmout)
-        else: 
-            return ''
-
-    def trycount(self):
-        tryct = self.TRYCT
-        if tryct != '':
-            return int(tryct)
-        else:
-            return ''
-
-    def Nmap(self):
-        nmap = self.NMAP
-        if nmap != '':
-            return int(nmap)
-        else:
-            return ''
-
-    def Verbose(self):
-        verbose = self.VERBOSE
-        if verbose in ['true', 'True']:
-            return True
-        elif verbose in ['false', 'False']:
-            return False
-        else:
-            return ''
-
-    def Threading(self):
-        threading = self.THREADING
-        if threading in ['true', 'True']:
-            return True
-        elif threading in ['false', 'False']:
-            return False
-        else:
-            return ''
-
-OPTIONS : list = [
-    variables().THOST
-    , variables().tport()
-    , variables().PROTOCOL
-    , variables().timeout()
-    , variables().trycount()
-    , variables().Nmap()
-    , variables().Verbose()
-    , variables().Threading()
-    , variables().WORDLIST
-]
-
+#Read the config.json file
 if 'Windows' in platform():
     data_path = path.expanduser('~\\Documents\\probeKit\\config.json')
 else:
@@ -135,8 +54,20 @@ else:
 with open(data_path, 'r') as f:
     data_str = f.read()
 data = json.loads(data_str)
+
+#List valid modules from config.json
 valid_modules: dict = data['modules']
+
+#Read the rules for valid options
 option_dict: dict = data['options']
+
+#Override options with values provided by the user
+for option in option_dict:
+    if OPTIONS.get(option):
+        if option_dict[option]['type'] == "dict":
+            option_dict[option]['value']['value'] = OPTIONS.get(option)
+        else:
+            option_dict[option]['value'] = OPTIONS.get(option)
 
 # Aliases for the user's comfort
 aliases : dict = {

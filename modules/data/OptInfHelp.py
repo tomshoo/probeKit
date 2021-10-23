@@ -1,6 +1,7 @@
 # This is the data-information module which will print help for the interpreter and information about selected module
 
 from config import colors
+from platform import platform
 
 FSUCCESS = colors.FSUCCESS
 FALERT = colors.FALERT
@@ -143,20 +144,24 @@ class Info():
 
 class Options():
     """List values assigned to various options of the module"""
-    def __init__(self, MODULE, OPTIONS, option_dict: dict, modules: dict):
-        self.module  = MODULE
-        self.thost   = OPTIONS[0]
-        self.tport   = OPTIONS[1]['value']
-        self.proto   = OPTIONS[2]
-        self.timeout = OPTIONS[3]
-        self.tryct = OPTIONS[4]
-        self.nmap = OPTIONS[5]
-        self.verbose = OPTIONS[6]
-        self.threading = OPTIONS[7]
+    def __init__(self, MODULE, option_dict: dict, modules: dict):
+        self.module = MODULE
         self.option_dict = option_dict
         self.modules = modules
 
-    def showOptions(self):
+    def showoriginal(self, option: str) -> str:
+        value = self.option_dict[option]['value']['value']
+        _type = self.option_dict[option]['value']['type']
+        if type(value) is not (list or dict or tuple):
+            return str(value)
+        
+        for rule in self.option_dict[option]['typerules']:
+            scheme: dict = self.option_dict[option]['typerules'][rule]
+            if scheme.get('delimeter') and type(value) is list and _type == rule:
+                delimeter : str = scheme.get('delimeter')
+                return delimeter.join(value)
+
+    def showOptions(self, trueval: bool = True):
         """
         Display values assigned to each options in a module.
         
@@ -178,13 +183,16 @@ class Options():
         if self.module in self.modules:
             maxwidth = max(len(opt) for opt in self.modules[self.module]['options'])
             maxwidth = maxwidth if (maxwidth > len("option")) else len("option")
-            print('{0:{2}}  | {1}'.format("option", "value", maxwidth))
-            print(f'{"-"*maxwidth}--|{"-"*maxoptwidth}')
+            print(f'\t+-{"-"*maxwidth}--={"-"*maxoptwidth}--+')
+            print('\t| {0:{2}}  | {1:{3}} |'.format("option", "value", maxwidth, maxoptwidth))
+            print(f'\t|-{"-"*maxwidth}--|{"-"*maxoptwidth}--|')
             COLOR: str = FNORMAL
             for option in self.modules[self.module]['options']:
-                OptionIsRequired: bool = self.option_dict[option]['required'] is (not None and True)
+                display_value = self.option_dict[option]['value'] if option in self.option_dict else "***N/A***"
+                OptionIsRequired: bool = self.option_dict[option]['required'] is (not None and True) if option in self.option_dict else False
                 if option in self.option_dict:
                     if self.option_dict[option]['type'] == "dict":
+                        display_value = self.showoriginal(option) if trueval else self.option_dict[option]['value']
                         if self.option_dict[option]['value']['value'] in [None, '']:
                             if OptionIsRequired:
                                 COLOR = FALERT
@@ -200,16 +208,28 @@ class Options():
                                 COLOR = FURGENT
                         else:
                             COLOR = FNORMAL
-
-                    print('{3}{0:{2}}{4}  | {1}'.format(option, self.option_dict[option]['value'], maxwidth, COLOR, FNORMAL))
                 else:
-                    print(f'{FALERT}Error: options \'{option}\' not found{FNORMAL}')
+                    COLOR = FALERT
+                    
+                COLOR = COLOR if 'Windows' not in platform() else ''
+                NORMAL = FNORMAL if 'Windows' not in platform() else ''
+                print('\t| {2}{0:{4}}{3}  | {1:{5}} |'.format(option, str(display_value), COLOR, NORMAL, maxwidth, maxoptwidth))
+            
+            print(f'\t+-{"-"*maxwidth}--={"-"*maxoptwidth}--+')
+
 
         elif not self.module:
             maxwidth = max(len(opt) for opt in self.option_dict)
-            print('{0:{2}}  | {1}'.format("option", "value", maxwidth))
-            print(f'{"-"*maxwidth}--|{"-"*maxoptwidth}')
+            maxwidth = maxwidth if (maxwidth > len("option")) else len("option")
+            print(f'\t+-{"-"*maxwidth}--={"-"*maxoptwidth}--+')
+            print('\t| {0:{2}}  | {1:{3}} |'.format("option", "value", maxwidth, maxoptwidth))
+            print(f'\t|-{"-"*maxwidth}--|{"-"*maxoptwidth}--|')
             for option in self.option_dict:
-                print('{0:{2}}  | {1}'.format(option, self.option_dict[option]['value'], maxwidth))
+                display_value: any = self.option_dict[option]['value'] if option in self.option_dict else f"{FALERT}*N/A*"
+                if self.option_dict[option]['type'] == "dict":
+                    display_value = self.showoriginal(option) if trueval else self.option_dict[option]['value']
+                print('\t| {0:{2}}  | {1:{3}} |'.format(option, str(display_value), maxwidth, maxoptwidth))
+
+            print(f'\t+-{"-"*maxwidth}--={"-"*maxoptwidth}--+')
 
         print()
