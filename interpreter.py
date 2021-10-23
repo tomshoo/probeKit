@@ -158,7 +158,7 @@ class input_parser:
         elif verb == 'show':
             if utils.args(cmd_split, 1):
                 if utils.args(cmd_split, 1) == 'options':
-                    options = Options(self.MODULE, OPTIONS, self.option_dict)
+                    options = Options(self.MODULE, OPTIONS, self.option_dict, _modules)
                     options.showOptions()
                     self.exit_code = 0
 
@@ -198,23 +198,20 @@ class input_parser:
                 sys.exit(self.exit_code)
 
         elif verb == 'run':
-            self.exit_code = run.run(self.MODULE, OPTIONS)
+            self.exit_code = run.run(self.MODULE, self.option_dict)
 
         # Verb(or command) to set options
         elif verb == 'set':
-            new_set = setval.set_class(OPTIONS, cmd_split[1::])
+            new_set  = setval.set_class(self.option_dict, cmd_split[1::])
             ret_list = new_set.run()
-            OPTIONS = ret_list[0]
-            self.exit_code = ret_list[1]
-            new_set_dict  =setval.set_class(self.option_dict, cmd_split[1::])
-            ret_list = new_set_dict.run()
             self.option_dict = ret_list[0]
-        # Verb(or command) to unset options
+            self.exit_code = ret_list[1]
 
+        # Verb(or command) to unset options
         elif verb == 'unset':
-            new_unset = unset.unset_val(OPTIONS, cmd_split[1::])
+            new_unset = unset.unset_val(self.option_dict, cmd_split[1::])
             ret_list = new_unset.run()
-            OPTIONS = ret_list[0]
+            self.option_dict = ret_list[0]
             self.exit_code = ret_list[1]
 
         elif verb == 'use':

@@ -7,73 +7,80 @@
 
     "options": {
         "thost": {
-            "RequiredBy": ["osprobe", "probe"],
             "required": true,
             "type": "str",
-            "value": "127.0.0.1"
+            "value": ""
         },
         "tport": {
-            "RequiredBy": ["probe"],
             "required": true,
-            "type": "dict single_int range_list-int_/ group_list-int_,",
+            "type": "dict",
+            "typerules": {
+                "range": {
+                    "type": "list",
+                    "dtype": "str",
+                    "identifier": "/",
+                    "delimeter": "/"
+                },
+                "group": {
+                    "type": "list",
+                    "dtype": "str",
+                    "identifier": ",",
+                    "delimeter": ","
+                },
+                "single": {
+                    "type": "str",
+                    "dtype": "int"
+                }
+            },
             "value": {
-                "value": "22",
-                "type": "single"
+                "value": "",
+                "type": ""
             }
         },
         "protocol": {
-            "RequiredBy": ["probe"],
             "required": true,
             "type": "str",
-            "value": "tcp"
+            "value": ""
         },
         "verbose": {
-            "RequiredBy": ["probe"],
             "required": false,
             "type": "bool",
-            "value": "false"
+            "value": ""
         },
         "threading": {
-            "RequiredBy": ["probe"],
             "required": false,
             "type": "bool",
-            "value": "false"
+            "value": ""
         },
         "nmap": {
-            "RequiredBy": ["osprobe"],
             "required": false,
             "type": "int",
-            "value": "0"
+            "value": ""
         },
         "tryct": {
-            "RequiredBy": ["osprobe"],
             "required": false,
             "type": "int",
-            "value": "5"
+            "value": ""
         },
         "timeout": {
-            "RequiredBy": ["osprobe", "probe"],
             "required": false,
             "type": "float",
-            "value": "2.5"
+            "value": ""
         },
         "depth": {
-            "RequiredBy": ["dirfuzz"],
             "required": false,
             "type": "int",
-            "value": "3"
+            "value": ""
         },
         "turl": {
-            "RequiredBy": ["dirfuzz"],
             "required": true,
             "type": "str",
-            "value": "https://www.example.com/"
+            "value": ""
         },
         "wordlist": {
-            "RequiredBy": ["dirfuzz"],
             "required": true,
             "type": "str",
-            "value": "/home/user/Projects/Wordlist.txt"
+            "value": ""
         }
     }
 }

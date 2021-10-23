@@ -135,7 +135,7 @@ else:
 with open(data_path, 'r') as f:
     data_str = f.read()
 data = json.loads(data_str)
-valid_modules: list = data['modules']
+valid_modules: dict = data['modules']
 option_dict: dict = data['options']
 
 # Aliases for the user's comfort
