@@ -33,6 +33,7 @@ def __getServbyPort(port, protocol):
 
 def __tscanner(host: str, port: int, timeout: float, verbose: bool):
     """TCP port scanner function."""
+    timeout = timeout if timeout else 1
 
     socktcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
@@ -49,6 +50,8 @@ def __tscanner(host: str, port: int, timeout: float, verbose: bool):
         socktcp.close()
 
 def __uscanner(host: str, port: int, timeout: float, tryct: str, verbose: bool):
+    timeout = timeout if timeout else 1
+    tryct = tryct if tryct else 1
     """UDP port scanner function."""
     portstatus = False
     sockudp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
