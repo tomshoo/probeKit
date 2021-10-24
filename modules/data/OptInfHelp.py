@@ -168,10 +168,6 @@ class Options():
         If no module is selected display values assigned to all options.
         """
 
-        # maxwidth = max(len(opt) for opt in self.option_dict)
-        # for data in self.option_dict:
-        #     print('{0:{2}} => {1}'.format(data, self.option_dict.get(data)['value'], maxwidth))
-
         values: list = []
         for option in self.option_dict:
             values.append(str(self.option_dict[option]['value']))
@@ -192,7 +188,7 @@ class Options():
                 OptionIsRequired: bool = self.option_dict[option]['required'] is (not None and True) if option in self.option_dict else False
                 if option in self.option_dict:
                     if self.option_dict[option]['type'] == "dict":
-                        display_value = self.showoriginal(option) if trueval else self.option_dict[option]['value']
+                        display_value = self.showoriginal(option) if not trueval else self.option_dict[option]['value']
                         if self.option_dict[option]['value']['value'] in [None, '']:
                             if OptionIsRequired:
                                 COLOR = FALERT
@@ -227,7 +223,7 @@ class Options():
             for option in self.option_dict:
                 display_value: any = self.option_dict[option]['value'] if option in self.option_dict else f"{FALERT}*N/A*"
                 if self.option_dict[option]['type'] == "dict":
-                    display_value = self.showoriginal(option) if trueval else self.option_dict[option]['value']
+                    display_value = self.showoriginal(option) if not trueval else self.option_dict[option]['value']
                 print('\t| {0:{2}}  | {1:{3}} |'.format(option, str(display_value), maxwidth, maxoptwidth))
 
             print(f'\t+-{"-"*maxwidth}--={"-"*maxoptwidth}--+')
