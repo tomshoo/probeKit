@@ -37,12 +37,14 @@ class dark():
 colors = dark
 
 #Assign what module to use at startup
-MODULE = ""
+MODULE = "probe"
 
 #Assign values to options at startup
 OPTIONS = {
     "thost": "127.0.0.1",
-    "tport": "1/8000"
+    "tport": "80",
+    "protocol": "tcp",
+    "verbose": "true"
 }
 
 #Read the config.json file

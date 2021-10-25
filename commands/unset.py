@@ -1,5 +1,5 @@
 from config import colors as _colors
-from modules.util.utils import optionparser
+from modules.util.utils import optionsparser as _optparser
 
 _FALERT = _colors.FALERT
 _FURGENT = _colors.FURGENT
@@ -17,18 +17,28 @@ class unset_val:
 
     def unassign(self, option: str):
         options_dict: dict = self.ret_list[0]
-        if options_dict.get(option):
+        if option == "all":
+            for data in options_dict:
+                if options_dict[data]['type'] == "dict":
+                    options_dict[data]['value']['value'] = ""
+                    options_dict[data]['value']['type'] = ""
+                else:
+                    options_dict[data]['value'] = ""
+
+        elif options_dict.get(option):
             if options_dict[option]['type'] != "dict":
                 options_dict[option]['value'] = ""
             else:
                 options_dict[option]['value']['value'] = ""
                 options_dict[option]['value']['type'] = ""
+
         else:
             print(f'{_FALERT}Error: invalid option \'{option}\'')
             self.ret_list[1] = 1
             return
 
-        options_dict = optionparser(options_dict)
+        parser = _optparser(options_dict)
+        options_dict = parser.parse()
         print(f'{_FURGENT}unset {option}')
         self.ret_list[0] = options_dict
         self.ret_list[1] = 0

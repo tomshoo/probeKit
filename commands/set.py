@@ -1,7 +1,8 @@
-from config import colors as _colors
-from modules.util.utils import trim as _trim, args as _args, optionparser as _optparser
+from config import colors as _colors, OPTIONS
+from modules.util.utils import trim as _trim, args as _args, optionsparser as _optparser
 
 _FALERT = _colors.FALERT
+_FSUCCESS = _colors.FSUCCESS
 
 class set_class:
     def __init__(self, option_dict: dict, options: list):
@@ -11,7 +12,19 @@ class set_class:
     def run(self) -> list:
         options: str = ' '.join(self.options)
 
-        if ' ' in options:
+        if options.lower() == "all":
+            print(f'{_FSUCCESS}set all')
+            option_dict: dict = self.ret_list[0]
+            for option in OPTIONS:
+                if option_dict[option]['type'] == "dict":
+                    option_dict[option]['value']['value'] = OPTIONS[option]
+                else:
+                    option_dict[option]['value'] = OPTIONS[option]
+
+            parser = _optparser(option_dict)
+            option_dict = parser.parse()
+            self.ret_list[0] = option_dict
+        elif ' ' in options:
             assignment = options.split(' ')
             for data in assignment:
                 option = _args(data.split('='), 0).lower()
@@ -38,7 +51,8 @@ class set_class:
             self.ret_list[1] = 1
             return
         
-        options = _optparser(options)
+        parser = _optparser(options)
+        options = parser.parse()
         print(option, '=>', value)
         self.ret_list[0] = options
         self.ret_list[1] = 0

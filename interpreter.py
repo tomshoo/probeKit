@@ -35,7 +35,8 @@ end = utils.timestamp()
 print(f'modules took {round(end-start, 7)} sec(s). to load')
 
 # Setup Utils
-option_dict = utils.optionparser(option_dict)
+optionparser = utils.optionsparser(option_dict)
+option_dict = optionparser.parse()
 ExitException = utils.ExitException
 completion_list: list = [
     "use", 
@@ -163,7 +164,7 @@ class input_parser:
             if utils.args(cmd_split, 1):
                 if utils.args(cmd_split, 1) == 'options':
                     options = Options(self.MODULE, self.option_dict, _modules)
-                    options.showOptions()
+                    options.showOptions() if utils.args(cmd_split, 2) in ['-t', '--true'] else options.showOptions(False)
                     self.exit_code = 0
 
                 elif utils.args(cmd_split, 1) == 'info':

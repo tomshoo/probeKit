@@ -17,13 +17,13 @@
             "typerules": {
                 "range": {
                     "type": "list",
-                    "dtype": "str",
+                    "dtype": "int",
                     "identifier": "/",
                     "delimeter": "/"
                 },
                 "group": {
                     "type": "list",
-                    "dtype": "str",
+                    "dtype": "int",
                     "identifier": ",",
                     "delimeter": ","
                 },
