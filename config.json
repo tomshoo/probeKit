@@ -2,7 +2,7 @@
     "modules": {
         "probe": {"options": ["thost", "tport", "protocol", "timeout", "tryct", "verbose", "threading"]},
         "osprobe": {"options": ["thost", "tryct", "nmap"]},
-        "dirfuzz": {"options": ["turl", "wordlist", "timeout"]}
+        "dirfuzz": {"options": ["turl", "wordlist", "depth"]}
     },
 
     "options": {
