@@ -40,8 +40,8 @@ class checkOS():
     nmapscanner = nmap.PortScanner()
     def __init__(self, target, iterator, ifnmap):
         self.target = target
-        self.iterator = iterator
-        self.ifnmap = ifnmap
+        self.iterator = iterator if iterator else 1
+        self.ifnmap = ifnmap if ifnmap else 0
 
     def OSbyTTL(self):
         ttllist = checkTTL(self.target, self.iterator)

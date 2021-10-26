@@ -32,23 +32,22 @@ def run(module: str, options: dict) -> int:
                     options['thost']['value'],
                     options['tryct']['value'],
                     options['nmap']['value']
-                )
+                ).scanner()
             elif module == "dirfuzz":
                 _dirfuzz.fuzz(
                     options['turl']['value'],
                     options['wordlist']['value'],
                     options['depth']['value']
                 )
+
+            return 0
         except PermissionError as e:
-            print(_FALERT+e)
+            print(_FALERT, e)
             return 1
 
         except FileNotFoundError as e:
-            print(_FALERT+e)
+            print(_FALERT ,e)
             return 1
-
-        finally:
-            return 0
     
     else:
         print(f'{_BALERT}[-] Error: Invalid module \'{module}\'{_BNORMAL}')

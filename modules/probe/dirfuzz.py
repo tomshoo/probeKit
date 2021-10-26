@@ -2,6 +2,7 @@ import requests
 import os
 
 def fuzz(url: str, wordlist_path: str, depth: int):
+    depth = 0 if not depth else depth
     if os.path.exists(wordlist_path):
         with open(wordlist_path, 'r') as f:
             wordlist = f.read().splitlines()
@@ -26,10 +27,11 @@ def fuzz(url: str, wordlist_path: str, depth: int):
 
     length = len(wordlist)
     for word in wordlist:
-        response = requests.get(url+word)
+        response = requests.get(url+'/'+word)
         if response:
             print('url: ', url+word, 'status code: ', response.status_code)
-            print(f'tried: {wordlist.index(word)}/{length}', end='\r')
+        
+        print(f'tried: {wordlist.index(word)}/{length}', end='\r')
 
     wordlist_use.clear()
     wordlist.clear()
