@@ -41,7 +41,7 @@ ln -srf ./config.json ~/.config/probekit/config.json
 ###  Windows 10
 
 - Install `nmap` and `npcap` from the [official](https://nmap.org/download.html) website.
-- Install `python3.x<10` from python's [official](https://www.python.org/downloads/) or from Micrsoft store.
+- Install `python3.6>=x<10` from python's [official](https://www.python.org/downloads/) or from Micrsoft store.
 - Then copy and paste the following commands in windows powershell,
 
 ``` pwsh

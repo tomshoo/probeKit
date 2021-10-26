@@ -165,12 +165,11 @@ class optionsparser:
                         else:
                             dtype = rule.get('dtype')
                             _type = rule.get('type')
-                            exec('data_value[\'value\'] = {}(\'{}\')'.format(dtype, data_value['value']))
+                            exec(f'data_value[\'value\'] = {dtype}(\'{data_value["value"]}\')')
                             data_value['type'] = scheme
                             break
                 else:
-                    exec('''try:\n\tdata_value[\'value\'] = {0}(\'{1}\') if data_value[\'value\'] else \'\'\nexcept ValueError:\n\tprint(\'Err: Invalid value\')'''.format(rule.get('dtype'), data_value['value']))
-                    # exec('''data_value[\'value\'] = {0}(\'{1}\') if data_value[\'value\'] else \'\'\n'''.format(rule.get('dtype'), data_value['value']))
+                    exec(f'''try:\n\tdata_value[\'value\'] = {rule.get("dtype")}(\'{data_value["value"]}\') if data_value[\'value\'] else \'\'\nexcept ValueError:\n\tprint(\'Err: Invalid value\')''')
                     data_value['type'] = scheme
         self.option_dict = option_dict
 

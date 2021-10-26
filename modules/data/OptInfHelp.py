@@ -180,7 +180,7 @@ class Options():
             maxwidth = max(len(opt) for opt in self.modules[self.module]['options'])
             maxwidth = maxwidth if (maxwidth > len("option")) else len("option")
             print(f'\t+-{"-"*maxwidth}--={"-"*maxoptwidth}--+')
-            print('\t| {0:{2}}  | {1:{3}} |'.format("option", "value", maxwidth, maxoptwidth))
+            print(f'\t| {"option":{maxwidth}}  | {"value":{maxoptwidth}} |')
             print(f'\t|-{"-"*maxwidth}--|{"-"*maxoptwidth}--|')
             COLOR: str = FNORMAL
             for option in self.modules[self.module]['options']:
@@ -209,7 +209,7 @@ class Options():
                     
                 COLOR = COLOR if 'Windows' not in platform() else ''
                 NORMAL = FNORMAL if 'Windows' not in platform() else ''
-                print('\t| {2}{0:{4}}{3}  | {1:{5}} |'.format(option, str(display_value), COLOR, NORMAL, maxwidth, maxoptwidth))
+                print(f'\t| {COLOR}{option:{maxwidth}}{NORMAL}  | {str(display_value):{maxwidth}} |')
             
             print(f'\t+-{"-"*maxwidth}--={"-"*maxoptwidth}--+')
 
@@ -218,13 +218,13 @@ class Options():
             maxwidth = max(len(opt) for opt in self.option_dict)
             maxwidth = maxwidth if (maxwidth > len("option")) else len("option")
             print(f'\t+-{"-"*maxwidth}--={"-"*maxoptwidth}--+')
-            print('\t| {0:{2}}  | {1:{3}} |'.format("option", "value", maxwidth, maxoptwidth))
+            print(f'\t| {"option":{maxwidth}}  | {"value":{maxoptwidth}} |')
             print(f'\t|-{"-"*maxwidth}--|{"-"*maxoptwidth}--|')
             for option in self.option_dict:
                 display_value: any = self.option_dict[option]['value'] if option in self.option_dict else f"{FALERT}*N/A*"
                 if self.option_dict[option]['type'] == "dict":
                     display_value = self.showoriginal(option) if not trueval else self.option_dict[option]['value']
-                print('\t| {0:{2}}  | {1:{3}} |'.format(option, str(display_value), maxwidth, maxoptwidth))
+                print(f'\t| {option:{maxwidth}}  | {str(display_value):{maxoptwidth}} |')
 
             print(f'\t+-{"-"*maxwidth}--={"-"*maxoptwidth}--+')
 
