@@ -4,37 +4,37 @@ from platform import platform
 from colorama import Fore, Back
 
 # configure colors in this class
-class light():
+class nonpowershell():
     #Foreground Colors
     FALERT   : str = Fore.RED
     FSUCCESS : str = Fore.GREEN
-    FNORMAL  : str = Fore.BLACK
+    FNORMAL  : str = Fore.RESET
     FURGENT  : str = Fore.YELLOW
     FPROMPT  : str = Fore.BLUE
 
     #Background Colors
     BALERT   : str = Back.RED
     BSUCCESS : str = Back.GREEN
-    BNORMAL  : str = Back.WHITE
+    BNORMAL  : str = Back.RESET
     BURGENT  : str = Back.YELLOW
 
 
-class dark():
+class powershell():
     #Foreground Colors
     FALERT   : str = Fore.RED
     FSUCCESS : str = Fore.GREEN
-    FNORMAL  : str = Fore.WHITE
+    FNORMAL  : str = Fore.RESET
     FURGENT  : str = Fore.YELLOW
-    FPROMPT  : str = Fore.BLUE
+    FPROMPT  : str = Fore.CYAN
 
     #Background Colors
     BALERT   : str = Back.RED
     BSUCCESS : str = Back.GREEN
-    BNORMAL  : str = Back.BLACK
+    BNORMAL  : str = Back.RESET
     BURGENT  : str = Back.YELLOW
 
 # Chose color scheme(light or dark)
-colors = dark
+colors = nonpowershell
 
 #Assign what module to use at startup
 MODULE = ""
@@ -45,7 +45,7 @@ OPTIONS = {
     "tport": "",
     "protocol": "",
     "verbose": "",
-    "turl": "https://www.example.com"
+    "turl": "https://www.example.com",
 }
 
 #Read the config.json file
