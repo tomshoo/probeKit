@@ -209,7 +209,7 @@ class Options():
                     
                 COLOR = COLOR if 'Windows' not in platform() else ''
                 NORMAL = FNORMAL if 'Windows' not in platform() else ''
-                print(f'\t| {COLOR}{option:{maxwidth}}{NORMAL}  | {str(display_value):{maxwidth}} |')
+                print(f'\t| {COLOR}{option:{maxwidth}}{NORMAL}  | {str(display_value):{maxoptwidth}} |')
             
             print(f'\t+-{"-"*maxwidth}--={"-"*maxoptwidth}--+')
 
