@@ -65,7 +65,7 @@ class portprobe:
 
         except Exception as exp:
             if verbose:
-                print(FALERT, port, exp, FNORMAL)
+                print('[-]', FALERT, port, exp, FNORMAL, end="\r")
             return False
 
         finally:
