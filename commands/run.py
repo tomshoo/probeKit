@@ -34,11 +34,13 @@ def run(module: str, options: dict) -> int:
                     options['nmap']['value']
                 ).scanner()
             elif module == "dirfuzz":
-                _dirfuzz.fuzz(
+                _dirfuzz.fuzzer(
                     options['turl']['value'],
+                    options['type']['value'],
                     options['wordlist']['value'],
-                    options['depth']['value']
-                )
+                    options['depth']['value'],
+                    options['verbose']['value']
+                ).fuzz()
 
             return 0
         except PermissionError as e:
