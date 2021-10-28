@@ -18,7 +18,7 @@ def run(module: str, options: dict) -> int:
                     print(f'{_FALERT}Error: Invalid value for tport')
                     return 1
 
-                _ports.display(
+                _ports.portprobe(
                     options['thost']['value'],
                     options['tport']['value'],
                     options['timeout']['value'],
@@ -26,7 +26,7 @@ def run(module: str, options: dict) -> int:
                     options['tryct']['value'],
                     options['verbose']['value'],
                     options['threading']['value']
-                )
+                ).display()
             elif module == "osprobe":
                 _osprobe.checkOS(
                     options['thost']['value'],
