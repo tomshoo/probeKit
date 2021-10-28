@@ -145,9 +145,23 @@ class optionsparser:
     def __init__(self, option_dict: dict) -> None:
         self.option_dict = option_dict
 
+
+    def __typeset(self, dtype: str):
+        dtype = dtype.lower()
+        if dtype == "str":
+            return str
+        elif dtype == "int":
+            return int
+        elif dtype == "float":
+            return float
+        elif dtype == "bool":
+            return bool
+        else:
+            raise Exception(f"Invalid dtype value \'{dtype}\'")
+
     def __dictparser(self, data: str) -> None:
         option_dict: dict = self.option_dict
-        data_value: str  = option_dict[data]['value']
+        data_value: dict  = option_dict[data]['value']
         data_rules: dict = option_dict[data]['typerules']
         if type(data_value['value']) is str:
             for scheme in data_rules:
@@ -165,11 +179,15 @@ class optionsparser:
                         else:
                             dtype = rule.get('dtype')
                             _type = rule.get('type')
-                            exec(f'data_value[\'value\'] = {dtype}(\'{data_value["value"]}\')')
+                            dtype = self.__typeset(dtype)
+                            data_value['value'] = dtype(data_value['value'])
+                            # exec(f'data_value[\'value\'] = {dtype}(\'{data_value["value"]}\')')
                             data_value['type'] = scheme
                             break
                 else:
-                    exec(f'''try:\n\tdata_value[\'value\'] = {rule.get("dtype")}(\'{data_value["value"]}\') if data_value[\'value\'] else \'\'\nexcept ValueError:\n\tprint(\'Err: Invalid value\')''')
+                    dtype = self.__typeset(rule.get("dtype"))
+                    data_value['value'] = '' if not data_value.get('value') and type(data_value.get('value')) is str else dtype(data_value.get('value'))
+                    # exec(f'''try:\n\tdata_value[\'value\'] = {rule.get("dtype")}(\'{data_value["value"]}\') if data_value[\'value\'] else \'\'\nexcept ValueError:\n\tprint(\'Err: Invalid value\')''')
                     data_value['type'] = scheme
         self.option_dict = option_dict
 
