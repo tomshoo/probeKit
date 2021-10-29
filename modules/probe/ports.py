@@ -198,7 +198,7 @@ class portprobe:
 
                 except KeyboardInterrupt:
                     print(f'{FALERT}Keyboard interrupt received, quitting!!')
-                    if threading:
+                    if self.threading:
                         executor.shutdown(wait=False, cancel_futures=True)
 
             end = timestamp()            
