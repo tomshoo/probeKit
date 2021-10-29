@@ -7,11 +7,13 @@
 
     "options": {
         "thost": {
+            "description": "Domain name or ip address of target",
             "required": true,
             "type": "str",
             "value": ""
         },
         "tport": {
+            "description": "Ports to scan for",
             "required": true,
             "type": "dict",
             "typerules": {
@@ -38,51 +40,61 @@
             }
         },
         "protocol": {
+            "description": "Protocol to use",
             "required": true,
             "type": "str",
             "value": ""
         },
         "verbose": {
+            "description": "Display verbose(exapnded) output",
             "required": false,
             "type": "bool",
             "value": ""
         },
         "threading": {
+            "description": "enable multithreading?",
             "required": false,
             "type": "bool",
             "value": ""
         },
         "nmap": {
+            "description": "use NMAP for OS detection(active)",
             "required": false,
             "type": "int",
             "value": ""
         },
         "tryct": {
+            "description": "Number of tries before giving up",
             "required": false,
             "type": "int",
             "value": ""
         },
         "timeout": {
+            "description": "time in seconds to wait before giving up",
             "required": false,
             "type": "float",
             "value": ""
         },
         "depth": {
+            "description": "depth of directories to check",
             "required": false,
             "type": "int",
             "value": ""
         },
         "turl": {
+            "description": "URL of target host, must be a proper URL",
             "required": true,
             "type": "str",
             "value": ""
         },
         "type" :{
+            "description": "type of bruteforcing to perform",
             "required": true,
             "type": "str",
             "value": ""
         },
         "wordlist": {
+            "description": "path to wordlist to use",
             "required": true,
             "type": "str",
             "value": ""
