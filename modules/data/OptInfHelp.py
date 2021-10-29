@@ -1,6 +1,6 @@
 # This is the data-information module which will print help for the interpreter and information about selected module
 
-from config import colors
+from config import colors_rich as colors
 from platform import platform
 from rich import traceback, table, box, console
 Console = console.Console()
@@ -8,7 +8,6 @@ traceback.install()
 
 FSUCCESS = colors.FSUCCESS
 FALERT = colors.FALERT
-FNORMAL = colors.FNORMAL
 FURGENT = colors.FURGENT
 
 class PromptHelp():
@@ -22,87 +21,87 @@ class PromptHelp():
 
         # Checks whether the shell is module interpreter or module selector session
         if command == '':
-            print(FSUCCESS+'\nUsage: [verb] [options]')
-            print('Available verbs are:\n')
-            print('\t use\t\t use an available module(*)')
-            print('\t show\t\t shows information on provided argument(*)')
-            print('\t set\t\t assignes values to available options(*)')
-            print('\t unset\t\t unassigns value from the provided option(*)')
-            print('\t help\t\t prints this help message')
-            print('\t exit\t\t exits the whole interpreter')
-            print('\t back\t\t moves back to the module selector')
-            print('\t clear\t\t clears screen')
-            print('\t run\t\t runs the selected module')
-            print('\t about\t\t prints details about specified module(*)')
-            print('\t list\t\t prints available modules')
-            print('\t banner\t\t prints an ascii banner')
-            print('\t alias\t\t set an alias for a command(*)')
-            print('\t unalias\t unset a pre-existing alias(*)')
-            print('\nRun help [command] for more information:')
-            print('\t -> only the commands marked with (*) have a seperate help\n')
+            Console.print(f'\n[{FSUCCESS}]Usage: [verb] [options]\n'+
+            'Available verbs are:\n\n'+
+            '\t use\t\t (*)use an available module\n'+
+            '\t show\t\t (*)shows information on provided argument\n'+
+            '\t set\t\t (*)assignes values to available options\n'+
+            '\t unset\t\t (*)unassigns value from the provided option\n'+
+            '\t help\t\t prints this help message\n'+
+            '\t exit\t\t exits the whole interpreter\n'+
+            '\t back\t\t moves back to the module selector\n'+
+            '\t clear\t\t clears screen\n'+
+            '\t run\t\t runs the selected module\n'+
+            '\t about\t\t (*)prints details about specified module\n'+
+            '\t list\t\t prints available modules\n'+
+            '\t banner\t\t prints an ascii banner\n'+
+            '\t alias\t\t (*)set an alias for a command\n'+
+            '\t unalias\t (*)unset a pre-existing alias\n'+
+            '\nRun help \[command] for more information:\n'+
+            '\t -> only the commands marked with (*) have a seperate help[/]\n'
+            )
             return 0
 
         elif command == 'show':
-            print(f'{FSUCCESS}\n show:\t Shows information on provided argument')
-            print('\t Usage: show [argument]')
-            print('\t Available arguments are:')
-            print('\t\t | options: shows values assigned to the options available for the selected module')
-            print('\t\t\t - shows all assigned values if no module is selected\n')
-            print('\t\t | info: shows available options for selected module\n')
-            print('\t\t | status: prints exit status of previous command\n')
+            Console.print(f'[{FSUCCESS}]\n show:\t Shows information on provided argument\n'
+            '\t Usage: show [argument]\n'
+            '\t Available arguments are:\n'
+            '\t\t | options: shows values assigned to the options available for the selected module\n'
+            '\t\t\t - shows all assigned values if no module is selected\n\n'
+            '\t\t | info: shows available options for selected module\n'
+            '\t\t | status: prints exit status of previous command[/]\n')
             return 0
 
         elif command == 'set':
-            print(f'{FSUCCESS}\n set:\t Sets the provided value to the provided option')
-            print('\t Usage: set [option1]=[value1] [option2]=[value2] ...')
-            print('\t Example: > set thost=127.0.0.1 tport=443,5432,8000 proto=tcp')
-            print('\t          > set thost=127.0.0.1 tport=1/8000')
-            print('\t          > set proto=tcp')
-            print('\t | Refer to [show] command to get options\n')
+            Console.print(f'[{FSUCCESS}]\n set:\t Sets the provided value to the provided option\n'
+            '\t Usage: set \[option1]=\[value1] \[option2]=\[value2] ...\n'
+            '\t Example: > set thost=127.0.0.1 tport=443,5432,8000 proto=tcp\n'
+            '\t          > set thost=127.0.0.1 tport=1/8000\n'
+            '\t          > set proto=tcp\n'
+            '\t | Refer to [show] command to get options[/]\n')
             return 0
 
         elif command == 'unset':
-            print(f'{FSUCCESS}\n unset:\t Unassigns any value provided to the given option')
-            print('\t Usage: unset [option1] [option2] ...')
-            print('\t | Note: It also unassigns the values defined in [config.py]\n')
+            Console.print(f'[{FSUCCESS}]\n unset:\t Unassigns any value provided to the given option\n'
+            '\t Usage: unset \[option1] \[option2] ...\n'
+            '\t | Note: It also unassigns the values defined in \[config.py][/]\n')
             return 0
 
         elif command == 'about':
-            print(f'{FSUCCESS}\n about:\t Displays information about the provided module')
-            print('\t Usage: about [module_name]')
-            print('\t\t | If no argument is provided it takes the selected module as argument\n')
+            Console.print(f'[{FSUCCESS}]\n about:\t Displays information about the provided module\n'
+            '\t Usage: about \[module_name]\n'
+            '\t\t | If no argument is provided it takes the selected module as argument[/]\n')
             return 0
 
         elif command == 'alias':
-            print(f'{FSUCCESS}\n alias:\t Set an alias for a command')
-            print('\t Usage: alias [alias_name]<-[command]')
-            print('\t Example: > alias u<use')
-            print('\t          > u$')
-            print('\t          > alias thost<set thost')
-            print('\t          > thost$=127.0.0.1')
-            print('\t          > alias localhost<127.0.0.1')
-            print('\t          > set thost=$localhost$')
-            print('\t | If ran without argument it lists all the available aliases\n')
+            Console.print(f'[{FSUCCESS}]\n alias:\t Set an alias for a command\n'
+            '\t Usage: alias \[alias_name]<\[command]\n'
+            '\t Example: > alias u<use\n'
+            '\t          > u$\n'
+            '\t          > alias thost<set thost\n'
+            '\t          > thost$=127.0.0.1\n'
+            '\t          > alias localhost<127.0.0.1\n'
+            '\t          > set thost=$localhost$\n'
+            '\t | If ran without argument it lists all the available aliases[/]\n')
             return 0
 
         elif command == 'unalias':
-            print(f'{FSUCCESS}\nunalias:\t Unset a pre-existing alias')
-            print('\t\t | Usage: unalias [alias_name]\n')
+            Console.print(f'[{FSUCCESS}]\nunalias:\t Unset a pre-existing alias\n'
+            '\t\t | Usage: unalias \[alias_name][/]\n')
             return 0
 
         elif command == 'use':
-            print(f'{FSUCCESS}\nuse: \t Use an available module')
-            print('\t Usage: use [module_name]\n')
+            Console.print(f'[{FSUCCESS}]\nuse: \t Use an available module\n'
+            '\t Usage: use \[module_name]\n[/]')
             return 0
 
         elif command in ['exit', 'back', 'help', 'clear', 'run', 'list']:
-            print(f'{FURGENT}Please refer the default help for \'{command}\'')
+            Console.print(f'[{FURGENT}]Please refer the default help for \'{command}\'[/]')
             return 3
 
         else:
-            print(f'{FALERT}Error: No such command: \'{command}\'')
+            Console.print(f'[{FALERT}]Error: No such command: \'[bold]{command}[/]\'[/]')
             return 1
-
 
 class Info():
     """List available options for a selected module"""
@@ -114,35 +113,35 @@ class Info():
         module = self.module
 
         if module == 'probe':
-            print(f'\n\t[*] THOST => hosts ip4 address(required)(THOST => thost)')
-            print(f'\t[*] TPORT => ports to scan on host(required)(TPORT => tport)')
-            print(FALERT+f'\t             | values can be set as:')
-            print('\t                                   | [portnumber] (single port scan)')
-            print('\t                                   | [startport/endport] (port range)')
-            print('\t                                   | [port1,port2,port3,...] (port group)\n')
-            print(FNORMAL+f'\t[*] PROTO => protocol to use for scanning(required)(PROTO => proto)')
-            print(FALERT+f'\t             | Available protocols: ')
-            print(f'\t                                  | [TCP => tcp => TCP/IP => tcp/ip]')
-            print(f'\t                                  | [UDP => udp]\n')
-            print(FNORMAL+f'\t[*] TMOUT => time to wait for incomming packet in seconds(set to \'1\' by default)(TMOUT => tmout)\n')
-            print(FNORMAL+f'\t[*] TRYCT => number of tries to perform while performing UDP scan(set to \'1\' by default)(TRYCT => tryct)\n')
-            print(FNORMAL+f'\t[*] VERBOSE => Provide a verbose output or not(VERBOSE => verbose)')
-            print(f'\t                     | Available options are true (or) false\n')
-            print(f'{FNORMAL}\t[*] THREADING => Allow threading while scanning ports(THREADING => threading)')
-            print(f'\t                     | Available options are true (or) false\n')
+            Console.print(f'\n\t[*] THOST => hosts ip4 address (required) (THOST => thost)\n'
+            f'\t[*] TPORT => ports to scan on host (required) (TPORT => tport)\n'
+            f'[{FALERT}]\t             | values can be set as:\n'
+            f'\t                                   | \[portnumber] (single port scan)\n'
+            f'\t                                   | \[startport/endport] (port range)\n'
+            f'\t                                   | \[port1,port2,port3,...] (port group)[/]\n\n'
+            f'\t[*] PROTO => protocol to use for scanning (required) (PROTO => proto)\n'
+            f'\t[{FALERT}]             | Available protocols: \n'
+            f'\t                                  | [TCP => tcp => TCP/IP => tcp/ip]\n'
+            f'\t                                  | [UDP => udp][/]\n\n'
+            f'\t[*] TMOUT => time to wait for incomming packet in seconds (set to \'1\' by default)(TMOUT => tmout)\n\n'
+            f'\t[*] TRYCT => number of tries to perform while performing UDP scan (set to \'1\' by default)(TRYCT => tryct)\n\n'
+            f'\t[*] VERBOSE => Provide a verbose output or not (VERBOSE => verbose)\n'
+            f'\t[{FALERT}]                     | Available options are true (or) false\n\n[/]'
+            f'\t[*] THREADING => Allow threading while scanning ports (THREADING => threading)\n'
+            f'\t[{FALERT}]                     | Available options are true (or) false\n[/]')
             return 0
 
         elif module == 'osprobe':
-            print(f'\n\t[*] THOST => hosts ip4 address(required)(THOST => thost)\n')
-            print(f'\t[*] TRYCT => number of tries to send the packet(set to \'1\' by default)(TRYC => tryc)\n')
-            print(f'\t[*] NMAP  => should we perform an NMAP scan?(set to \'0\' by default)(NMAP => nmap)')
-            print(f'\t           {FALERT}| 0 implies flase')
-            print(f'\t           | 1 implies true')
-            print(f'\t           | WARNING: Use at your own risk{FNORMAL}\n')
+            Console.print(f'\n\t[*] THOST => hosts ip4 address (required) (THOST => thost)\n\n'
+            f'\t[*] TRYCT => number of tries to send the packet (set to \'1\' by default) (TRYC => tryc)\n\n'
+            f'\t[*] NMAP  => should we perform an NMAP scan? (set to \'0\' by default) (NMAP => nmap)\n'
+            f'\t[{FALERT}]           | 0 implies flase\n'
+            f'\t           | 1 implies true\n'
+            f'\t           | WARNING: Use at your own risk\n[/]')
             return 0
 
         else:
-            print(FALERT+'Error: Invalid module')
+            Console.print(f'[{FALERT}]Error: Invalid module[/]')
             return 1
 
 class Options():
@@ -176,7 +175,7 @@ class Options():
         if self.module in self.modules:
             COLOR: str = ""
             for option in self.modules[self.module]['options']:
-                display_value = self.option_dict[option]['value'] if option in self.option_dict else "***N/A***"
+                display_value = self.option_dict[option]['value'] if option in self.option_dict else "[red]***N/A***[/]"
                 OptionIsRequired: bool = self.option_dict[option]['required'] is (not None and True) if option in self.option_dict else False
                 if option in self.option_dict:
                     if self.option_dict[option]['type'] == "dict":
@@ -200,12 +199,16 @@ class Options():
                     COLOR = "red"
 
                 COLOR = COLOR if COLOR else "white"                    
-                new_table.add_row(f"[{COLOR}]{option}[/]", f"[white]{display_value}", self.option_dict.get(option).get('description'))
+                new_table.add_row(
+                    f"[{COLOR}]{option}[/]",
+                    f"[white]{display_value}",
+                    self.option_dict.get(option).get('description') if self.option_dict.get(option) else '[red]***N/A***'
+                )
 
 
         elif not self.module:
             for option in self.option_dict:
-                display_value: str = str(self.option_dict[option]['value'] if option in self.option_dict else f"{FALERT}*N/A*")
+                display_value: str = str(self.option_dict[option]['value'] if option in self.option_dict else f"[red]*N/A*[/]")
                 if self.option_dict[option]['type'] == "dict":
                     display_value = str(self.showoriginal(option) if not trueval else self.option_dict[option]['value'])
                 

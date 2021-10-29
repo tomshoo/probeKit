@@ -1,21 +1,20 @@
-from config import (
-    colors as _colors,
-    valid_modules as _modules,
-)
+from config import valid_modules as _modules, colors_rich as _colors
 import modules.probe.ports as _ports
 import modules.probe.osprobe as _osprobe
 import modules.probe.dirfuzz as _dirfuzz
+from rich import traceback, console
+traceback.install()
+Console = console.Console()
 
 _FALERT = _colors.FALERT
 _BALERT = _colors.BALERT
-_BNORMAL = _colors.BNORMAL
 
 def run(module: str, options: dict) -> int:
     if module in _modules:
         try:
             if module == "probe":
                 if not options['tport']['value']['value']:
-                    print(f'{_FALERT}Error: Invalid value for tport')
+                    Console.print(f'[bold {_FALERT}]Error: Invalid value for tport[/]')
                     return 1
 
                 _ports.portprobe(
@@ -44,13 +43,13 @@ def run(module: str, options: dict) -> int:
 
             return 0
         except PermissionError as e:
-            print(_FALERT, e)
+            Console.print(f'[{_FALERT}]{str(e)}[/]')
             return 1
 
         except FileNotFoundError as e:
-            print(_FALERT ,e)
+            Console.print(f'[{_FALERT}]{str(e)}[/]')
             return 1
     
     else:
-        print(f'{_BALERT}[-] Error: Invalid module \'{module}\'{_BNORMAL}')
+        Console.print(f'[{_BALERT}][-] Error: Invalid module "{module}"[/]')
         return 1

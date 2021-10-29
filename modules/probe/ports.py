@@ -25,15 +25,16 @@ openports: list = []
 valid_protocols: list = ['tcp', 'tcp/ip', 'TCP', 'TCP/IP', 'udp', 'UDP']
 
 class portprobe:
-    def __init__(self,
-            thost: str,
-            tport: dict,
-            timeout: int,
-            protocol: str,
-            tryct: int,
-            verbose: bool,
-            threading: bool
-        ):
+    def __init__(
+        self,
+        thost: str,
+        tport: dict,
+        timeout: int,
+        protocol: str,
+        tryct: int,
+        verbose: bool,
+        threading: bool
+    ):
         self.thost = thost
         self.tport = tport
         self.timeout = timeout if timeout else 1
