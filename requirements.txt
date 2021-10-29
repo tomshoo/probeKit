@@ -4,3 +4,4 @@ pyreadline>=2.1
 pyfiglet>=0.8.post1
 colorama>=0.4.4
 multipledispatch>=0.6.0
+rich

@@ -2,6 +2,9 @@
 
 from config import colors
 from platform import platform
+from rich import traceback, table, box, console
+Console = console.Console()
+traceback.install()
 
 FSUCCESS = colors.FSUCCESS
 FALERT = colors.FALERT
@@ -168,21 +171,10 @@ class Options():
         If no module is selected display values assigned to all options.
         """
 
-        values: list = []
-        for option in self.option_dict:
-            values.append(str(self.option_dict[option]['value']))
-
-        maxoptwidth = max(len(val) for val in values)
-        values.clear()
-        print(FNORMAL)
+        new_table = table.Table("Option", "Value", "Descrption", box=box.SIMPLE)
 
         if self.module in self.modules:
-            maxwidth = max(len(opt) for opt in self.modules[self.module]['options'])
-            maxwidth = maxwidth if (maxwidth > len("option")) else len("option")
-            print(f'\t+-{"-"*maxwidth}--={"-"*maxoptwidth}--+')
-            print(f'\t| {"option":{maxwidth}}  | {"value":{maxoptwidth}} |')
-            print(f'\t|-{"-"*maxwidth}--|{"-"*maxoptwidth}--|')
-            COLOR: str = FNORMAL
+            COLOR: str = ""
             for option in self.modules[self.module]['options']:
                 display_value = self.option_dict[option]['value'] if option in self.option_dict else "***N/A***"
                 OptionIsRequired: bool = self.option_dict[option]['required'] is (not None and True) if option in self.option_dict else False
@@ -191,41 +183,32 @@ class Options():
                         display_value = self.showoriginal(option) if not trueval else self.option_dict[option]['value']
                         if self.option_dict[option]['value']['value'] in [None, '']:
                             if OptionIsRequired:
-                                COLOR = FALERT
+                                COLOR = "red"
                             else:
-                                COLOR = FURGENT
+                                COLOR = "yellow"
                         else:
-                            COLOR = FNORMAL
+                            COLOR = "white"
                     else:
                         if self.option_dict[option]['value'] in [None, '']:
                             if OptionIsRequired:
-                                COLOR = FALERT
+                                COLOR = "red"
                             else:
-                                COLOR = FURGENT
+                                COLOR = "yellow"
                         else:
-                            COLOR = FNORMAL
+                            COLOR = "white"
                 else:
-                    COLOR = FALERT
-                    
-                COLOR = COLOR if 'Windows' not in platform() else ''
-                NORMAL = FNORMAL if 'Windows' not in platform() else ''
-                print(f'\t| {COLOR}{option:{maxwidth}}{NORMAL}  | {str(display_value):{maxoptwidth}} |')
-            
-            print(f'\t+-{"-"*maxwidth}--={"-"*maxoptwidth}--+')
+                    COLOR = "red"
+
+                COLOR = COLOR if COLOR else "white"                    
+                new_table.add_row(f"[{COLOR}]{option}[/]", f"[white]{display_value}", self.option_dict.get(option).get('description'))
 
 
         elif not self.module:
-            maxwidth = max(len(opt) for opt in self.option_dict)
-            maxwidth = maxwidth if (maxwidth > len("option")) else len("option")
-            print(f'\t+-{"-"*maxwidth}--={"-"*maxoptwidth}--+')
-            print(f'\t| {"option":{maxwidth}}  | {"value":{maxoptwidth}} |')
-            print(f'\t|-{"-"*maxwidth}--|{"-"*maxoptwidth}--|')
             for option in self.option_dict:
-                display_value: any = self.option_dict[option]['value'] if option in self.option_dict else f"{FALERT}*N/A*"
+                display_value: str = str(self.option_dict[option]['value'] if option in self.option_dict else f"{FALERT}*N/A*")
                 if self.option_dict[option]['type'] == "dict":
-                    display_value = self.showoriginal(option) if not trueval else self.option_dict[option]['value']
-                print(f'\t| {option:{maxwidth}}  | {str(display_value):{maxoptwidth}} |')
-
-            print(f'\t+-{"-"*maxwidth}--={"-"*maxoptwidth}--+')
-
-        print()
+                    display_value = str(self.showoriginal(option) if not trueval else self.option_dict[option]['value'])
+                
+                new_table.add_row(option, display_value, self.option_dict.get(option).get('description'))
+        
+        Console.print(new_table)
