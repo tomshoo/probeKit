@@ -1,5 +1,7 @@
 import requests
 import os
+from rich import traceback, progress
+traceback.install()
 
 class fuzzer:
     def __init__(self, url: str, type: str, wordlist_path: str, depth: int, verbose: bool = False):
@@ -18,8 +20,11 @@ class fuzzer:
             for word in wordlist_secondary:
                 for root in wordlist_tertiary:
                     root : str = root
-                    if root+'/'+word not in wordlist_primary and (not root.startswith('.') and '.' in word):
-                        wordlist_primary.append(root+'/'+word)
+                    if root+'/'+word not in wordlist_primary:
+                        if not root.startswith('.') and '.' in root:
+                            pass
+                        else:
+                            wordlist_primary.append(root+'/'+word)
 
             wordlist_secondary = wordlist_primary.copy()
 
@@ -31,6 +36,7 @@ class fuzzer:
     def fuzz(self):
         url = self.url
         verbose = self.verbose
+        depth = self.depth
 
         try:
             if requests.get(url):
@@ -68,7 +74,7 @@ class fuzzer:
         wordlist = wordlist if not depth and self.type.lower() == "directory" else self.__depth_gen(wordlist)
 
         length = len(wordlist)
-        for word in wordlist:
+        for word in progress.track(wordlist, description="working..."):
             global response
             response = None
             try:
@@ -77,7 +83,5 @@ class fuzzer:
                 print(e) if verbose else print(end="")
             if response:
                 print('url: ', url.replace('FUZZ', word), 'status code: ', response.status_code)
-
-            print(f'tried: {wordlist.index(word)}/{length}', end='\r')
 
         wordlist.clear()

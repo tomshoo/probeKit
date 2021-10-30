@@ -6,6 +6,8 @@ import socket
 import concurrent.futures
 from config import colors
 from modules.util.utils import datevalue, timestamp
+from rich import traceback, progress
+traceback.install()
 
 # Additional colors
 BALERT:   str = colors.BALERT
@@ -23,15 +25,16 @@ openports: list = []
 valid_protocols: list = ['tcp', 'tcp/ip', 'TCP', 'TCP/IP', 'udp', 'UDP']
 
 class portprobe:
-    def __init__(self,
-            thost: str,
-            tport: dict,
-            timeout: int,
-            protocol: str,
-            tryct: int,
-            verbose: bool,
-            threading: bool
-        ):
+    def __init__(
+        self,
+        thost: str,
+        tport: dict,
+        timeout: int,
+        protocol: str,
+        tryct: int,
+        verbose: bool,
+        threading: bool
+    ):
         self.thost = thost
         self.tport = tport
         self.timeout = timeout if timeout else 1
@@ -64,8 +67,8 @@ class portprobe:
             return True
 
         except Exception as exp:
-            if verbose:
-                print('[-]', FALERT, port, exp, FNORMAL, end="\r")
+            if self.threading:
+                print('[-]', FALERT, port, exp, FNORMAL, " "*(len(str(exp))*3), end="\r")
             return False
 
         finally:
@@ -167,7 +170,7 @@ class portprobe:
                                 results.append(f.result())
                     else:
                         if type == 'range':
-                            output = [ self.__scanner(x) for x in range(p_begin, p_end) ]
+                            output = [ self.__scanner(x) for x in progress.track(range(p_begin, p_end), description=f"Scanning {self.protocol}") ]
                         else:
                             output = [ self.__scanner(int(x)) for x in port['value'] ]
 

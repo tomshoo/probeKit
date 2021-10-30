@@ -14,6 +14,8 @@ import ctypes
 import sys
 import csv
 from multipledispatch import dispatch
+from rich import traceback
+traceback.install()
 
 def split_and_quote(key: str, quotekey: str, string: str) -> list:
     for l in csv.reader([string], delimiter=key, quotechar=quotekey):

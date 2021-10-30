@@ -9,6 +9,8 @@ import ctypes
 import subprocess
 
 import modules.util.utils as utils
+from rich.traceback import install
+install()
 
 print(f'Importing custom modules', end='\r')
 start = utils.timestamp()

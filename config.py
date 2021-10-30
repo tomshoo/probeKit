@@ -4,6 +4,16 @@ from platform import platform
 from colorama import Fore, Back
 
 # configure colors in this class
+
+class colors_rich:
+    FALERT: str = "red"
+    FSUCCESS: str = "green"
+    FURGENT: str = "yellow"
+    FPROMPT: str = "blue"
+
+    BALERT: str = "bold white on red"
+    BSUCCESS: str = "bold white on green"
+    BURGENT: str = "bold black on yellow"
 class nonpowershell():
     #Foreground Colors
     FALERT   : str = Fore.RED
