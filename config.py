@@ -1,5 +1,6 @@
 import json
 from os import path
+from pathlib import Path
 from platform import platform
 from colorama import Fore, Back
 
@@ -58,12 +59,10 @@ OPTIONS = {
     "turl": "https://www.example.com",
 }
 
-#Read the config.json file
-if 'Windows' in platform():
-    data_path = path.expanduser('~\\Documents\\probeKit\\config.json')
-else:
-    data_path = path.expanduser('~/.config/probekit/config.json')
+data_path = Path(__file__).parent
 
+#Read the config.json file
+data_path = path.join(data_path, 'config.json')
 with open(data_path, 'r') as f:
     data_str = f.read()
 data = json.loads(data_str)
