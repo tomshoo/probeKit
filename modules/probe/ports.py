@@ -4,18 +4,17 @@
 # Imports
 import socket
 import concurrent.futures
-from config import colors
+from config import colors_rich as colors
 from modules.util.utils import datevalue, timestamp
-from rich import traceback, progress
+from rich import traceback, progress, console
+Console = console.Console()
 traceback.install()
 
 # Additional colors
 BALERT:   str = colors.BALERT
 FSUCCESS: str = colors.FSUCCESS
-FNORMAL:  str = colors.FNORMAL
 BURGENT:  str = colors.BURGENT
 FALERT:   str = colors.FALERT
-BNORMAL:  str = colors.BNORMAL
 
 # Lists for presenting output
 results: list = []
@@ -68,7 +67,7 @@ class portprobe:
 
         except Exception as exp:
             if self.threading:
-                print('[-]', FALERT, port, exp, FNORMAL, " "*(len(str(exp))*3), end="\r")
+                Console.print(f'[{FALERT}][-]'+" "+str(port)+" "+str(exp)+" "*(len(str(exp))*3)+"[/]", end="\r")
             return False
 
         finally:
@@ -95,7 +94,7 @@ class portprobe:
 
                 if not serv:
                     if verbose:
-                        print(f'{BALERT}[*] Error: Service on port: {port} not found{BNORMAL}')
+                        Console.print(f'[{BALERT}]\[*] Error: Service on port: [bold {BALERT}]{port}[/] not found[/]')
                     portstatus = False
                 else:
                     portstatus = True
@@ -116,17 +115,17 @@ class portprobe:
             if self.__tscanner(port):
                 serv = self.__getServbyPort(port, 'tcp') if self.__getServbyPort(port, 'tcp') else 'Undefined'
 
-                return f'{FSUCCESS}[+] {self.protocol}: {self.thost}: {port} is open, service: {serv}{FNORMAL}'
+                return f'[{FSUCCESS}][+] {self.protocol}: {self.thost}: {port} is open, service: {serv}[/]'
             elif self.verbose:
-                return f'{FALERT}[-] {self.protocol}: {self.thost}: {port} is closed{FNORMAL}'
+                return f'[{FALERT}][-] {self.protocol}: {self.thost}: {port} is closed'
 
         elif protocol in ['udp', 'UDP']:
             if self.__uscanner(port):
                 serv = self.__getServbyPort(port, 'udp') if self.__getServbyPort(port, 'udp') else 'Undefined'
 
-                return f'{FSUCCESS}[+] {self.protocol}: {self.thost}: {port} is open, service: {serv}{FNORMAL}'
+                return f'[{FSUCCESS}][+] {self.protocol}: {self.thost}: {port} is open, service: {serv}[/]'
             elif self.verbose:
-                return f'{FALERT}[-] {self.protocol}: {self.thost}: {port} is closed{FNORMAL}'
+                return f'[{FALERT}][-] {self.protocol}: {self.thost}: {port} is closed'
 
     def display(self):
         """
@@ -140,7 +139,7 @@ class portprobe:
             # check if input is a single port or a range
             type = self.tport['type']
             port = self.tport
-            print(f'{BURGENT}[**] Scan started at {datevalue()}{BNORMAL}')
+            Console.print(f'[{BURGENT}]\[**] Scan started at {datevalue()}[/]')
             start = timestamp()
 
             if type == 'single':
@@ -172,7 +171,7 @@ class portprobe:
                         if type == 'range':
                             output = [ self.__scanner(x) for x in progress.track(range(p_begin, p_end), description=f"Scanning {self.protocol}") ]
                         else:
-                            output = [ self.__scanner(int(x)) for x in port['value'] ]
+                            output = [ self.__scanner(int(x)) for x in progress.track(port['value'], description=f"Scanning {self.protocol}") ]
 
                         for x in output:
                             if x:
@@ -185,27 +184,27 @@ class portprobe:
                         for x in results:
                             if 'open' in x:
                                 openports.append(x)
-                            print(x)
+                            Console.print(x)
 
                         print('-'*60)
                         for y in openports:
-                            print(y)
+                            Console.print(y)
 
                         results.clear()
                         openports.clear()
 
                     else:
                         for x in results:
-                            print(x)
+                            Console.print(x)
                     results.clear()
 
                 except KeyboardInterrupt:
-                    print(f'{FALERT}Keyboard interrupt received, quitting!!')
+                    Console.print(f'[{FALERT}]Keyboard interrupt received, quitting!![/]')
                     if self.threading:
                         executor.shutdown(wait=False, cancel_futures=True)
 
             end = timestamp()            
-            print(f'{BURGENT}[**] Scan took about {round(end-start, 5)} sec(s).{BNORMAL}')
+            Console.print(f'[{BURGENT}][**] Scan took about {round(end-start, 5)} sec(s).[/]')
 
         else:
-            print(f'{BALERT}[-] Error: Unknown protocol specified{BNORMAL}')
+            Console.print(f'[{BALERT}][-] Error: Unknown protocol specified[/]')
