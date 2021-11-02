@@ -1,4 +1,5 @@
-from config import colors as _colors, valid_modules as _modules
+from config import colors_rich as _colors, valid_modules as _modules
+from rich.console import Console
 
 
 _FALERT = _colors.FALERT
@@ -13,22 +14,22 @@ class use:
         if not module:
             self.ret_list[0] = ''
             self.ret_list[1] = 1
-            print(f'{_FALERT}Error: no module specified')
+            Console().print(f'[{_FALERT}]Error: no module specified[/]')
 
         elif len(module) > 1:
             self.ret_list[0] = ''
             self.ret_list[1] = 1
-            print(f'{_FURGENT}Alert: too many arguments')
+            Console().print(f'[{_FURGENT}]Alert: too many arguments[/]')
 
         else:
             if module[0] in _modules:
                 self.ret_list[0] = module[0]
                 self.ret_list[1] = 0
-                print(f'{_FURGENT}MODULE => {module[0]}')
+                Console().print(f'[{_FURGENT}]MODULE => {module[0]}[/]')
 
             else:
                 self.ret_list[0] = ''
                 self.ret_list[1] = 1
-                print(f'{_FALERT}Error: Invalid module')
+                Console().print(f'[{_FALERT}]Error: Invalid module[/]')
 
         return self.ret_list

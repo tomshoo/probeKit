@@ -1,5 +1,8 @@
-from config import colors as _colors, OPTIONS
+from config import colors_rich as _colors, OPTIONS
 from modules.util.utils import trim as _trim, args as _args, optionsparser as _optparser
+from rich import console,traceback
+traceback.install()
+Console = console.Console()
 
 _FALERT = _colors.FALERT
 _FSUCCESS = _colors.FSUCCESS
@@ -13,7 +16,7 @@ class set_class:
         options: str = ' '.join(self.options)
 
         if options.lower() == "all":
-            print(f'{_FSUCCESS}set all')
+            Console.print(f'[{_FSUCCESS}]set all[/]')
             option_dict: dict = self.ret_list[0]
             for option in OPTIONS:
                 if option_dict[option]['type'] == "dict":
@@ -47,7 +50,7 @@ class set_class:
             else:
                 options[option]['value']['value'] = value
         else:
-            print(f'{_FALERT}Error: Invalid option \'{option}\'')
+            Console.print(f'[{_FALERT}]Error: Invalid option \'{option}\'[/]')
             self.ret_list[1] = 1
             return
         

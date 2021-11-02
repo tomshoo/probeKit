@@ -1,6 +1,8 @@
-from config import colors as _colors
+from config import colors_rich as _colors
 from modules.util.utils import optionsparser as _optparser
+from rich.console import Console
 
+Console = Console()
 _FALERT = _colors.FALERT
 _FURGENT = _colors.FURGENT
 
@@ -33,12 +35,12 @@ class unset_val:
                 options_dict[option]['value']['type'] = ""
 
         else:
-            print(f'{_FALERT}Error: invalid option \'{option}\'')
+            Console.print(f'[{_FALERT}]Error: invalid option \'{option}\'[/]')
             self.ret_list[1] = 1
             return
 
         parser = _optparser(options_dict)
         options_dict = parser.parse()
-        print(f'{_FURGENT}unset {option}')
+        Console.print(f'[{_FURGENT}]unset {option}[/]')
         self.ret_list[0] = options_dict
         self.ret_list[1] = 0

@@ -9,12 +9,14 @@ OS-prober module using scapy and python-nmap.
 from scapy.all import IP,ICMP,sr1
 import nmap
 import socket
-from config import colors
+from config import colors_rich as colors
+from rich.console import Console as Con
 
-FRED = colors.FALERT
-FWHITE = colors.FNORMAL
-FGREEN = colors.FSUCCESS
-FYELLOW = colors.FURGENT
+Console = Con()
+
+FALERT = colors.FALERT
+FSUCCESS = colors.FSUCCESS
+FURGENT = colors.FURGENT
 
 def checkTTL(target, iterator):
     """
@@ -24,7 +26,7 @@ def checkTTL(target, iterator):
     ttllist = []
 
     if iterator == 0:
-        print(f'{FRED}Error: invalid try count specified: {iterator}{FWHITE}')
+        Console.print(f'[{FALERT}]Error: invalid try count specified: {iterator}[/]')
 
     for _ in range(iterator):
         rpkt = sr1(pkt)
@@ -62,7 +64,7 @@ class checkOS():
 
         OSresult = scanner.scan(hosts=target, arguments="-O")['scan'][targetip]
         if not OSresult['osmatch']:
-            print(FRED+"Error: Unable to identify OS via Nmap")
+            Console.print(f"[{FALERT}]Error: Unable to identify OS via Nmap[/]")
         else:
             for data in OSresult['osmatch']:
                 for i in data:
@@ -76,14 +78,14 @@ class checkOS():
         print("Please wait...")
 
         HostOSbyTTL = self.OSbyTTL()
-        print(f"{FGREEN}[*] Host appears to be running {HostOSbyTTL} based OS{FWHITE}")
+        Console.print(f"[{FSUCCESS}][*] Host appears to be running {HostOSbyTTL} based OS[/]")
 
         if self.ifnmap == 1:
             print("Please wait running Nmap scan...")
             self.nmapScan()
 
         elif self.ifnmap == 0:
-            print(f'{FYELLOW}Alert: Skipping nmap scan')
+            Console.print(f'[{FURGENT}]Alert: Skipping nmap scan[/]')
 
         else:
-            print(f'{FRED}Error: invalid condition for nmap: {self.ifnmap}{FWHITE}')
+            Console.print(f'[{FALERT}]Error: invalid condition for nmap: {self.ifnmap}[/]')

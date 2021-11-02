@@ -1,5 +1,8 @@
-from config import colors as _colors
+from config import colors_rich as _colors
 from modules.util.utils import split_and_quote, args, trim
+from rich import traceback, console
+traceback.install()
+Console = console.Console()
 
 class alias:
     def __init__(self, get_cmd: list, aliases: dict):
@@ -26,7 +29,7 @@ class alias:
         if bool(command) ^ bool(alias):
             check_c: str = 'x' if bool(command) else '?'
             check_a: str = 'x' if bool(alias) else '?'
-            print(f'{_colors.FALERT}Error: required value missing: {_colors.FNORMAL}')
+            Console.print(f'[{_colors.FALERT}]Error: required value missing: [/]')
             print(f'command: {check_c}')
             print(f'alias:   {check_a}')
             exit_code = 1

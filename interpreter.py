@@ -9,8 +9,9 @@ import ctypes
 import subprocess
 
 import modules.util.utils as utils
-from rich.traceback import install
-install()
+from rich import traceback, console
+traceback.install()
+Console = console.Console()
 
 print(f'Importing custom modules', end='\r')
 start = utils.timestamp()
@@ -27,7 +28,7 @@ from commands import (
 from modules.data.OptInfHelp import (PromptHelp, Options, Info)
 from config import (
     MODULE,
-    colors,
+    colors_rich as colors,
     aliases,
     option_dict,
     valid_modules as _modules
@@ -61,7 +62,6 @@ completer = utils.completer(completion_list)
 # Setting up colors (edit these in config.py)
 FSUCCESS = colors.FSUCCESS
 FALERT = colors.FALERT
-FNORMAL = colors.FNORMAL
 FURGENT = colors.FURGENT
 FSTYLE = colors.FPROMPT
 
@@ -76,10 +76,10 @@ if 'Windows' not in platform.platform():
         readline.read_history_file(histfile)
 
     if os.getuid() != 0:
-        print(f'{FURGENT}[**] Warning: You won\'t be able to use the osprbe module without root access.')
+        Console.print(f'[{FURGENT}][**] Warning: You won\'t be able to use the osprbe module without root access.[/]')
 
 else:
-    print(f'{FURGENT}[**] Warning: system commands will not run in windows based system')
+    Console.print(f'[{FURGENT}][**] Warning: system commands will not run in windows based system[/]')
 
 
 # Session starts over here
@@ -189,7 +189,7 @@ class input_parser:
 
         # Create an exception which exits the try block and then exits the session
         elif verb == 'exit':
-            raise ExitException(f'{FALERT}probeKit: exiting session{FNORMAL}')
+            raise ExitException(f'probeKit: exiting session')
 
         elif verb == 'clear':
             if 'Windows' in platform.platform():
@@ -253,7 +253,7 @@ class input_parser:
                 print(f'dir: {fpath}')
 
             else:
-                print(f'{FALERT}[-] Error: no such directory: \'{fpath}\'')
+                Console.print(f'[{FALERT}][-] Error: no such directory: \'{fpath}\'[/]')
 
         else:
             try:
@@ -265,11 +265,11 @@ class input_parser:
                         self.exit_code = subprocess.run(command, shell=True).returncode
                         
                 else:
-                    print(f'{FALERT}Error: Invalid command \'{verb}\'')
+                    Console.print(f'[{FALERT}]Error: Invalid command \'{verb}\'[/]')
                     self.exit_code = 1
-                        
+
             except FileNotFoundError:
-                print(f'{FALERT}Error: Invalid command \'{verb}\'')
+                Console.print(f'[{FALERT}]Error: Invalid command \'{verb}\'[/]')
                 self.exit_code = 1
 
     def main(self):
@@ -284,25 +284,25 @@ class input_parser:
         if self.MODULE in _modules or self.MODULE == '':
             pass
         else:
-            print(f'{FALERT}[-] No such module: \'{self.MODULE}\'{FNORMAL}')
+            Console.print(f'[{FALERT}][-] No such module: [bold underline]\'{self.MODULE}\'[/][/]')
             sys.exit(1)
 
         try:
             while(True):
                 if self.exit_code == 0:
                     COLOR = colors.FSUCCESS
-                elif self.exit_code == 3:
+                elif self.exit_code == 130:
                     COLOR = colors.FURGENT
                 else:
                     COLOR = colors.FALERT
             
                 if check == 0:
                     if self.MODULE == '':
-                        prompt_str: str = f'{FNORMAL}[probkit]: {COLOR}{self.exit_code}{FNORMAL}$> '
+                        prompt_str: str = f'\[probkit]: [{COLOR}]{self.exit_code}[/]$> '
                     else:
-                        prompt_str: str = f'{FNORMAL}probeKit: {FSTYLE}[{self.MODULE}]: {COLOR}{self.exit_code}{FNORMAL}$> '
+                        prompt_str: str = f'probeKit: [{FSTYLE}]\[{self.MODULE}][/]: [{COLOR}]{self.exit_code}[/]$> '
 
-                    value = input(prompt_str)
+                    value = Console.input(prompt_str)
 
                 else:
                     value = ' '.join(sys.argv[1].split('\ '))
@@ -324,7 +324,7 @@ class input_parser:
             self.main()
 
         except ExitException as e:
-            print(e)
+            Console.print(f"[{FALERT}]"+str(e)+"[/]")
             utils.Exit(self.exit_code) if 'Windows' in platform.platform() else utils.Exit(self.exit_code, histfile)
 
 if __name__ == '__main__':

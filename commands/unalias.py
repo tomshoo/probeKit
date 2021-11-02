@@ -1,5 +1,7 @@
-from config import colors as _colors
+from config import colors_rich as _colors
+from rich.console import Console
 
+Console = Console()
 _FALERT = _colors.FALERT
 _FURGENT = _colors.FURGENT
 
@@ -11,7 +13,7 @@ class unalias:
     def run(self) -> list:
         if not self.alias_list:
             self.ret_list[1] = 1
-            print(f'{_FALERT}[-] Error: no input provided')
+            Console.print(f'[{_FALERT}][-] Error: no input provided[/]')
             return self.ret_list
 
         for alias in self.alias_list:
@@ -28,7 +30,7 @@ class unalias:
             exit_code = 0
 
         else:
-            print(f'{_FALERT}[-] Error: no such alias \'{_FURGENT}{alias}{_FALERT}\' exists')
+            Console.print(f'[{_FALERT}\[-] Error: no such alias \'[{_FURGENT}]{alias}[/]\' exists[/]')
             exit_code = 1
 
         self.ret_list[0] = aliases
