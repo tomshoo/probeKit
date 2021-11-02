@@ -119,7 +119,7 @@ class portprobe:
             elif self.verbose:
                 return f'[{FALERT}][-] {self.protocol}: {self.thost}: {port} is closed'
 
-        elif protocol in ['udp', 'UDP']:
+        elif self.protocol in ['udp', 'UDP']:
             if self.__uscanner(port):
                 serv = self.__getServbyPort(port, 'udp') if self.__getServbyPort(port, 'udp') else 'Undefined'
 
@@ -144,11 +144,11 @@ class portprobe:
 
             if type == 'single':
                 single_port: int = self.tport['value']
-                portstatus = __scanner(self.thost, single_port, timeout, protocol, tryct)
+                portstatus = self.__scanner(single_port)
                 if portstatus:
                     print(portstatus)
                 else:
-                    print(f'{protocol}: {host}: {single_port} is closed')
+                    print(f'{self.protocol}: {self.host}: {single_port} is closed')
 
             else:
                 try:
