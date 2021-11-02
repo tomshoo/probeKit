@@ -28,7 +28,7 @@ from commands import (
 from modules.data.OptInfHelp import (PromptHelp, Options, Info)
 from config import (
     MODULE,
-    colors_rich as colors,
+    colors,
     aliases,
     option_dict,
     valid_modules as _modules

@@ -1,4 +1,4 @@
-from config import colors_rich as _colors
+from config import colors as _colors
 from modules.util.utils import split_and_quote, args, trim
 from rich import traceback, console
 traceback.install()

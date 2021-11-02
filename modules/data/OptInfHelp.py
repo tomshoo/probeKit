@@ -1,6 +1,6 @@
 # This is the data-information module which will print help for the interpreter and information about selected module
 
-from config import colors_rich as colors
+from config import colors as colors
 from platform import platform
 from rich import traceback, table, box, console
 Console = console.Console()

@@ -1,4 +1,4 @@
-from config import colors_rich as _colors, OPTIONS
+from config import colors as _colors, OPTIONS
 from modules.util.utils import trim as _trim, args as _args, optionsparser as _optparser
 from rich import console,traceback
 traceback.install()

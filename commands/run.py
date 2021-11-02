@@ -1,4 +1,4 @@
-from config import valid_modules as _modules, colors_rich as _colors
+from config import valid_modules as _modules, colors as _colors
 import modules.probe.ports as _ports
 import modules.probe.osprobe as _osprobe
 import modules.probe.dirfuzz as _dirfuzz

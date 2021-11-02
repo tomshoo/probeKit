@@ -2,47 +2,32 @@ import json
 from os import path
 from pathlib import Path
 from platform import platform
-from colorama import Fore, Back
 
 # configure colors in this class
-
-class colors_rich:
-    FALERT: str = "red"
-    FSUCCESS: str = "green"
-    FURGENT: str = "yellow"
-    FPROMPT: str = "blue"
-
-    BALERT: str = "bold white on red"
-    BSUCCESS: str = "bold white on green"
-    BURGENT: str = "bold black on yellow"
 class nonpowershell():
     #Foreground Colors
-    FALERT   : str = Fore.RED
-    FSUCCESS : str = Fore.GREEN
-    FNORMAL  : str = Fore.RESET
-    FURGENT  : str = Fore.YELLOW
-    FPROMPT  : str = Fore.BLUE
+    FALERT   : str = "red"
+    FSUCCESS : str = "green"
+    FURGENT  : str = "yellow"
+    FPROMPT  : str = "blue"
 
     #Background Colors
-    BALERT   : str = Back.RED
-    BSUCCESS : str = Back.GREEN
-    BNORMAL  : str = Back.RESET
-    BURGENT  : str = Back.YELLOW
+    BALERT   : str = "bold white on red"
+    BSUCCESS : str = "bold white on green"
+    BURGENT  : str = "bold black on yellow"
 
 
 class powershell():
     #Foreground Colors
-    FALERT   : str = Fore.RED
-    FSUCCESS : str = Fore.GREEN
-    FNORMAL  : str = Fore.RESET
-    FURGENT  : str = Fore.YELLOW
-    FPROMPT  : str = Fore.CYAN
+    FALERT   : str = "red"
+    FSUCCESS : str = "green"
+    FURGENT  : str = "yellow"
+    FPROMPT  : str = "cyan"
 
     #Background Colors
-    BALERT   : str = Back.RED
-    BSUCCESS : str = Back.GREEN
-    BNORMAL  : str = Back.RESET
-    BURGENT  : str = Back.YELLOW
+    BALERT   : str = "bold white on red"
+    BSUCCESS : str = "bold white on green"
+    BURGENT  : str = "bold black on yellow"
 
 # Chose color scheme(light or dark)
 colors = nonpowershell

@@ -1,4 +1,4 @@
-from config import colors_rich as _colors
+from config import colors as _colors
 from rich.console import Console
 
 Console = Console()

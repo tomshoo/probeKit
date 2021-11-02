@@ -1,4 +1,4 @@
-from config import colors_rich as colors, valid_modules as _modules
+from config import colors as colors, valid_modules as _modules
 from rich.console import Console as Con
 
 Console = Con()

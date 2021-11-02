@@ -4,7 +4,7 @@
 # Imports
 import socket
 import concurrent.futures
-from config import colors_rich as colors
+from config import colors as colors
 from modules.util.utils import datevalue, timestamp
 from rich import traceback, progress, console
 Console = console.Console()

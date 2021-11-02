@@ -9,7 +9,7 @@ OS-prober module using scapy and python-nmap.
 from scapy.all import IP,ICMP,sr1
 import nmap
 import socket
-from config import colors_rich as colors
+from config import colors as colors
 from rich.console import Console as Con
 
 Console = Con()
