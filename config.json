@@ -2,7 +2,7 @@
     "modules": {
         "probe": {"options": ["thost", "tport", "protocol", "timeout", "tryct", "verbose", "threading"]},
         "osprobe": {"options": ["thost", "tryct", "nmap"]},
-        "dirfuzz": {"options": ["turl", "type", "wordlist", "depth", "verbose"]}
+        "dirfuzz": {"options": ["turl", "mode", "wordlist", "depth", "verbose"]}
     },
 
     "options": {
@@ -87,8 +87,8 @@
             "type": "str",
             "value": ""
         },
-        "type" :{
-            "description": "type of bruteforcing to perform",
+        "mode" :{
+            "description": "mode of bruteforcing to perform",
             "required": true,
             "type": "str",
             "value": ""

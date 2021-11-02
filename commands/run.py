@@ -35,7 +35,7 @@ def run(module: str, options: dict) -> int:
             elif module == "dirfuzz":
                 _dirfuzz.fuzzer(
                     options['turl']['value'],
-                    options['type']['value'],
+                    options['mode']['value'],
                     options['wordlist']['value'],
                     options['depth']['value'],
                     options['verbose']['value']
