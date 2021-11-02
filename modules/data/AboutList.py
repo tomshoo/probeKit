@@ -73,6 +73,22 @@ class moduleHelp():
             '\t\t | 1 for true\n'
             f'[{FALERT}]\t\t | Warning: It is an active scanning method hence use it on your own risk[/][/]\n')
 
+        elif moduleName == 'dirfuzz':
+            Console.print(f'[{FALERT}]\nName:\t\t{moduleName}\n'
+            'Type:\t\tBruteforcing\n'
+            'Description:\tThis module is used for directory (or) subdomain bruteforcing[/]\n')
+            Console.print(f'[{FSUCCESS}]Available options:\n\n'
+            '\tTURL => Complete url of the target `http(s)://<domain name>/`\n'
+            '\tMODE => Type of brute forcing\n'
+            '\t\t | subdomain: bruteforce the subdomain for the given url\n'
+            '\t\t | directory: bruteforcing the directories in the given url\n'
+            '\tWORDLIST => Path to a wordlist file\n'
+            '\t\t | Path can be relative\n'
+            '\t\t | Use proper structure for your operating system\n'
+            '\t\t\t - `/` for *nix and `\\` for dos based systems\n'
+            '\tDEPTH => Depth to crawl if type is set to `directory`\n'
+            '\tVERBOSE => Display an expanded output if set to true[/]\n')
+
         elif moduleName == '':
             print(FALERT+'[-] Error: no module selected')
 

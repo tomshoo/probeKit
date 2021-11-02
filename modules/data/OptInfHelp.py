@@ -115,14 +115,14 @@ class Info():
         if module == 'probe':
             Console.print(f'\n\t[*] THOST => hosts ip4 address (required) (THOST => thost)\n'
             f'\t[*] TPORT => ports to scan on host (required) (TPORT => tport)\n'
-            f'[{FALERT}]\t             | values can be set as:\n'
+            f'[{FALERT}]\t             | values can be set as:[/]\n'
             f'\t                                   | \[portnumber] (single port scan)\n'
             f'\t                                   | \[startport/endport] (port range)\n'
-            f'\t                                   | \[port1,port2,port3,...] (port group)[/]\n\n'
+            f'\t                                   | \[port1,port2,port3,...] (port group)\n\n'
             f'\t[*] PROTO => protocol to use for scanning (required) (PROTO => proto)\n'
-            f'\t[{FALERT}]             | Available protocols: \n'
+            f'\t[{FALERT}]             | Available protocols:[/] \n'
             f'\t                                  | [TCP => tcp => TCP/IP => tcp/ip]\n'
-            f'\t                                  | [UDP => udp][/]\n\n'
+            f'\t                                  | [UDP => udp]\n\n'
             f'\t[*] TMOUT => time to wait for incomming packet in seconds (set to \'1\' by default)(TMOUT => tmout)\n\n'
             f'\t[*] TRYCT => number of tries to perform while performing UDP scan (set to \'1\' by default)(TRYCT => tryct)\n\n'
             f'\t[*] VERBOSE => Provide a verbose output or not (VERBOSE => verbose)\n'
@@ -138,6 +138,19 @@ class Info():
             f'\t[{FALERT}]           | 0 implies flase\n'
             f'\t           | 1 implies true\n'
             f'\t           | WARNING: Use at your own risk\n[/]')
+            return 0
+
+        elif module == 'dirfuzz':
+            Console.print('\n\t[white]TURL     => Complete url of the target `http(s)://<domain name>/`\n'
+            '\tMODE     => Type of brute forcing\n'
+            '\t\t | subdomain: bruteforce the subdomain for the given url\n'
+            '\t\t | directory: bruteforcing the directories in the given url\n'
+            '\tWORDLIST => Path to a wordlist file\n'
+            '\t\t | Path can be relative\n'
+            '\t\t | Use proper structure for your operating system\n'
+            '\t\t\t - `/` for *nix and `\\` for dos based systems\n'
+            '\tDEPTH    => Depth to crawl if type is set to `directory`\n'
+            '\tVERBOSE  => Display an expanded output if set to true[/]\n')
             return 0
 
         else:
