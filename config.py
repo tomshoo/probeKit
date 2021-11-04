@@ -48,7 +48,7 @@ OPTIONS = {
 aliases : dict = {
     'execute': 'run',
     'info': 'show info',
-    'options': 'show options',
+    'options': 'show options'
 }
 
 #############################NOTE#############################
