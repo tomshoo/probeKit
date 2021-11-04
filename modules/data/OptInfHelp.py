@@ -1,6 +1,6 @@
 # This is the data-information module which will print help for the interpreter and information about selected module
 
-from config import colors as colors
+from config import colors, valid_modules
 from platform import platform
 from rich import traceback, table, box, console
 Console = console.Console()
@@ -33,7 +33,6 @@ class PromptHelp():
             '\t clear\t\t clears screen\n'+
             '\t run\t\t runs the selected module\n'+
             '\t about\t\t (*)prints details about specified module\n'+
-            '\t list\t\t prints available modules\n'+
             '\t banner\t\t prints an ascii banner\n'+
             '\t alias\t\t (*)set an alias for a command\n'+
             '\t unalias\t (*)unset a pre-existing alias\n'+
@@ -49,7 +48,8 @@ class PromptHelp():
             '\t\t | options: shows values assigned to the options available for the selected module\n'
             '\t\t\t - shows all assigned values if no module is selected\n\n'
             '\t\t | info: shows available options for selected module\n'
-            '\t\t | status: prints exit status of previous command[/]\n')
+            '\t\t | status: prints exit status of previous command[/]\n'
+            '\t\t | modules: list all available modules\n')
             return 0
 
         elif command == 'set':
@@ -105,12 +105,12 @@ class PromptHelp():
 
 class Info():
     """List available options for a selected module"""
-    def __init__(self, MODULE):
+    def __init__(self, MODULE: str):
         self.module = MODULE
 
     def showInfo(self):
         """Display the options for available modules."""
-        module = self.module
+        module: str = self.module
 
         if module == 'probe':
             Console.print(f'\n\t[*] THOST => hosts ip4 address (required) (THOST => thost)\n'
@@ -153,16 +153,19 @@ class Info():
             '\tVERBOSE  => Display an expanded output if set to true[/]\n')
             return 0
 
+        elif not module:
+            Console.print(f'[{FALERT}]Error: No module selected[/]')
+            return 2
         else:
             Console.print(f'[{FALERT}]Error: Invalid module[/]')
             return 1
 
 class Options():
     """List values assigned to various options of the module"""
-    def __init__(self, MODULE, option_dict: dict, modules: dict):
+    def __init__(self, MODULE, option_dict: dict):
         self.module = MODULE
         self.option_dict = option_dict
-        self.modules = modules
+        self.modules = valid_modules
 
     def showoriginal(self, option: str) -> str:
         value = self.option_dict[option]['value']['value']
