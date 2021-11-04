@@ -23,7 +23,8 @@ from commands import (
     alias,
     unalias,
     use,
-    banner
+    banner,
+    show
 )
 from modules.data.OptInfHelp import (PromptHelp, Options, Info)
 from config import (
@@ -159,26 +160,8 @@ class input_parser:
             init_editor = start_editor(cmd_split)
             init_editor.start_led()
 
-        elif verb == 'list':
-            self.exit_code = aboutList.moduleHelp(self.MODULE).listmodules()
-
         elif verb == 'show':
-            if utils.args(cmd_split, 1):
-                if utils.args(cmd_split, 1) == 'options':
-                    options = Options(self.MODULE, self.option_dict, _modules)
-                    options.showOptions() if utils.args(cmd_split, 2) in ['-t', '--true'] else options.showOptions(False)
-                    self.exit_code = 0
-
-                elif utils.args(cmd_split, 1) == 'info':
-                    info = Info(self.MODULE)
-                    self.exit_code = info.showInfo()
-
-                else:
-                    print(f'{FALERT}[-] Error: Invalid argument provided')
-                    self.exit_code = 1
-            else:
-                print(f'{FALERT}[-] Error: no argument provided')
-                self.exit_code = 1
+            self.exit_code = show.run(cmd_split[1::], self.MODULE, self.option_dict)
 
         elif verb == 'back':
             if self.MODULE == '':
