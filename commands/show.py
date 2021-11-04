@@ -1,11 +1,11 @@
 from modules.util.utils import args as _args
 from rich.console import Console as con
-from config import colors
+from config import colors, valid_modules
 from modules.data.OptInfHelp import Info, Options
-from modules.data.AboutList import moduleHelp
 
 _FALERT = colors.FALERT
 _FHIGHLIGHT = colors.FPROMPT
+_FSUCCESS = colors.FSUCCESS
 
 Console = con()
 def run(arguments: list=None, module: str=None, option_dict: str=None) -> int:
@@ -23,12 +23,18 @@ def run(arguments: list=None, module: str=None, option_dict: str=None) -> int:
         return info.showInfo()
 
     elif _args(arguments, 0).lower() == "modules":
-        try:
-            moduleHelp(module).listmodules()
-            return 0
-        except Exception as e:
-            Console.print(f'[{_FALERT}]{str(e)}[/]')
-            return 1
+        print()
+        print('Aviable modules are:')
+        for data in valid_modules:
+            Console.print(f'\t[{_FSUCCESS}]{data}[/]')
+        print()
+
+        if module:
+            Console.print(f'Current selected module: [{_FSUCCESS}]{module}[/]')
+            print('type "about" to list more details about the selected module\n')
+
+        print('type "about [modulename]" to list details about a specific module\n')
+        return 0
 
     else:
         Console.print(f'[{_FALERT}]Error: Invalid argument\n'
