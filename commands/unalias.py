@@ -1,5 +1,6 @@
 from config import colors as _colors
 from rich.console import Console
+from typing import List, Union
 
 Console = Console()
 _FALERT = _colors.FALERT
@@ -10,7 +11,7 @@ class unalias:
         self.alias_list = alias_list
         self.ret_list = [aliases, 0]
 
-    def run(self) -> list:
+    def run(self) -> List[Union[dict, int]]:
         if not self.alias_list:
             self.ret_list[1] = 1
             Console.print(f'[{_FALERT}][-] Error: no input provided[/]')

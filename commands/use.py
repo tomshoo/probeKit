@@ -1,5 +1,6 @@
 from config import colors as _colors, valid_modules as _modules
 from rich.console import Console
+from typing import List, Union
 
 
 _FALERT = _colors.FALERT
@@ -9,7 +10,7 @@ class use:
     def __init__(self, module: list = None):
         self.ret_list = [module, 0]
 
-    def run(self) -> list:
+    def run(self) -> List[Union[str, int]]:
         module = self.ret_list[0]
         if not module:
             self.ret_list[0] = ''

@@ -1,6 +1,7 @@
 from config import colors as _colors
 from modules.util.utils import optionsparser as _optparser
 from rich.console import Console
+from typing import List, Union
 
 Console = Console()
 _FALERT = _colors.FALERT
@@ -12,7 +13,7 @@ class unset_val:
         self.ret_list = ret_list
         self.options = options
 
-    def run(self) -> list:
+    def run(self) -> List[Union[dict, int]]:
         for option in self.options:
             self.unassign(option)
         return self.ret_list
