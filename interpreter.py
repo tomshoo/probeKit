@@ -5,7 +5,6 @@ import sys
 import readline
 import platform
 import os
-import ctypes
 import subprocess
 
 import modules.util.utils as utils
@@ -24,9 +23,10 @@ from commands import (
     unalias,
     use,
     banner,
-    show
+    show,
+    clear
 )
-from modules.data.OptInfHelp import (PromptHelp, Options, Info)
+from modules.data.OptInfHelp import PromptHelp
 from config import (
     MODULE,
     colors,
@@ -175,17 +175,7 @@ class input_parser:
             raise ExitException(f'probeKit: exiting session')
 
         elif verb == 'clear':
-            if 'Windows' in platform.platform():
-                os.system('cls')
-                self.exit_code = 0
-            else:
-                print(chr(27)+'2[j')
-                print('\033c')
-                print('\x1bc')
-                self.exit_code = 0
-
-            if utils.args(cmd_split, 1) == '-e':
-                sys.exit(self.exit_code)
+            self.exit_code = clear.run(cmd_split[1::], self.exit_code)
 
         elif verb == 'run':
             self.exit_code = run.run(self.MODULE, self.option_dict)
