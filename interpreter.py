@@ -5,7 +5,6 @@ import sys
 import readline
 import platform
 import os
-import ctypes
 import subprocess
 
 import modules.util.utils as utils
@@ -23,9 +22,11 @@ from commands import (
     alias,
     unalias,
     use,
-    banner
+    banner,
+    show,
+    clear
 )
-from modules.data.OptInfHelp import (PromptHelp, Options, Info)
+from modules.data.OptInfHelp import PromptHelp
 from config import (
     MODULE,
     colors,
@@ -159,26 +160,8 @@ class input_parser:
             init_editor = start_editor(cmd_split)
             init_editor.start_led()
 
-        elif verb == 'list':
-            self.exit_code = aboutList.moduleHelp(self.MODULE).listmodules()
-
         elif verb == 'show':
-            if utils.args(cmd_split, 1):
-                if utils.args(cmd_split, 1) == 'options':
-                    options = Options(self.MODULE, self.option_dict, _modules)
-                    options.showOptions() if utils.args(cmd_split, 2) in ['-t', '--true'] else options.showOptions(False)
-                    self.exit_code = 0
-
-                elif utils.args(cmd_split, 1) == 'info':
-                    info = Info(self.MODULE)
-                    self.exit_code = info.showInfo()
-
-                else:
-                    print(f'{FALERT}[-] Error: Invalid argument provided')
-                    self.exit_code = 1
-            else:
-                print(f'{FALERT}[-] Error: no argument provided')
-                self.exit_code = 1
+            self.exit_code = show.run(cmd_split[1::], self.MODULE, self.option_dict)
 
         elif verb == 'back':
             if self.MODULE == '':
@@ -192,17 +175,7 @@ class input_parser:
             raise ExitException(f'probeKit: exiting session')
 
         elif verb == 'clear':
-            if 'Windows' in platform.platform():
-                os.system('cls')
-                self.exit_code = 0
-            else:
-                print(chr(27)+'2[j')
-                print('\033c')
-                print('\x1bc')
-                self.exit_code = 0
-
-            if utils.args(cmd_split, 1) == '-e':
-                sys.exit(self.exit_code)
+            self.exit_code = clear.run(cmd_split[1::], self.exit_code)
 
         elif verb == 'run':
             self.exit_code = run.run(self.MODULE, self.option_dict)

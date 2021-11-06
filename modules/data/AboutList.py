@@ -14,19 +14,6 @@ class moduleHelp():
     def __init__(self, MODULE):
         self.module = MODULE
 
-    def listmodules(self):
-        """Checks if there is any active module"""
-        if self.module != '':
-            Console.print(f'Currently activated module: [{FALERT}][{self.module}][/]')
-
-        print('Available modules are:')
-        for x in _modules:
-            Console.print(f"[{FSUCCESS}]\t {x}[/]")
-
-        print('type: about [Module] for more information')
-
-        return 0
-
     def aboutModule(self, moduleName):
         """Prints data about a give module will print data without argument if a module is active"""
 

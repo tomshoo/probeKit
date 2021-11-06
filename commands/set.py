@@ -1,6 +1,7 @@
 from config import colors as _colors, OPTIONS
 from modules.util.utils import trim as _trim, args as _args, optionsparser as _optparser
 from rich import console,traceback
+from typing import List, Union
 traceback.install()
 Console = console.Console()
 
@@ -12,7 +13,7 @@ class set_class:
         self.ret_list = [option_dict, 0]
         self.options = options
 
-    def run(self) -> list:
+    def run(self) -> List[Union[dict, int]]:
         options: str = ' '.join(self.options)
 
         if options.lower() == "all":

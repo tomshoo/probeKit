@@ -44,9 +44,23 @@ OPTIONS = {
     "turl": "https://www.example.com",
 }
 
-data_path = Path(__file__).parent
+# Aliases for the user's comfort
+aliases : dict = {
+    'execute': 'run',
+    'info': 'show info',
+    'options': 'show options'
+}
+
+#############################NOTE#############################
+# Everything after this point is used to process all the     #
+# configuration provided by the user.                        #
+# Editing anything after this point may tend to break stuff. #
+# Edit anything only if absolutely neccessary, and you know  #
+# what exactly you want to achieve                           #
+##############################################################
 
 #Read the config.json file
+data_path = Path(__file__).parent
 data_path = path.join(data_path, 'config.json')
 with open(data_path, 'r') as f:
     data_str = f.read()
@@ -65,10 +79,3 @@ for option in option_dict:
             option_dict[option]['value']['value'] = OPTIONS.get(option)
         else:
             option_dict[option]['value'] = OPTIONS.get(option)
-
-# Aliases for the user's comfort
-aliases : dict = {
-    'execute': 'run',
-    'info': 'show info',
-    'options': 'show options',
-}
