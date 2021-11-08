@@ -5,6 +5,11 @@ from platform import platform
 
 # configure colors in this class
 class nonpowershell():
+    """
+    Colorscheme for terminal emulators other than default powershell in windows,
+    Contains dark blue for style coloring.
+    """
+
     #Foreground Colors
     FALERT   : str = "red"
     FSUCCESS : str = "green"
@@ -18,6 +23,11 @@ class nonpowershell():
 
 
 class powershell():
+    """
+    Colorscheme for the default powershell in windows,
+    Contains lighter shade of blue (cyan) for more visible style coloring
+    """
+
     #Foreground Colors
     FALERT   : str = "red"
     FSUCCESS : str = "green"
