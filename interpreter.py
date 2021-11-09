@@ -26,7 +26,7 @@ from commands import (
     show,
     clear
 )
-from modules.data.OptInfHelp import PromptHelp
+from modules.data import Help
 from config import (
     MODULE,
     colors,
@@ -150,10 +150,10 @@ class input_parser:
 
         elif verb == 'help':
             if not utils.args(cmd_split, 1):
-                Data = PromptHelp('')
+                Data = Help.Help('')
                 self.exit_code = Data.showHelp()
             else:
-                Data = PromptHelp(utils.args(cmd_split, 1))
+                Data = Help.Help(utils.args(cmd_split, 1))
                 self.exit_code = Data.showHelp()
 
         elif verb == 'led':

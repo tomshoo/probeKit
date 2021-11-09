@@ -1,8 +1,7 @@
 # This is the data-information module which will print help for the interpreter and information about selected module
 
-from config import colors, valid_modules
-from platform import platform
-from rich import traceback, table, box, console
+from config import colors
+from rich import traceback, console
 Console = console.Console()
 traceback.install()
 
@@ -10,7 +9,7 @@ FSUCCESS = colors.FSUCCESS
 FALERT = colors.FALERT
 FURGENT = colors.FURGENT
 
-class PromptHelp():
+class Help():
     """This class prints help for the interpreter."""
     def __init__(self, command : str):
         self.command = command

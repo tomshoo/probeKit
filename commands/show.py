@@ -1,7 +1,6 @@
 from modules.util.utils import args as _args
 from rich.console import Console as con
 from config import colors, valid_modules
-from modules.data.OptInfHelp import Options
 from modules.data import Info, Options
 
 _FALERT = colors.FALERT
