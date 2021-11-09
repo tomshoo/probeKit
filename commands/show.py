@@ -2,7 +2,7 @@ from modules.util.utils import args as _args
 from rich.console import Console as con
 from config import colors, valid_modules
 from modules.data.OptInfHelp import Options
-from modules.data import Info
+from modules.data import Info, Options
 
 _FALERT = colors.FALERT
 _FHIGHLIGHT = colors.FPROMPT
@@ -15,7 +15,7 @@ def run(arguments: list=None, module: str=None, option_dict: str=None) -> int:
         return 2
     
     if _args(arguments, 0).lower() == "options":
-        options = Options(module, option_dict)
+        options = Options.Options(module, option_dict)
         options.showOptions(trueval=True) if _args(arguments, 1) in ['-t', '--true'] else options.showOptions(trueval=False)
         return 0
 
