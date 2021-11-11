@@ -6,18 +6,9 @@ It is a very basic and minimal text editor working on line based editing.
 
 import os
 import readline
-from modules.util.utils import args, completer
+from modules.util.utils import args, completer, completers
 
-completion_list: list = [
-    "i", "insert",
-    "w", "write",
-    "c", "change",
-    "p", "print",
-    "n", "lineprint",
-    "q", "quit",
-]
-completer = completer(completion_list)
-
+completer = completer(completers.led)
 class start_editor():
     def __init__(self, argslist: list):
         """Initiate the editor with the arguments"""

@@ -42,23 +42,7 @@ print(f'modules took {round(end-start, 7)} sec(s). to load')
 optionparser = utils.optionsparser(option_dict)
 option_dict = optionparser.parse()
 ExitException = utils.ExitException
-completion_list: list = [
-    "use", 
-    "show", 
-    "set", 
-    "help", 
-    "exit", 
-    "back", 
-    "clear", 
-    "run", 
-    "about", 
-    "list", 
-    "banner", 
-    "alias", 
-    "unalias", 
-    "unset"
-]
-completer = utils.completer(completion_list)
+completer = utils.completer(utils.completers.interpreter)
 
 # Setting up colors (edit these in config.py)
 FSUCCESS = colors.FSUCCESS

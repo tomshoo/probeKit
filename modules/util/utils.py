@@ -15,7 +15,36 @@ import sys
 import csv
 from multipledispatch import dispatch
 from rich import traceback
+from collections import namedtuple
 traceback.install()
+
+completer = namedtuple("Completers", ['interpreter', 'led'])
+completers = completer(
+    [
+        "use", 
+        "show", 
+        "set", 
+        "help", 
+        "exit", 
+        "back", 
+        "clear", 
+        "run", 
+        "about", 
+        "list", 
+        "banner", 
+        "alias", 
+        "unalias", 
+        "unset"
+    ],
+    [
+       "i", "insert",
+        "w", "write",
+        "c", "change",
+        "p", "print",
+        "n", "lineprint",
+        "q", "quit",
+    ]
+)
 
 def split_and_quote(key: str, quotekey: str, string: str) -> list:
     for l in csv.reader([string], delimiter=key, quotechar=quotekey):
@@ -94,8 +123,7 @@ def Exit(exitStatus: int, histfile: str):
 
 def isAdmin() -> bool:
     try:
-        admin = ctypes.windll.shell32.IsUserAnAdmin() == 1
-        return admin
+        return ctypes.windll.shell32.IsUserAnAdmin() == 1
     except AttributeError:
         return os.getuid() == 0
 
