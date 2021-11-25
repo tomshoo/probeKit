@@ -7,7 +7,6 @@ OS-prober module using scapy and python-nmap.
 
 # Imports
 from scapy.all import IP,ICMP,sr1
-import nmap
 import socket
 from config import colors as colors
 from rich.console import Console as Con
@@ -22,53 +21,64 @@ def checkTTL(target, iterator):
     """
     Function to check the TTL value in an ICMP ping response.
     """
-    pkt = IP(dst=target)/ICMP(seq=9999)
-    ttllist = []
+    try:
+        pkt = IP(dst=target)/ICMP(seq=9999)
+        ttllist = []
 
-    if iterator == 0:
-        Console.print(f'[{FALERT}]Error: invalid try count specified: {iterator}[/]')
+        if iterator == 0:
+            Console.print(f'[{FALERT}]Error: invalid try count specified: {iterator}[/]')
 
-    for _ in range(iterator):
-        rpkt = sr1(pkt)
-        rpttl = rpkt[IP].ttl
-        ttllist.append(rpttl)
+        for _ in range(iterator):
+            rpkt = sr1(pkt)
+            rpttl = rpkt[IP].ttl
+            ttllist.append(rpttl)
 
-    return ttllist
+        return ttllist
+
+    except TypeError as err:
+        print(err)
 
 class checkOS():
     """
     Driver class where the output of checkTTL will be processed along with the nmap(if enabled) result.
     """
-    nmapscanner = nmap.PortScanner()
     def __init__(self, target, iterator, ifnmap):
         self.target = target
         self.iterator = iterator if iterator else 1
         self.ifnmap = ifnmap if ifnmap else 0
 
     def OSbyTTL(self):
-        ttllist = checkTTL(self.target, self.iterator)
-        for i in ttllist:
-            if i <= 64:
-                return "Linux"
+        try:
+            ttllist = checkTTL(self.target, self.iterator)
+            for i in ttllist:
+                if i <= 64:
+                    return "Linux"
 
-            elif i <= 128:
-                return "DOS"
+                elif i <= 128:
+                    return "DOS"
 
-            elif i <= 256:
-                return "Solaris"
+                elif i <= 256:
+                    return "Solaris"
+
+        except TypeError:
+            print('Err: Unable to determine remote host Operating System')
 
     def nmapScan(self):
-        scanner = self.nmapscanner
-        target = self.target
-        targetip = socket.gethostbyname(target)
+        import nmap
+        try:
+            scanner = nmap.PortScanner()
+            target = self.target
+            targetip = socket.gethostbyname(target)
 
-        OSresult = scanner.scan(hosts=target, arguments="-O")['scan'][targetip]
-        if not OSresult['osmatch']:
-            Console.print(f"[{FALERT}]Error: Unable to identify OS via Nmap[/]")
-        else:
-            for data in OSresult['osmatch']:
-                for i in data:
-                    print(data[i])
+            OSresult = scanner.scan(hosts=target, arguments="-O")['scan'][targetip]
+            if not OSresult['osmatch']:
+                Console.print(f"[{FALERT}]Error: Unable to identify OS via Nmap[/]")
+            else:
+                for data in OSresult['osmatch']:
+                    for i in data:
+                        print(data[i])
+        except nmap.PortScannerError:
+            Console.print(f'[{FALERT}]Err: `nmap` was not installed!!![/]')
 
     def scanner(self):
         """
