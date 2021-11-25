@@ -1,7 +1,7 @@
 from config import valid_modules as _modules, colors as _colors
 import modules.probe.ports as _ports
 import modules.probe.osprobe as _osprobe
-import modules.probe.dirfuzz as _dirfuzz
+import modules.probe.fuzz as _fuzz
 from rich import traceback, console
 traceback.install()
 Console = console.Console()
@@ -33,7 +33,7 @@ def run(module: str, options: dict) -> int:
                     options['nmap']['value']
                 ).scanner()
             elif module == "dirfuzz":
-                _dirfuzz.fuzzer(
+                _fuzz.fuzzer(
                     options['turl']['value'],
                     options['mode']['value'],
                     options['wordlist']['value'],
