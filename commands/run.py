@@ -32,7 +32,7 @@ def run(module: str, options: dict) -> int:
                     options['tryct']['value'],
                     options['nmap']['value']
                 ).scanner()
-            elif module == "dirfuzz":
+            elif module == "fuzz":
                 _fuzz.fuzzer(
                     options['turl']['value'],
                     options['mode']['value'],
