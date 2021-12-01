@@ -159,7 +159,7 @@ class input_parser:
             raise ExitException(f'probeKit: exiting session')
 
         elif verb == 'clear':
-            self.exit_code = clear.run(cmd_split[1::], self.exit_code)
+            self.exit_code = clear.run(cmd_split[1::], self.exit_code, histfile) if histfile else clear.run(cmd_split[1::], self.exit_code)
 
         elif verb == 'run':
             self.exit_code = run.run(self.MODULE, self.option_dict)
