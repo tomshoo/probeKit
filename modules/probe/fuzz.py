@@ -33,7 +33,7 @@ class fuzzer:
 
         return wordlist_primary
 
-    def fuzz(self):
+    def fuzz(self) -> int:
         url = self.url
         verbose = self.verbose
         depth = self.depth
@@ -43,10 +43,14 @@ class fuzzer:
                 pass
             else:
                 print('Please check the input url')
-                return
+                return 3
         except requests.exceptions.ConnectionError as e:
-            print(e)
-            return
+            print('Err:',e)
+            return 1
+
+        except requests.exceptions.MissingSchema as e:
+            print('Err:',e)
+            return 3
 
         if self.type.lower() == "subdomain":
             url = url.replace('://', '://FUZZ.')
@@ -58,18 +62,18 @@ class fuzzer:
         
         if not url or type(url) is not str:
             print('Err: No url found')
-            return 1
+            return 2
 
         elif 'FUZZ' not in url:
             print('Err: FUZZ keyword not found')
-            return 1
+            return 2
 
         if os.path.exists(self.wordlist_path):
             with open(self.wordlist_path, 'r') as f:
                 wordlist = f.read().splitlines()
         else:
             raise FileNotFoundError(f'Error: file \'{self.wordlist_path}\' does not exist')
-            return 1
+            return 3
 
         wordlist = wordlist if not depth and self.type.lower() == "directory" else self.__depth_gen(wordlist)
 
@@ -85,3 +89,4 @@ class fuzzer:
                 print('url: ', url.replace('FUZZ', word), 'status code: ', response.status_code)
 
         wordlist.clear()
+        return 0

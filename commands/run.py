@@ -17,7 +17,7 @@ def run(module: str, options: dict) -> int:
                     Console.print(f'[bold {_FALERT}]Error: Invalid value for tport[/]')
                     return 1
 
-                _ports.portprobe(
+                return _ports.portprobe(
                     options['thost']['value'],
                     options['tport']['value'],
                     options['timeout']['value'],
@@ -27,13 +27,13 @@ def run(module: str, options: dict) -> int:
                     options['threading']['value']
                 ).display()
             elif module == "osprobe":
-                _osprobe.checkOS(
+                return _osprobe.checkOS(
                     options['thost']['value'],
                     options['tryct']['value'],
                     options['nmap']['value']
                 ).scanner()
             elif module == "fuzz":
-                _fuzz.fuzzer(
+                return _fuzz.fuzzer(
                     options['turl']['value'],
                     options['mode']['value'],
                     options['wordlist']['value'],

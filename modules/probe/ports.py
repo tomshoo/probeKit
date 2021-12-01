@@ -44,16 +44,16 @@ class portprobe:
         pass
 
 
-    def __getServbyPort(self, port, protocol):
+    def __getServbyPort(self, port, protocol) -> bool:
         """Get the service name based on the port."""
 
         try:
             name = socket.getservbyport(int(port), protocol)
             return name
         except:
-            return False
+            return None
 
-    def __tscanner(self, port: int):
+    def __tscanner(self, port: int) -> bool:
         """TCP port scanner function."""
         host = self.thost
         timeout = self.timeout
@@ -73,7 +73,7 @@ class portprobe:
         finally:
             socktcp.close()
 
-    def __uscanner(self, port: int):
+    def __uscanner(self, port: int) -> bool:
         """UDP port scanner function."""
         host = self.thost
         timeout = self.timeout
@@ -108,7 +108,7 @@ class portprobe:
 
         return portstatus
 
-    def __scanner(self, port):
+    def __scanner(self, port) -> str:
         """Starts the actual scanner session"""
 
         if self.protocol in ['tcp', 'tcp/ip', 'TCP', 'TCP/IP']:
@@ -127,7 +127,7 @@ class portprobe:
             elif self.verbose:
                 return f'[{FALERT}][-] {self.protocol}: {self.thost}: {port} is closed'
 
-    def display(self):
+    def display(self) -> int:
         """
         Displays the output.
         Also provides multithreading it the port input is a list.
@@ -149,6 +149,7 @@ class portprobe:
                     print(portstatus)
                 else:
                     print(f'{self.protocol}: {self.host}: {single_port} is closed')
+                return 0
 
             else:
                 try:
@@ -199,12 +200,19 @@ class portprobe:
                     results.clear()
 
                 except KeyboardInterrupt:
-                    Console.print(f'[{FALERT}]Keyboard interrupt received, quitting!![/]')
+                    Console.print(f'\n[{FALERT}]Keyboard interrupt received, quitting!![/]')
                     if self.threading:
                         executor.shutdown(wait=False, cancel_futures=True)
+                    return 130
+
+                except Exception as e:
+                    Console.print(f'[{FALERT}]{str(e)}[/]')
+                    return 1
 
             end = timestamp()            
             Console.print(f'[{BURGENT}][**] Scan took about {round(end-start, 5)} sec(s).[/]')
+            return 0
 
         else:
             Console.print(f'[{BALERT}][-] Error: Unknown protocol specified[/]')
+            return 3
