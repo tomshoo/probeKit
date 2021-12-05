@@ -6,6 +6,7 @@ import readline
 import platform
 import os
 import subprocess
+# import re
 
 import modules.util.utils as utils
 from rich import traceback, console
@@ -75,10 +76,11 @@ class input_parser:
     def __init__(self):
         self.exit_code: int = 0
         # Variables also known as options to the user
-        self.option_dict = option_dict
+        self.option_dict: dict = option_dict
 
-        self.MODULE = MODULE
-        self.aliases = aliases
+        self.MODULE: str = MODULE
+        self.MODLIST: list = []
+        self.aliases: dict = aliases
 
     def parser(self, value: str):
         if '#' in value:
@@ -101,6 +103,7 @@ class input_parser:
 
             for command in commandlist:
                 command = utils.trim(command)
+                #print (re.findall('\{.*?\}', command))
                 if '$' in command:
                     alias_cmd: list = command.split('$')
                     emp_list: list = []
@@ -132,6 +135,9 @@ class input_parser:
         if verb == "banner":
             self.exit_code = banner.run()
 
+        # elif verb == 'do':
+        #     pass
+
         elif verb == 'help':
             if not utils.args(cmd_split, 1):
                 Data = Help.Help('')
@@ -148,11 +154,18 @@ class input_parser:
             self.exit_code = show.run(cmd_split[1::], self.MODULE, self.option_dict)
 
         elif verb == 'back':
-            if self.MODULE == '':
-                raise ExitException(f'{FALERT}probeKit: exiting session')
+            if not self.MODULE:
+                Console.print(f'[{FURGENT}]Alert: No module selected... nothing to back from.')
             else:
-                self.MODULE = ''
-                self.exit_code = 0
+                if self.MODULE == (self.MODLIST[-1] if self.MODLIST else None):
+                    try:
+                        self.MODLIST.pop()
+                    except Exception as e:
+                        print(e)
+                else:
+                    pass
+
+                self.MODULE = self.MODLIST.pop() if self.MODLIST else ''
 
         # Create an exception which exits the try block and then exits the session
         elif verb == 'exit':
@@ -179,9 +192,10 @@ class input_parser:
             self.exit_code = ret_list[1]
 
         elif verb == 'use':
-            new_use = use.use(cmd_split[1::])
+            new_use = use.use(cmd_split[1::], self.MODLIST)
             ret_list = new_use.run()
-            self.MODULE = ret_list[0]
+            self.MODLIST = ret_list[0]
+            self.MODULE = self.MODLIST[-1]
             self.exit_code = ret_list[1]
 
         elif verb == 'about':
