@@ -6,7 +6,7 @@ import readline
 import platform
 import os
 import subprocess
-# import re
+import re
 
 import modules.util.utils as utils
 from rich import traceback, console
@@ -38,6 +38,9 @@ from config import (
 from modules.util.led import start_editor
 end = utils.timestamp()
 print(f'modules took {round(end-start, 7)} sec(s). to load')
+
+class SudoError(Exception):
+    pass
 
 # Setup Utils
 optionparser = utils.optionsparser(option_dict)
@@ -135,8 +138,9 @@ class input_parser:
         if verb == "banner":
             self.exit_code = banner.run()
 
-        # elif verb == 'do':
-        #     pass
+        elif verb == 'do':
+            print(re.findall('\(.*?\)', command))
+            pass
 
         elif verb == 'help':
             if not utils.args(cmd_split, 1):
@@ -227,6 +231,9 @@ class input_parser:
                 Console.print(f'[{FALERT}][-] Error: no such directory: \'{fpath}\'[/]')
 
         else:
+            if verb.lower() == 'sudo':
+                Console.print(f'[{FALERT}]Warning: using sudo is prohibited for security reasons[/]')
+                raise SudoError()
             try:
                 if not utils.isAdmin():
                     if 'Windows' not in platform.platform():
@@ -292,6 +299,11 @@ class input_parser:
         except KeyboardInterrupt:
             self.exit_code = 130
             print('\n')
+            self.main()
+
+        except SudoError:
+            self.exit_code = 1
+            print()
             self.main()
 
         except ExitException as e:
