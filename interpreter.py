@@ -37,7 +37,7 @@ from config import (
 )
 from modules.util.led import start_editor
 end = utils.timestamp()
-print(f'modules took {round(end-start, 7)} sec(s). to load')
+Console.print(f'[{colors.FSUCCESS}]modules took {round(end-start, 7)} sec(s). to load[/]')
 
 class SudoError(Exception):
     pass
@@ -101,6 +101,15 @@ class input_parser:
             if '\\;' in value:
                 value = value.replace('\\;', '\\semicolon')
 
+            commandlets: list = re.findall('\{.*?\}', value)
+            cmdletdict: dict = {}
+
+            for idx, commandlet in enumerate(commandlets):
+                cmdletdict['cmdlet_'+str(idx)] = commandlet
+
+            for replacer in cmdletdict:
+                value = value.replace(cmdletdict.get(replacer), replacer)
+
             commandlist: list = value.split(';')
             commandlist.pop(-1)
 
@@ -120,11 +129,15 @@ class input_parser:
                     for x in command.split(';'):
                         if '\\semicolon' in command:
                             command = command.replace('\\semicolon', ';')
+                        for cmdlet_idx in cmdletdict:
+                            command = command.replace(cmdlet_idx, cmdletdict.get(cmdlet_idx).replace(' ', '_'))
                         self.executor(utils.trim(x))
                         continue
                 else:
                     if '\\semicolon' in command:
                         command = command.replace('\\semicolon', ';')
+                    for cmdlet_idx in cmdletdict:
+                        command = command.replace(cmdlet_idx, cmdletdict.get(cmdlet_idx).replace(' ', '_'))
                     self.executor(command)
         except IndexError:
             pass
@@ -139,8 +152,17 @@ class input_parser:
             self.exit_code = banner.run()
 
         elif verb == 'do':
-            print(re.findall('\(.*?\)', command))
-            pass
+            try:
+                times: int = 1
+                if ('-t' in command):
+                    argument: str = ''
+                    check: int = 0
+                    times = command[command.find('-t')+3]
+                noreturn: bool = True if '-n' in command else False
+                self.do(cmd_split[1], int(times), noreturn)
+                pass
+            except ValueError:
+                Console.print(f'[{FALERT}]Error: Invalid argument[/]')
 
         elif verb == 'help':
             if not utils.args(cmd_split, 1):
@@ -309,6 +331,22 @@ class input_parser:
         except ExitException as e:
             Console.print(f"[{FALERT}]"+str(e)+"[/]")
             utils.Exit(self.exit_code) if 'Windows' in platform.platform() else utils.Exit(self.exit_code, histfile)
+
+    def do(self, command: str, times: int = 1, noreturn: bool = False) -> int:
+        command = command.replace('{', '')
+        command = command.replace('}', '')
+        command = command.replace('_', ' ')
+        if noreturn:
+            try:
+                for x in range(times):
+                    self.parser(command)
+            except Exception as e:
+                print(e)
+            self.exit_code = 0
+        else:
+            for x in range(times):
+                self.parser(command)
+        pass
 
 if __name__ == '__main__':
     new_parser = input_parser()

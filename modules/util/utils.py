@@ -18,6 +18,7 @@ from rich import traceback
 from collections import namedtuple
 traceback.install()
 
+# Named tuple containing all available commands for both `interpreter`, `probekit`
 completer = namedtuple("Completers", ['interpreter', 'led'])
 completers = completer(
     [
@@ -170,13 +171,19 @@ class register_history():
                     fp.write(self.command + f' # {datevalue()} \n')
                     pass
 
-
 class optionsparser:
+    """
+    Parse the dictionary read from `config.json`
+    Assign desired values to the value key for each value
+    """
     def __init__(self, option_dict: dict) -> None:
         self.option_dict = option_dict
 
 
     def __typeset(self, dtype: str):
+        """
+        Return the type object required as per the `dtype` key found in the scheme
+        """
         dtype = dtype.lower()
         if dtype == "str":
             return str
@@ -190,6 +197,15 @@ class optionsparser:
             raise Exception(f"Invalid dtype value \'{dtype}\'")
 
     def __dictparser(self, data: str) -> None:
+        """
+        Parse the value where type of value is specified as a dictionary
+        If type is mentioned as dictionary, the value is a dictionary containing two values:
+         - value: containing the value that needs to be sent to module
+         - type: the type of value,
+           - This key would not hold the data-type of the value,
+           - It hold the type mentioned in the module, for example:
+             module: probe, option: tport, (value: 1/8000, type: range)/(value: 1,8000, type: group)
+        """
         option_dict: dict = self.option_dict
         data_value: dict  = option_dict[data]['value']
         data_rules: dict = option_dict[data]['typerules']
@@ -211,17 +227,18 @@ class optionsparser:
                             _type = rule.get('type')
                             dtype = self.__typeset(dtype)
                             data_value['value'] = dtype(data_value['value'])
-                            # exec(f'data_value[\'value\'] = {dtype}(\'{data_value["value"]}\')')
                             data_value['type'] = scheme
                             break
                 else:
                     dtype = self.__typeset(rule.get("dtype"))
                     data_value['value'] = '' if not data_value.get('value') and type(data_value.get('value')) is str else dtype(data_value.get('value'))
-                    # exec(f'''try:\n\tdata_value[\'value\'] = {rule.get("dtype")}(\'{data_value["value"]}\') if data_value[\'value\'] else \'\'\nexcept ValueError:\n\tprint(\'Err: Invalid value\')''')
                     data_value['type'] = scheme
         self.option_dict = option_dict
 
     def parse(self) -> dict:
+        """
+        Parse the option dictionary assigning appropriate values for the options
+        """
         option_dict = self.option_dict
         for data in option_dict:
             if option_dict[data].get('value') is None:
@@ -283,6 +300,7 @@ class optionsparser:
                 else:
                     _type = option_dict[data]['type']
                     print(f'Error: Invalid type: {_type}')
+                    delete(_type)
                     sys.exit(1)
 
         return option_dict
