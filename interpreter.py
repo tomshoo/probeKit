@@ -101,7 +101,11 @@ class input_parser:
             if '\\;' in value:
                 value = value.replace('\\;', '\\semicolon')
 
-            commandlets: list = re.findall('\{.*?\}', value)
+            # commandlets: list = re.findall('\{.*?\}', value)
+            commandlets: list = utils.split_from_bracket(value, '{')
+            if commandlets is None:
+                self.exit_code = 3
+                return
             cmdletdict: dict = {}
 
             for idx, commandlet in enumerate(commandlets):
