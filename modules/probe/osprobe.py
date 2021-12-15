@@ -11,6 +11,7 @@ import socket
 from config import colors as colors
 from rich.console import Console as Con
 from typing import List, Union
+import nmap
 
 Console = Con()
 
@@ -67,7 +68,6 @@ class checkOS():
 
 
     def nmapScan(self) -> int:
-        import nmap
         try:
             scanner = nmap.PortScanner()
             target = self.target
