@@ -38,7 +38,7 @@ completers = completer(
         "unset"
     ],
     [
-       "i", "insert",
+        "i", "insert",
         "w", "write",
         "c", "change",
         "p", "print",
@@ -47,7 +47,7 @@ completers = completer(
     ]
 )
 
-def split_from_bracket(string: str, bropen: str):
+def split_from_bracket(string: str, bropen: str = '('):
     openbr: str = '({[<'
     closebr: str = ')}]>'
     if bropen in openbr:
@@ -68,7 +68,7 @@ def split_from_bracket(string: str, bropen: str):
             if nbuff == 0:
                 check = 0
             if nbuff < 0:
-                print("Extra bracket found. Qutting...")
+                print("Extra closing bracket found. Qutting...")
                 check = 1
                 break
         if check == 1:
@@ -80,7 +80,8 @@ def split_from_bracket(string: str, bropen: str):
     if check == 0:
         return str_container
     else:
-        print("Invalid bracket formatting please recheck...")
+        if nbuff >= 0:
+            print("Extra opening bracket found. Quitting...")
         return None
 
 def split_and_quote(key: str, quotekey: str, string: str) -> list:
