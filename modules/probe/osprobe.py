@@ -12,6 +12,7 @@ from config import colors as colors
 from rich.console import Console as Con
 from typing import List, Union
 import nmap
+from os import getuid
 
 Console = Con()
 
@@ -91,6 +92,9 @@ class checkOS():
         """
         Take the values and provide the processed output.
         """
+        if getuid() != 0:
+            Console.print(f'[{FALERT}]root access required to run this module[/]')
+            return 1
         print("Running TTL check on host")
         print("Please wait...")
 

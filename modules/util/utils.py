@@ -9,10 +9,10 @@ file and later import it from here.
 # Imports
 from datetime import datetime
 import time
-import os
 import ctypes
 import sys
 import csv
+from os import path, getuid
 from multipledispatch import dispatch
 from rich import traceback
 from collections import namedtuple
@@ -116,23 +116,17 @@ class completer:
         else:
             return None
 
-
-def isFloat(value: str) -> bool:
-    """
-    Check if a given string is a float value
-    """
-    valsplit = value.split('.')
-    length: int = len(valsplit)
-    isfloat: list = []
-    if (0 < length <= 2):
-        for x in valsplit:
-            isfloat.append(x.isdecimal())
-        if False in isfloat:
-            return False
-        else:
-            return True
-    else:
-        return False
+class string(str):
+    def isfloat(self)->bool:
+        ssplit = self.split('.')
+        length: int = len(ssplit)
+        FloatList: list = []
+        if 0 < length <= 2:
+            for x in ssplit:
+                FloatList.append(x.isdecimal())
+            if False in FloatList: return False
+            else: return True
+        else: return False
 
 def trim(string: str) -> str:
     """Function to remove extra white spaces from the string"""
@@ -166,7 +160,7 @@ def isAdmin() -> bool:
     try:
         return ctypes.windll.shell32.IsUserAnAdmin() == 1
     except AttributeError:
-        return os.getuid() == 0
+        return getuid() == 0
 
 def timestamp() -> float:
     """To get total time taken by things to load and run"""
@@ -182,7 +176,7 @@ class register_history():
 
     def __init__(self, command : str):
         self.command = command
-        self.histfile : str = os.path.join(os.path.expanduser('~'), '.probeKit.history')
+        self.histfile : str = path.join(path.expanduser('~'), '.probeKit.history')
 
     def __hastimestamp(self) -> bool:
         command: str = self.command
@@ -202,7 +196,7 @@ class register_history():
         """write the history to $HOME/.probeKit.history"""
         histfile = self.histfile
         if not self.__hastimestamp():
-            if os.path.exists(histfile):
+            if path.exists(histfile):
                 with open(histfile, 'a') as fp:
                     fp.write(self.command + f' # {datevalue()} \n')
                     pass
@@ -315,7 +309,7 @@ class optionsparser:
 
                 elif option_dict[data]['type'] == "float": 
                     if type(option_dict[data]['value']) is not float:
-                        if isFloat(option_dict[data]['value']):
+                        if string(option_dict[data]['value']).isfloat():
                             option_dict[data]['value'] = float(option_dict[data]['value'])
                         else:
                             option_dict[data]['value'] = ""
