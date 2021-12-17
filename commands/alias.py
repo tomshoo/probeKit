@@ -36,8 +36,7 @@ class alias:
 
         elif not (command and alias):
             exit_code = 0
-            for x in aliases:
-                print(x,":",aliases[x])
+            for x in aliases: print(x,":",aliases[x])
 
         else:
             alias = trim(alias)

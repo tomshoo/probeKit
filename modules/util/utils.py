@@ -52,8 +52,7 @@ class splitters:
     def bracket(string: str, bropen: str = '('):
         openbr: str = '({[<'
         closebr: str = ')}]>'
-        if bropen in openbr:
-            brclose = closebr[openbr.find(bropen)]
+        if bropen in openbr: brclose = closebr[openbr.find(bropen)]
         else:
             print("Not a valid bracket...")
             return None
@@ -67,29 +66,24 @@ class splitters:
                 nbuff+=1
             if ch == brclose:
                 nbuff-=1
-                if nbuff == 0:
-                    check = 0
+                if nbuff == 0: check = 0
                 if nbuff < 0:
                     print("Extra closing bracket found. Qutting...")
                     check = 1
                     break
-            if check == 1:
-                form_string+=ch
+            if check == 1: form_string+=ch
             if check == 0:
                 if form_string:
                     str_container.append(form_string+brclose)
                     form_string = ''
-        if check == 0:
-            return str_container
+        if check == 0: return str_container
         else:
-            if nbuff >= 0:
-                print("Extra opening bracket found. Quitting...")
+            if nbuff >= 0: print("Extra opening bracket found. Quitting...")
             return None
 
     @staticmethod
     def quote(key: str, quotekey: str, string: str) -> list:
-        for l in csv.reader([string], delimiter=key, quotechar=quotekey):
-            split_quoted = l
+        for l in csv.reader([string], delimiter=key, quotechar=quotekey): split_quoted = l
         return split_quoted
 
 def args(value: list, pos: int) -> str:
@@ -98,23 +92,18 @@ def args(value: list, pos: int) -> str:
     in such a way that the interpreter doesn't break
     """
 
-    try:
-        return str(value[int(pos)])
-    except Exception:
-        return ''
+    try: return str(value[int(pos)])
+    except Exception: return ''
 
 class completer:
     """tab completion class(experimental)"""
-    def __init__(self, commands):
-        self.commands = commands
+    def __init__(self, commands): self.commands = commands
     def completion(self, text: str, state: int):
         """return valid commands from the list of commands provided"""
         commands = self.commands
         options = [i for i in commands if i.startswith(text.lower())]
-        if state < len(options):
-            return options[state]
-        else:
-            return None
+        if state < len(options): return options[state]
+        else: return None
 
 class string(str):
     def isfloat(self)->bool:
@@ -144,8 +133,7 @@ def datevalue() -> str:
     return datetime.now().strftime('%a %Y-%m-%d %H:%M:%S')
 
 @dispatch(int)
-def Exit(exitStatus: int):
-    sys.exit(exitStatus)
+def Exit(exitStatus: int): sys.exit(exitStatus)
 
 @dispatch(int, str)
 def Exit(exitStatus: int, histfile: str):
@@ -157,10 +145,8 @@ def Exit(exitStatus: int, histfile: str):
     sys.exit(exitStatus)
 
 def isAdmin() -> bool:
-    try:
-        return ctypes.windll.shell32.IsUserAnAdmin() == 1
-    except AttributeError:
-        return getuid() == 0
+    try: return ctypes.windll.shell32.IsUserAnAdmin() == 1
+    except AttributeError: return getuid() == 0
 
 def timestamp() -> float:
     """To get total time taken by things to load and run"""
@@ -187,10 +173,8 @@ class register_history():
             try:
                 time.strptime(comment, "%a %Y-%m-%d %H:%M:%S")
                 return True
-            except ValueError:
-                return False
-        else:
-            return False
+            except ValueError: return False
+        else: return False
 
     def write_history(self):
         """write the history to $HOME/.probeKit.history"""
@@ -219,16 +203,11 @@ class optionsparser:
         Return the type object required as per the `dtype` key found in the scheme
         """
         dtype = dtype.lower()
-        if dtype == "str":
-            return str
-        elif dtype == "int":
-            return int
-        elif dtype == "float":
-            return float
-        elif dtype == "bool":
-            return bool
-        else:
-            raise Exception(f"Invalid dtype value \'{dtype}\'")
+        if dtype == "str": return str
+        elif dtype == "int": return int
+        elif dtype == "float": return float
+        elif dtype == "bool": return bool
+        else: raise Exception(f"Invalid dtype value \'{dtype}\'")
 
     def __dictparser(self, data: str) -> None:
         """
@@ -254,8 +233,7 @@ class optionsparser:
                             if rule.get('delimeter'):
                                 data_value['value'] = data_value['value'].split(rule.get('delimeter'))
                                 break
-                            else:
-                                print('Err: no delimeter found... cannot split.')
+                            else: print('Err: no delimeter found... cannot split.')
                         else:
                             dtype = rule.get('dtype')
                             _type = rule.get('type')
@@ -281,55 +259,39 @@ class optionsparser:
                         'value': '',
                         'type': ''
                     }
-                else:
-                    option_dict[data]['value'] = ''
+                else: option_dict[data]['value'] = ''
 
             if option_dict[data].get('type'):
                 if option_dict[data]['type'] == "dict":
-                    if not option_dict[data].get('typerules'):
-                        print('Err: No type rule found... skipping value')
+                    if not option_dict[data].get('typerules'): print('Err: No type rule found... skipping value')
                     else:
-                        if type(option_dict[data]['typerules']) is not dict:
-                            print('Invalid type rule scheme... skipping value')
+                        if type(option_dict[data]['typerules']) is not dict: print('Invalid type rule scheme... skipping value')
                         else:
-                            try:
-                                self.__dictparser(data)
-                            except TypeError as e:
-                                print(f'Something went wrong... => {e}')
+                            try: self.__dictparser(data)
+                            except TypeError as e: print(f'Something went wrong... => {e}')
                     pass
 
                 elif option_dict[data]['type'] == "int": 
                     if type(option_dict[data]['value']) is not int:
-                        if option_dict[data]['value'].isdecimal():
-                            option_dict[data]['value'] = int(option_dict[data]['value'])
-                        else:
-                            option_dict[data]['value'] = ""
-                    else:
-                        pass
+                        if option_dict[data]['value'].isdecimal(): option_dict[data]['value'] = int(option_dict[data]['value'])
+                        else: option_dict[data]['value'] = ""
+                    else: pass
 
                 elif option_dict[data]['type'] == "float": 
                     if type(option_dict[data]['value']) is not float:
-                        if string(option_dict[data]['value']).isfloat():
-                            option_dict[data]['value'] = float(option_dict[data]['value'])
-                        else:
-                            option_dict[data]['value'] = ""
-                    else:
-                        pass
+                        if string(option_dict[data]['value']).isfloat(): option_dict[data]['value'] = float(option_dict[data]['value'])
+                        else: option_dict[data]['value'] = ""
+                    else: pass
 
                 elif option_dict[data]['type'] == "bool":
                     if type(option_dict[data]['value']) is not bool:
                         if option_dict[data]['value'].lower() in ['true', 'false']:
-                            if option_dict[data]['value'].lower() == "true":
-                                option_dict[data]['value'] = True
-                            else:
-                                option_dict[data]['value'] = False
-                        else:
-                            option_dict[data]['value'] = ""
-                    else:
-                        pass
+                            if option_dict[data]['value'].lower() == "true": option_dict[data]['value'] = True
+                            else: option_dict[data]['value'] = False
+                        else: option_dict[data]['value'] = ""
+                    else: pass
 
-                elif option_dict[data]['type'] == "str":
-                    pass
+                elif option_dict[data]['type'] == "str": pass
 
                 else:
                     _type = option_dict[data]['type']

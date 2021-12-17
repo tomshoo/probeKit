@@ -17,8 +17,7 @@ class unalias:
             Console.print(f'[{_FALERT}][-] Error: no input provided[/]')
             return self.ret_list
 
-        for alias in self.alias_list:
-            self.unassign(alias)
+        for alias in self.alias_list: self.unassign(alias)
 
         return self.ret_list
 

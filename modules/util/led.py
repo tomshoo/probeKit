@@ -21,10 +21,8 @@ class start_editor():
 
         This function is not related to utils.args in any sense.
         """
-        if pos:
-            return self.argslist[pos]
-        else:
-            return self.argslist
+        if pos: return self.argslist[pos]
+        else: return self.argslist
 
     def start_led(self):
         """Call the driver function for the editor"""
@@ -52,10 +50,8 @@ class start_editor():
                     file_content = file_content_string.split('\n')
                     file_content.pop(len(file_content)-1)
                     return file_content
-                else:
-                    return []
-        except IndexError:
-            return []
+                else: return []
+        except IndexError: return []
 
     def change(self, pos, original_buffer):
         """
@@ -66,10 +62,8 @@ class start_editor():
         temp_buffer = []
         while(True):
             c = input()
-            if c != '~|':
-                temp_buffer.append(c)
-            else:
-                break;
+            if c != '~|': temp_buffer.append(c)
+            else: break
 
         temp_buffer_string = '\n'.join(temp_buffer)
         original_buffer[pos] = temp_buffer_string
@@ -90,53 +84,38 @@ class start_editor():
                     readline.parse_and_bind('tab: complete')
                     readline.set_completer(completer.completion)
                     c = input(f'{mode}> ')
-                else:
-                    c = input()
+                else: c = input()
 
                 cmd = c.split()
                 if mode == 'normal':
-                    if c in [None, '']:
-                        pass
+                    if c in [None, '']: pass
 
-                    elif args(cmd, 0) in ['insert', 'i']:
-                        mode = 'insert'
+                    elif args(cmd, 0) in ['insert', 'i']: mode = 'insert'
 
                     elif args(cmd, 0) in ['change', 'c']:
-                        if args(cmd, 1) and led_buffer[int(args(cmd, 1))-1]:
-                            led_buffer = self.change(int(args(cmd, 1))-1, led_buffer)
-                        else:
-                            print('Error')
+                        if args(cmd, 1) and led_buffer[int(args(cmd, 1))-1]: led_buffer = self.change(int(args(cmd, 1))-1, led_buffer)
+                        else: print('Error')
 
                     elif args(cmd, 0) in ['print', 'p']:
-                        for x in led_buffer:
-                            print(x)
+                        for x in led_buffer: print(x)
 
                     elif args(cmd, 0) in ['lineprint', 'n']:
-                        for x in range(len(led_buffer)):
-                            print(f'{x+1}\t| {led_buffer[x]}')
+                        for x in range(len(led_buffer)): print(f'{x+1}\t| {led_buffer[x]}')
 
                     elif args(cmd, 0) in ['write', 'w']:
-                        if args(cmd, 1):
-                            self.write(args(cmd, 1), led_buffer)
-                        elif self.args(1):
-                            self.write(self.args(1), led_buffer)
-                        else:
-                            print('Err: Invalid Filename')
+                        if args(cmd, 1): self.write(args(cmd, 1), led_buffer)
+                        elif self.args(1): self.write(self.args(1), led_buffer)
+                        else: print('Err: Invalid Filename')
 
-                    elif args(cmd, 0) in ['quit', 'q']:
-                        break;
+                    elif args(cmd, 0) in ['quit', 'q']: break
 
-                    else:
-                        print(f'Err: Invalid instruction: {args(cmd, 0)}')
+                    else: print(f'Err: Invalid instruction: {args(cmd, 0)}')
 
                 elif mode == 'insert':
                     if c != '~|':
                         led_buffer.append(c)
                         pos+=1
 
-                    else:
-                        mode = 'normal'
-        except EOFError:
-            pass
-        except KeyboardInterrupt:
-            pass
+                    else: mode = 'normal'
+        except EOFError: pass
+        except KeyboardInterrupt: pass

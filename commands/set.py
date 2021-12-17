@@ -20,10 +20,8 @@ class set_class:
             Console.print(f'[{_FSUCCESS}]set all[/]')
             option_dict: dict = self.ret_list[0]
             for option in OPTIONS:
-                if option_dict[option]['type'] == "dict":
-                    option_dict[option]['value']['value'] = OPTIONS[option]
-                else:
-                    option_dict[option]['value'] = OPTIONS[option]
+                if option_dict[option]['type'] == "dict": option_dict[option]['value']['value'] = OPTIONS[option]
+                else: option_dict[option]['value'] = OPTIONS[option]
 
             parser = _optparser(option_dict)
             option_dict = parser.parse()
@@ -46,10 +44,8 @@ class set_class:
     def assign(self, option: str, value: str):
         options = self.ret_list[0]
         if options.get(option):
-            if options[option]['type'] != "dict":
-                options[option]['value'] = value
-            else:
-                options[option]['value']['value'] = value
+            if options[option]['type'] != "dict": options[option]['value'] = value
+            else: options[option]['value']['value'] = value
         else:
             Console.print(f'[{_FALERT}]Error: Invalid option \'{option}\'[/]')
             self.ret_list[1] = 1

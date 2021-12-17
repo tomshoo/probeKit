@@ -72,8 +72,7 @@ aliases : dict = {
 #Read the config.json file
 data_path = Path(__file__).parent
 data_path = path.join(data_path, 'config.json')
-with open(data_path, 'r') as f:
-    data_str = f.read()
+with open(data_path, 'r') as f: data_str = f.read()
 data = json.loads(data_str)
 
 #List valid modules from config.json
@@ -85,7 +84,5 @@ option_dict: dict = data['options']
 #Override options with values provided by the user
 for option in option_dict:
     if OPTIONS.get(option):
-        if option_dict[option]['type'] == "dict":
-            option_dict[option]['value']['value'] = OPTIONS.get(option)
-        else:
-            option_dict[option]['value'] = OPTIONS.get(option)
+        if option_dict[option]['type'] == "dict": option_dict[option]['value']['value'] = OPTIONS.get(option)
+        else: option_dict[option]['value'] = OPTIONS.get(option)

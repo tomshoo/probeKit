@@ -14,8 +14,7 @@ class unset_val:
         self.options = options
 
     def run(self) -> List[Union[dict, int]]:
-        for option in self.options:
-            self.unassign(option)
+        for option in self.options: self.unassign(option)
         return self.ret_list
 
     def unassign(self, option: str):
@@ -25,12 +24,10 @@ class unset_val:
                 if options_dict[data]['type'] == "dict":
                     options_dict[data]['value']['value'] = ""
                     options_dict[data]['value']['type'] = ""
-                else:
-                    options_dict[data]['value'] = ""
+                else: options_dict[data]['value'] = ""
 
         elif options_dict.get(option):
-            if options_dict[option]['type'] != "dict":
-                options_dict[option]['value'] = ""
+            if options_dict[option]['type'] != "dict": options_dict[option]['value'] = ""
             else:
                 options_dict[option]['value']['value'] = ""
                 options_dict[option]['value']['type'] = ""

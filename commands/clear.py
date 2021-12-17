@@ -5,8 +5,7 @@ import readline
 from sys import exit
 
 def run(arg: list, exit_code: int, histfile: str = None) -> int:
-    if args(arg, 0) and args(arg, 0) == '-e':
-        exit(exit_code)
+    if args(arg, 0) and args(arg, 0) == '-e': exit(exit_code)
 
     if args(arg, 0) and args(arg, 0) in ['-h', '--history']:
         readline.clear_history()
@@ -17,8 +16,7 @@ def run(arg: list, exit_code: int, histfile: str = None) -> int:
                     hist_cls.write('#Clear\n')
 
 
-    if 'Windows' in platform():
-        system('cls')
+    if 'Windows' in platform(): system('cls')
     
     else:
         print(chr(27)+'2[j')

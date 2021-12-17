@@ -21,10 +21,8 @@ class fuzzer:
                 for root in wordlist_tertiary:
                     root : str = root
                     if root+'/'+word not in wordlist_primary:
-                        if not root.startswith('.') and '.' in root:
-                            pass
-                        else:
-                            wordlist_primary.append(root+'/'+word)
+                        if not root.startswith('.') and '.' in root: pass
+                        else: wordlist_primary.append(root+'/'+word)
 
             wordlist_secondary = wordlist_primary.copy()
 
@@ -39,8 +37,7 @@ class fuzzer:
         depth = self.depth
 
         try:
-            if requests.get(url):
-                pass
+            if requests.get(url): pass
             else:
                 print('Please check the input url')
                 return 3
@@ -52,13 +49,10 @@ class fuzzer:
             print('Err:',e)
             return 3
 
-        if self.type.lower() == "subdomain":
-            url = url.replace('://', '://FUZZ.')
+        if self.type.lower() == "subdomain": url = url.replace('://', '://FUZZ.')
         elif self.type.lower() == "directory":
-            if url[-1] != '/':
-                url = url+'/FUZZ'
-            else:
-                url = url + 'FUZZ'
+            if url[-1] != '/': url = url+'/FUZZ'
+            else: url = url + 'FUZZ'
         
         if not url or type(url) is not str:
             print('Err: No url found')
@@ -81,12 +75,9 @@ class fuzzer:
         for word in progress.track(wordlist, description="working..."):
             global response
             response = None
-            try:
-                response = requests.get(url.replace('FUZZ', word))
-            except requests.exceptions.ConnectionError as e:
-                print(e) if verbose else print(end="")
-            if response:
-                print('url: ', url.replace('FUZZ', word), 'status code: ', response.status_code)
+            try: response = requests.get(url.replace('FUZZ', word))
+            except requests.exceptions.ConnectionError as e: print(e) if verbose else print(end="")
+            if response: print('url: ', url.replace('FUZZ', word), 'status code: ', response.status_code)
 
         wordlist.clear()
         return 0

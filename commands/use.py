@@ -24,8 +24,7 @@ class use:
 
         else:
             if module[0] in _modules:
-                if module[0] not in self.ret_list[0]:
-                    self.ret_list[0].append(module[0])
+                if module[0] not in self.ret_list[0]: self.ret_list[0].append(module[0])
                 else:
                     curridx: int = self.ret_list[0].index(module[0])
                     self.ret_list[0].append(self.ret_list[0].pop(curridx))

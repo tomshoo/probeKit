@@ -28,8 +28,7 @@ def checkTTL(target, iterator) -> list:
         pkt = IP(dst=target)/ICMP(seq=9999)
         ttllist = []
 
-        if iterator == 0:
-            Console.print(f'[{FALERT}]Error: invalid try count specified: {iterator}[/]')
+        if iterator == 0: Console.print(f'[{FALERT}]Error: invalid try count specified: {iterator}[/]')
 
         for _ in range(iterator):
             rpkt = sr1(pkt)
@@ -38,8 +37,7 @@ def checkTTL(target, iterator) -> list:
 
         return ttllist
 
-    except TypeError as err:
-        print(err)
+    except TypeError as err: print(err)
 
 class checkOS():
     """
@@ -54,14 +52,9 @@ class checkOS():
         try:
             ttllist = checkTTL(self.target, self.iterator)
             for i in ttllist:
-                if i <= 64:
-                    return ["Linux", 0]
-
-                elif i <= 128:
-                    return ["DOS", 0]
-
-                elif i <= 256:
-                    return ["Solaris", 0]
+                if i <= 64: return ["Linux", 0]
+                elif i <= 128: return ["DOS", 0]
+                elif i <= 256: return ["Solaris", 0]
 
         except TypeError:
             print('Err: Unable to determine remote host Operating System')
@@ -80,8 +73,7 @@ class checkOS():
                 return 1
             else:
                 for data in OSresult['osmatch']:
-                    for i in data:
-                        print(data[i])
+                    for i in data: print(data[i])
         except nmap.PortScannerError:
             Console.print(f'[{FALERT}]Err: `nmap` was not installed!!![/]')
             return 2
@@ -107,8 +99,7 @@ class checkOS():
             print("Please wait running Nmap scan...")
             return self.nmapScan()
 
-        elif self.ifnmap == 0:
-            Console.print(f'[{FURGENT}]Alert: Skipping nmap scan[/]')
+        elif self.ifnmap == 0: Console.print(f'[{FURGENT}]Alert: Skipping nmap scan[/]')
 
         else:
             Console.print(f'[{FALERT}]Error: invalid condition for nmap: {self.ifnmap}[/]')
