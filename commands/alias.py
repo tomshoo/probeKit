@@ -1,5 +1,5 @@
 from config import colors as _colors
-from modules.util.utils import split_and_quote, args, trim
+from modules.util.utils import splitters, args, trim
 from rich import traceback, console
 traceback.install()
 Console = console.Console()
@@ -14,7 +14,7 @@ class alias:
         tmp_cmd_split = self.get_cmd
         tmp_cmd_split.pop(0)
         new_str = ' '.join(tmp_cmd_split)
-        tmp_str = split_and_quote('<', '"', new_str)
+        tmp_str = splitters.quote('<', '"', new_str)
         new_alias = args(tmp_str, 0)
         new_cmd = args(tmp_str, 1)
         self.assign(new_alias, new_cmd)

@@ -102,7 +102,7 @@ class input_parser:
                 value = value.replace('\\;', '\\semicolon')
 
             # commandlets: list = re.findall('\{.*?\}', value)
-            commandlets: list = utils.split_from_bracket(value, '{')
+            commandlets: list = utils.splitters().bracket(value, '{')
             if commandlets is None:
                 self.exit_code = 3
                 return
@@ -148,7 +148,7 @@ class input_parser:
 
     def executor(self, command: str):
         cmd_split: list = command.split()
-        cmd_split_quoted = utils.split_and_quote(' ', '"', command)
+        cmd_split_quoted = utils.splitters.quote(' ', '"', command)
 
         verb: str = cmd_split[0].lower()
 
@@ -333,6 +333,7 @@ class input_parser:
             self.main()
 
         except ExitException as e:
+            print(e.__str__())
             Console.print(f"[{FALERT}]"+str(e)+"[/]")
             utils.Exit(self.exit_code) if 'Windows' in platform.platform() else utils.Exit(self.exit_code, histfile)
 
