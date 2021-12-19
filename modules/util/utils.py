@@ -90,6 +90,32 @@ class splitters:
     #     return split_quoted
 
     @staticmethod
+    def dbreaker(string: str, delimiter: str = ' ') -> list:
+        if delimiter.isalnum(): raise ValueError('delimitter cannot be an alpha-numeric character')
+        if delimiter not in string: return [string]
+        form_string: str = ''
+        str_container: list = []
+        check: int = 0
+        for ch in string:
+            if ch == '\'':
+                if check == 2: pass
+                elif check == 1: check = 0
+                elif check == 0: check = 1
+            if ch == '"':
+                if check == 2: check = 0
+                elif check == 1: pass
+                elif check == 0: check = 2
+            if ch == delimiter and check == 0: pass
+            else: form_string+=ch
+            if check == 0:
+                if ch == delimiter:
+                    str_container.append(form_string)
+                    form_string=''
+        if form_string:
+            str_container.append(form_string)
+        return str_container
+
+    @staticmethod
     def quote(string: str, delimiter: str = ' ') -> list:
         if delimiter.isalnum(): raise ValueError('delimiter cannot be an alpha-numeric character')
         form_string: str = ''
@@ -100,25 +126,18 @@ class splitters:
         for ch in string:
             previous_state = check
             if ch == '\'':
-                if check == 2:
-                    pass
-                elif check == 1:
-                    check = 0
-                elif check == 0:
-                    check = 1
+                if check == 2: pass
+                elif check == 1: check = 0
+                elif check == 0: check = 1
             if ch == '"':
-                if check == 2:
-                    check = 0
-                elif check == 1:
-                    pass
-                elif check == 0:
-                    check = 2
+                if check == 2: check = 0
+                elif check == 1: pass
+                elif check == 0: check = 2
             if check == 0:
                 if previous_state != check:
                     str_container.append(quote_string)
                     quote_string = ''
-                elif ch != delimiter and previous_state == check:
-                    form_string+=ch
+                elif ch != delimiter and previous_state == check: form_string+=ch
                 else:
                     if form_string:
                         str_container.append(form_string)
@@ -128,9 +147,7 @@ class splitters:
                 if check == 2 and ch == '"': pass
                 elif check == 1 and ch == '\'': pass
                 else: quote_string+=ch
-        if form_string:
-            str_container.append(form_string)
-        del(form_string)
+        if form_string: str_container.append(form_string)
         return str_container
 
 def args(value: list, pos: int) -> str:

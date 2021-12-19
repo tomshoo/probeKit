@@ -97,11 +97,12 @@ class input_parser:
             for idx, commandlet in enumerate(commandlets): cmdletdict['cmdlet_'+str(idx)] = commandlet
             for replacer in cmdletdict: value = value.replace('{'+cmdletdict.get(replacer)+'}', replacer)
 
-            commandlist: list = value.split(';')
-            commandlist.pop(-1)
+            commandlist: list = utils.splitters.dbreaker(value, delimiter=';')
 
             for command in commandlist:
                 command = utils.trim(command)
+                if not command:
+                    continue
                 #print (re.findall('\{.*?\}', command))
                 if '$' in command:
                     alias_cmd: list = command.split('$')
@@ -112,8 +113,9 @@ class input_parser:
                             x = possible_macro
                         emp_list.append(x)
                     command = ''.join(emp_list)
+                    print(command)
                 if ';' in command:
-                    for x in command.split(';'):
+                    for x in utils.splitters.dbreaker(command, delimiter=';'):
                         if '\\semicolon' in command:
                             command = command.replace('\\semicolon', ';')
                         for cmdlet_idx in cmdletdict: command = command.replace(cmdlet_idx, cmdletdict.get(cmdlet_idx).replace(' ', '_'))
