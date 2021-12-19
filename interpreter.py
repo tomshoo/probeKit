@@ -15,27 +15,20 @@ Console = console.Console()
 
 print(f'Importing custom modules', end='\r')
 start = utils.timestamp()
+
 import modules.data.AboutList as aboutList
 from commands import (
-    run,
-    set as setval,
-    unset,
-    alias,
-    unalias,
-    use,
-    banner,
-    show,
-    clear
+    run, set as setval, unset,
+    alias, unalias, use,
+    banner, show, clear
 )
 from modules.data import Help
 from config import (
-    MODULE,
-    colors,
-    aliases,
-    option_dict,
-    valid_modules as _modules
+    MODULE, colors, aliases,
+    option_dict, valid_modules as _modules
 )
 from modules.util.led import start_editor
+
 end = utils.timestamp()
 Console.print(f'[{colors.FSUCCESS}]modules took {round(end-start, 7)} sec(s). to load[/]')
 
@@ -102,7 +95,7 @@ class input_parser:
             cmdletdict: dict = {}
 
             for idx, commandlet in enumerate(commandlets): cmdletdict['cmdlet_'+str(idx)] = commandlet
-            for replacer in cmdletdict: value = value.replace(cmdletdict.get(replacer), replacer)
+            for replacer in cmdletdict: value = value.replace('{'+cmdletdict.get(replacer)+'}', replacer)
 
             commandlist: list = value.split(';')
             commandlist.pop(-1)
@@ -134,7 +127,8 @@ class input_parser:
 
     def executor(self, command: str):
         cmd_split: list = command.split()
-        cmd_split_quoted = utils.splitters.quote(' ', '"', command)
+        # cmd_split_quoted = utils.splitters.quote(' ', '"', command)
+        cmd_split_quoted = utils.splitters.quote(command, ' ')
 
         verb: str = cmd_split[0].lower()
 
@@ -298,13 +292,10 @@ class input_parser:
             self.main()
 
         except ExitException as e:
-            print(e.__str__())
-            Console.print(f"[{FALERT}]"+str(e)+"[/]")
+            Console.print(f"[{FALERT}]"+e.__str__()+"[/]")
             utils.Exit(self.exit_code) if 'Windows' in platform.platform() else utils.Exit(self.exit_code, histfile)
 
     def do(self, command: str, times: int = 1, noreturn: bool = False) -> int:
-        command = command.replace('{', '')
-        command = command.replace('}', '')
         command = command.replace('_', ' ')
         if noreturn:
             try:
