@@ -54,10 +54,8 @@ banner.run()
 if 'Windows' not in platform.platform():
     histfile : str = os.path.join(os.path.expanduser('~'), '.probeKit.history')
     if os.path.exists(histfile): readline.read_history_file(histfile)
-    if os.getuid() != 0: Console.print(f'[{FURGENT}][**] Warning: You won\'t be able to use the osprbe module without root access.[/]')
 
-else: Console.print(f'[{FURGENT}][**] Warning: system commands will not run in windows based system[/]')
-
+if not utils.isAdmin(): Console.print(f'[{FURGENT}]Warning: `osprobe` and `UDP Scanning` may not work as expected...')
 
 # Session starts over here
 # Not the best way to do it but it works so...
