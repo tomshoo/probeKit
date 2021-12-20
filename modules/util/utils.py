@@ -84,11 +84,6 @@ class splitters:
             if nbuff >= 0: print("Extra opening bracket found. Quitting...")
             return None
 
-    # @staticmethod
-    # def quote(key: str, quotekey: str, string: str) -> list:
-    #     for l in csv.reader([string], delimiter=key, quotechar=quotekey): split_quoted = l
-    #     return split_quoted
-
     @staticmethod
     def dbreaker(string: str, delimiter: str = ' ') -> list:
         if delimiter.isalnum(): raise ValueError('delimitter cannot be an alpha-numeric character')
@@ -191,11 +186,6 @@ class ExitException(Exception):
     """Custom "dummy" exception to exit the session"""
     pass
 
-def datevalue() -> str:
-    """Function to get immediate time at a point"""
-
-    return datetime.now().strftime('%a %Y-%m-%d %H:%M:%S')
-
 @dispatch(int)
 def Exit(exitStatus: int): sys.exit(exitStatus)
 
@@ -212,10 +202,18 @@ def isAdmin() -> bool:
     try: return ctypes.windll.shell32.IsUserAnAdmin() == 1
     except AttributeError: return os.getuid() == 0
 
-def timestamp() -> float:
-    """To get total time taken by things to load and run"""
+class timefunc:
+    @staticmethod
+    def datevalue() -> str:
+        """Function to get immediate time at a point"""
 
-    return time.perf_counter()
+        return datetime.now().strftime('%a %Y-%m-%d %H:%M:%S')
+
+    @staticmethod
+    def timestamp() -> float:
+        """To get total time taken by things to load and run"""
+
+        return time.perf_counter()
 
 class register_history():
     """
@@ -246,11 +244,11 @@ class register_history():
         if not self.__hastimestamp():
             if os.path.exists(histfile):
                 with open(histfile, 'a') as fp:
-                    fp.write(self.command + f' # {datevalue()} \n')
+                    fp.write(self.command + f' # {timefunc.datevalue()} \n')
                     pass
             else:
                 with open(histfile, 'w') as fp:
-                    fp.write(self.command + f' # {datevalue()} \n')
+                    fp.write(self.command + f' # {timefunc.datevalue()} \n')
                     pass
 
 class optionsparser:

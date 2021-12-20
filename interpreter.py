@@ -14,7 +14,7 @@ traceback.install()
 Console = console.Console()
 
 print(f'Importing custom modules', end='\r')
-start = utils.timestamp()
+start = utils.timefunc.timestamp()
 
 import modules.data.AboutList as aboutList
 from commands import (
@@ -29,7 +29,7 @@ from config import (
 )
 from modules.util.led import start_editor
 
-end = utils.timestamp()
+end = utils.timefunc.timestamp()
 Console.print(f'[{colors.FSUCCESS}]modules took {round(end-start, 7)} sec(s). to load[/]')
 
 class SudoError(Exception): pass
@@ -47,7 +47,7 @@ FURGENT = colors.FURGENT
 FSTYLE = colors.FPROMPT
 
 # Display time during statup
-print(f'current session started at {utils.datevalue()}')
+print(f'current session started at {utils.timefunc.datevalue()}')
 banner.run()
 
 # Checks if history file already exists or not
@@ -259,8 +259,8 @@ class input_parser:
         elif self.exit_code == 130: COLOR: str = colors.FURGENT
         else: COLOR: str = colors.FALERT
 
-        if not MODULE: prompt_str: str = f'\[probkit]: [{COLOR}]{self.exit_code}[/]$> '
-        else: prompt_str: str = f'probeKit: [{FSTYLE}]\[{self.MODULE}][/]: [{COLOR}]{self.exit_code}[/]$> '
+        if not self.MODULE: prompt_str: str = f'\[probkit]: [{COLOR}]{self.exit_code}[/]$> '
+        else: prompt_str: str = f'\[probeKit]: [{FSTYLE}]({self.MODULE})[/]: [{COLOR}]{self.exit_code}[/]$> '
         if check == 0:
             value = Console.input(prompt_str)
         else: value = ' '.join(sys.argv[1].split('\ ')); check = 0
