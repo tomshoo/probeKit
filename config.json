@@ -29,6 +29,12 @@
                     "identifier": ",",
                     "delimeter": ","
                 },
+
+                "common": {
+                    "type": "str",
+                    "dtype": "str",
+                    "identifier": "common"
+                },
                 "single": {
                     "type": "str",
                     "dtype": "int"
