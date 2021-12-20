@@ -227,19 +227,19 @@ class input_parser:
             else: Console.print(f'[{FALERT}][-] Error: no such directory: \'{fpath}\'[/]')
 
         else:
-            try:
-                PATH: list=(os.getenv('PATH')+':').split(':')
-                for path in PATH:
-                    with open(path+verb, 'r') as cmd:
+            PATH: list=(os.getenv('PATH')+':').split(':')
+            for path in PATH:
+                try:
+                    with open(path+'/'+verb, 'r') if 'Windows' not in platform.platform() else open(path+'\\'+verb) as cmd:
                         content = cmd.read()
-            except UnicodeDecodeError:
-                pass
-            except FileNotFoundError:
-                pass
-            else:
-                if len(re.findall('sudo*', content)) > 0:
-                    Console.print(f'[{FALERT}]Warning: sudo found in script, not running...')
-                    raise SudoError()
+                except UnicodeDecodeError:
+                    pass
+                except FileNotFoundError:
+                    pass
+                else:
+                    if len(re.findall('sudo*', content)) > 0 or 'sudo' in content:
+                        Console.print(f'[{FALERT}]Warning: sudo found in script, not running...')
+                        raise SudoError()
             if verb.lower() == 'sudo':
                 Console.print(f'[{FALERT}]Warning: using sudo is prohibited for security reasons[/]')
                 raise SudoError()
@@ -255,6 +255,24 @@ class input_parser:
             except FileNotFoundError:
                 Console.print(f'[{FALERT}]Error: Invalid command \'{verb}\'[/]')
                 self.exit_code = 1
+
+    def prompt(self, check: int = 0) -> int:
+        if self.exit_code == 0: COLOR: str = colors.FSUCCESS
+        elif self.exit_code == 130: COLOR: str = colors.FURGENT
+        else: COLOR: str = colors.FALERT
+
+        if not MODULE: prompt_str: str = f'\[probkit]: [{COLOR}]{self.exit_code}[/]$> '
+        else: prompt_str: str = f'probeKit: [{FSTYLE}]\[{self.MODULE}][/]: [{COLOR}]{self.exit_code}[/]$> '
+        if check == 0:
+            value = Console.input(prompt_str)
+        else: value = ' '.join(sys.argv[1].split('\ ')); check = 0
+
+        if value:
+            self.parser(value)
+            if 'Windows' not in platform.platform():
+                hist = utils.register_history(value)
+                hist.write_history()
+        return 0
 
     def main(self):
         check: int = 1 if utils.args(sys.argv, 1) else 0
@@ -272,25 +290,7 @@ class input_parser:
 
         try:
             while(True):
-                if self.exit_code == 0: COLOR = colors.FSUCCESS
-                elif self.exit_code == 130: COLOR = colors.FURGENT
-                else: COLOR = colors.FALERT
-            
-                if check == 0:
-                    if self.MODULE == '': prompt_str: str = f'\[probkit]: [{COLOR}]{self.exit_code}[/]$> '
-                    else: prompt_str: str = f'probeKit: [{FSTYLE}]\[{self.MODULE}][/]: [{COLOR}]{self.exit_code}[/]$> '
-
-                    value = Console.input(prompt_str)
-
-                else:
-                    value = ' '.join(sys.argv[1].split('\ '))
-                    check = 0
-
-                if value:
-                    self.parser(value)
-                    if 'Windows' not in platform.platform():
-                        hist = utils.register_history(value)
-                        hist.write_history()
+                check = self.prompt(check)
 
         except EOFError:
             print()
