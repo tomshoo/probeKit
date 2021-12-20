@@ -266,6 +266,14 @@ class input_parser:
         else: value = ' '.join(sys.argv[1].split('\ ')); check = 0
 
         if value:
+            value = utils.trim(value)
+            if value[-1] == '\\':
+                concatinator: list = [value[:-1]]
+                while(True):
+                    line: str = input('..> ')
+                    if not line: break
+                    concatinator.append(line)
+                value = ''.join(concatinator)
             self.parser(value)
             if 'Windows' not in platform.platform():
                 hist = utils.register_history(value)
