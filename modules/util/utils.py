@@ -11,7 +11,7 @@ from datetime import datetime
 import time
 import ctypes
 import sys
-from os import path, getuid
+import os
 from multipledispatch import dispatch
 from rich import traceback
 from collections import namedtuple
@@ -210,7 +210,7 @@ def Exit(exitStatus: int, histfile: str):
 
 def isAdmin() -> bool:
     try: return ctypes.windll.shell32.IsUserAnAdmin() == 1
-    except AttributeError: return getuid() == 0
+    except AttributeError: return os.getuid() == 0
 
 def timestamp() -> float:
     """To get total time taken by things to load and run"""
@@ -226,7 +226,7 @@ class register_history():
 
     def __init__(self, command : str):
         self.command = command
-        self.histfile : str = path.join(path.expanduser('~'), '.probeKit.history')
+        self.histfile : str = os.path.join(os.path.expanduser('~'), '.probeKit.history')
 
     def __hastimestamp(self) -> bool:
         command: str = self.command
@@ -244,7 +244,7 @@ class register_history():
         """write the history to $HOME/.probeKit.history"""
         histfile = self.histfile
         if not self.__hastimestamp():
-            if path.exists(histfile):
+            if os.path.exists(histfile):
                 with open(histfile, 'a') as fp:
                     fp.write(self.command + f' # {datevalue()} \n')
                     pass
@@ -360,7 +360,7 @@ class optionsparser:
                 else:
                     _type = option_dict[data]['type']
                     print(f'Error: Invalid type: {_type}')
-                    delete(_type)
+                    del(_type)
                     sys.exit(1)
 
         return option_dict

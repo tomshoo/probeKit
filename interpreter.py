@@ -175,7 +175,7 @@ class input_parser:
         # Create an exception which exits the try block and then exits the session
         elif verb == 'exit': raise ExitException(f'probeKit: exiting session')
 
-        elif verb == 'clear': self.exit_code = clear.run(cmd_split[1::], self.exit_code, histfile) if histfile else clear.run(cmd_split[1::], self.exit_code)
+        elif verb == 'clear': self.exit_code = clear.run(cmd_split[1::], self.exit_code, histfile) if 'Windows' not in platform.platform() else clear.run(cmd_split[1::], self.exit_code)
 
         elif verb == 'run': self.exit_code = run.run(self.MODULE, self.option_dict)
 
@@ -227,6 +227,19 @@ class input_parser:
             else: Console.print(f'[{FALERT}][-] Error: no such directory: \'{fpath}\'[/]')
 
         else:
+            try:
+                PATH: list=(os.getenv('PATH')+':').split(':')
+                for path in PATH:
+                    with open(path+verb, 'r') as cmd:
+                        content = cmd.read()
+            except UnicodeDecodeError:
+                pass
+            except FileNotFoundError:
+                pass
+            else:
+                if len(re.findall('sudo*', content)) > 0:
+                    Console.print(f'[{FALERT}]Warning: sudo found in script, not running...')
+                    raise SudoError()
             if verb.lower() == 'sudo':
                 Console.print(f'[{FALERT}]Warning: using sudo is prohibited for security reasons[/]')
                 raise SudoError()
@@ -290,7 +303,6 @@ class input_parser:
 
         except SudoError:
             self.exit_code = 1
-            print()
             self.main()
 
         except ExitException as e:
