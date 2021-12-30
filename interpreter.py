@@ -14,7 +14,7 @@ from rich import traceback, console
 traceback.install()
 Console = console.Console()
 
-print(f'Importing custom modules', end='\r')
+print(f'Importing custom modules', end='\r') if utils.args(sys.argv, 1) not in ['-h', '--help'] else 0
 start = utils.timefunc.timestamp()
 
 import modules.data.AboutList as aboutList
@@ -31,7 +31,7 @@ from config import (
 from modules.util.led import start_editor
 
 end = utils.timefunc.timestamp()
-Console.print(f'[{colors.FSUCCESS}]modules took {round(end-start, 7)} sec(s). to load[/]')
+Console.print(f'[{colors.FSUCCESS}]modules took {round(end-start, 7)} sec(s). to load[/]') if utils.args(sys.argv, 1) not in ['-h', '--help'] else 0
 
 class SudoError(Exception): pass
 
@@ -48,7 +48,11 @@ FURGENT = colors.FURGENT
 FSTYLE = colors.FPROMPT
 
 # Display time during statup
-print(f'current session started at {utils.timefunc.datevalue()}')
+print(f'current session started at {utils.timefunc.datevalue()}') if utils.args(sys.argv, 1) not in ['-h', '--help'] else 0
+
+if utils.args(sys.argv, 1) in ['-h', '--help']:
+    banner.run()
+    print()
 
 parser = argparse.ArgumentParser(description="Command line toolkit for basic reconnaisance")
 parser.add_argument('-c', '--command', help='custom command to run from outside the session')
@@ -68,7 +72,8 @@ if 'Windows' not in platform.platform():
     histfile : str = os.path.join(os.path.expanduser('~'), '.probeKit.history')
     if os.path.exists(histfile): readline.read_history_file(histfile)
 
-if not utils.isAdmin(): Console.print(f'[{FURGENT}]Warning: `osprobe` and `UDP Scanning` may not work as expected...')
+if not utils.isAdmin():
+    Console.print(f'[{FURGENT}]Warning: `osprobe` and `UDP Scanning` may not work as expected...')
 
 # Session starts over here
 # Not the best way to do it but it works so...
@@ -88,7 +93,8 @@ class input_parser:
         if '#' in value:
             vallist = value.split('#')
             value = utils.trim(vallist.pop(0))
-        else: pass
+        else:
+            pass
 
         try:
             if value[-1] != ';':
@@ -105,8 +111,10 @@ class input_parser:
                 return
             cmdletdict: dict = {}
 
-            for idx, commandlet in enumerate(commandlets): cmdletdict['cmdlet_'+str(idx)] = commandlet
-            for replacer in cmdletdict: value = value.replace('{'+cmdletdict.get(replacer)+'}', replacer)
+            for idx, commandlet in enumerate(commandlets):
+                cmdletdict['cmdlet_'+str(idx)] = commandlet
+            for replacer in cmdletdict:
+                value = value.replace('{'+cmdletdict.get(replacer)+'}', replacer)
 
             commandlist: list = utils.splitters.dbreaker(value, delimiter=';')
 
@@ -129,14 +137,18 @@ class input_parser:
                     for x in utils.splitters.dbreaker(command, delimiter=';'):
                         if '\\semicolon' in command:
                             command = command.replace('\\semicolon', ';')
-                        for cmdlet_idx in cmdletdict: command = command.replace(cmdlet_idx, cmdletdict.get(cmdlet_idx).replace(' ', '_'))
+                        for cmdlet_idx in cmdletdict:
+                            command = command.replace(cmdlet_idx, cmdletdict.get(cmdlet_idx).replace(' ', '_'))
                         self.executor(utils.trim(x))
                         continue
                 else:
-                    if '\\semicolon' in command: command = command.replace('\\semicolon', ';')
-                    for cmdlet_idx in cmdletdict: command = command.replace(cmdlet_idx, cmdletdict.get(cmdlet_idx).replace(' ', '_'))
+                    if '\\semicolon' in command:
+                        command = command.replace('\\semicolon', ';')
+                    for cmdlet_idx in cmdletdict:
+                        command = command.replace(cmdlet_idx, cmdletdict.get(cmdlet_idx).replace(' ', '_'))
                     self.executor(command)
-        except IndexError: pass
+        except IndexError:
+            pass
 
     def executor(self, command: str):
         cmd_split: list = command.split()
@@ -145,7 +157,8 @@ class input_parser:
 
         verb: str = cmd_split[0].lower()
 
-        if verb == "banner": self.exit_code = banner.run()
+        if verb == "banner":
+            self.exit_code = banner.run()
 
         elif verb == 'do':
             try:
@@ -157,7 +170,8 @@ class input_parser:
                 noreturn: bool = True if '-n' in command else False
                 self.do(cmd_split[1], int(times), noreturn)
                 pass
-            except ValueError: Console.print(f'[{FALERT}]Error: Invalid argument[/]')
+            except ValueError:
+                Console.print(f'[{FALERT}]Error: Invalid argument[/]')
 
         elif verb == 'help':
             if not utils.args(cmd_split, 1):
@@ -171,15 +185,20 @@ class input_parser:
             init_editor = start_editor(cmd_split)
             init_editor.start_led()
 
-        elif verb == 'show': self.exit_code = show.run(cmd_split[1::], self.MODULE, self.option_dict)
+        elif verb == 'show':
+            self.exit_code = show.run(cmd_split[1::], self.MODULE, self.option_dict)
 
         elif verb == 'back':
-            if not self.MODULE: Console.print(f'[{FURGENT}]Alert: No module selected... nothing to back from.')
+            if not self.MODULE:
+                Console.print(f'[{FURGENT}]Alert: No module selected... nothing to back from.')
             else:
                 if self.MODULE == (self.MODLIST[-1] if self.MODLIST else None):
-                    try: self.MODLIST.pop()
-                    except Exception as e: print(e)
-                else: pass
+                    try:
+                        self.MODLIST.pop()
+                    except Exception as e:
+                        print(e)
+                else:
+                    pass
 
                 self.MODULE = self.MODLIST.pop() if self.MODLIST else ''
 
@@ -190,9 +209,11 @@ class input_parser:
             else:
                 raise ExitException(f'probeKit: exiting session')
 
-        elif verb == 'clear': self.exit_code = clear.run(cmd_split[1::], self.exit_code, histfile) if 'Windows' not in platform.platform() else clear.run(cmd_split[1::], self.exit_code)
+        elif verb == 'clear':
+            self.exit_code = clear.run(cmd_split[1::], self.exit_code, histfile) if 'Windows' not in platform.platform() else clear.run(cmd_split[1::], self.exit_code)
 
-        elif verb == 'run': self.exit_code = run.run(self.MODULE, self.option_dict)
+        elif verb == 'run':
+            self.exit_code = run.run(self.MODULE, self.option_dict)
 
         # Verb(or command) to set options
         elif verb == 'set':
@@ -219,7 +240,8 @@ class input_parser:
             if utils.args(cmd_split, 1):
                 mod = utils.args(cmd_split, 1)
                 aboutList.moduleHelp(mod).aboutModule(mod)
-            else: aboutList.moduleHelp(self.MODULE).aboutModule(self.MODULE)
+            else:
+                aboutList.moduleHelp(self.MODULE).aboutModule(self.MODULE)
 
         elif verb == 'alias':
             new_alias = alias.alias(cmd_split, self.aliases)
@@ -263,8 +285,10 @@ class input_parser:
                 raise SudoError()
             try:
                 if not utils.isAdmin():
-                    if 'Windows' not in platform.platform(): self.exit_code = subprocess.call((cmd_split_quoted))
-                    else: self.exit_code = subprocess.run(command, shell=True).returncode
+                    if 'Windows' not in platform.platform():
+                        self.exit_code = subprocess.call((cmd_split_quoted))
+                    else:
+                        self.exit_code = subprocess.run(command, shell=True).returncode
                         
                 else:
                     Console.print(f'[{FALERT}]Error: Invalid command \'{verb}\'[/]')
@@ -275,12 +299,17 @@ class input_parser:
                 self.exit_code = 1
 
     def prompt(self, check: int = 0) -> int:
-        if self.exit_code == 0: COLOR: str = colors.FSUCCESS
-        elif self.exit_code == 130: COLOR: str = colors.FURGENT
-        else: COLOR: str = colors.FALERT
+        if self.exit_code == 0:
+            COLOR: str = colors.FSUCCESS
+        elif self.exit_code == 130:
+            COLOR: str = colors.FURGENT
+        else:
+            COLOR: str = colors.FALERT
 
-        if not self.MODULE: prompt_str: str = f'\[probkit]: [{COLOR}]{self.exit_code}[/]$> '
-        else: prompt_str: str = f'\[probeKit]: [{FSTYLE}]({self.MODULE})[/]: [{COLOR}]{self.exit_code}[/]$> '
+        if not self.MODULE:
+            prompt_str: str = f'\[probkit]: [{COLOR}]{self.exit_code}[/]$> '
+        else:
+            prompt_str: str = f'\[probeKit]: [{FSTYLE}]({self.MODULE})[/]: [{COLOR}]{self.exit_code}[/]$> '
         if check == 0:
             value = Console.input(prompt_str)
         else:
@@ -313,7 +342,9 @@ class input_parser:
         # Initial module is set to blank
         # Set it to any other module if you want a default module at startup
 
-        if self.MODULE in _modules or self.MODULE == '': pass
+        if self.MODULE in _modules or self.MODULE == '':
+            pass
+        
         else:
             Console.print(f'[{FALERT}][-] No such module: [bold underline]\'{self.MODULE}\'[/][/]')
             sys.exit(1)
@@ -345,7 +376,8 @@ class input_parser:
             try:
                 for x in range(times):
                     self.parser(command)
-            except Exception as e: print(e)
+            except Exception as e:
+                print(e)
             self.exit_code = 0
         else:
             for x in range(times):
