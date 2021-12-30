@@ -194,7 +194,7 @@ def Exit(exitStatus: int, histfile: str):
     """End the session and append the date and time to the end of the history file."""
 
     with open(histfile, 'a') as fp:
-        fp.write('# session ended at: ' + datevalue() + ' # \n')
+        fp.write('# session ended at: ' + timefunc.datevalue() + ' # \n')
         pass
     sys.exit(exitStatus)
 

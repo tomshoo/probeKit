@@ -5,6 +5,7 @@ import sys
 import readline
 import platform
 import os
+import argparse
 import subprocess
 import re
 
@@ -48,7 +49,15 @@ FSTYLE = colors.FPROMPT
 
 # Display time during statup
 print(f'current session started at {utils.timefunc.datevalue()}')
-banner.run()
+
+parser = argparse.ArgumentParser(description="Command line toolkit for basic reconnaisance")
+parser.add_argument('-c', '--command', help='custom command to run from outside the session')
+parser.add_argument('-q', '--quiet', help="Do not display banner on startup", action='store_true')
+
+args = parser.parse_args()
+
+if not args.quiet:
+    banner.run()
 
 # Checks if history file already exists or not
 if 'Windows' not in platform.platform():
@@ -171,7 +180,11 @@ class input_parser:
                 self.MODULE = self.MODLIST.pop() if self.MODLIST else ''
 
         # Create an exception which exits the try block and then exits the session
-        elif verb == 'exit': raise ExitException(f'probeKit: exiting session')
+        elif verb == 'exit':
+            if utils.args(cmd_split, 1) == '-q':
+                raise ExitException()
+            else:
+                raise ExitException(f'probeKit: exiting session')
 
         elif verb == 'clear': self.exit_code = clear.run(cmd_split[1::], self.exit_code, histfile) if 'Windows' not in platform.platform() else clear.run(cmd_split[1::], self.exit_code)
 
@@ -221,8 +234,11 @@ class input_parser:
             if os.path.exists(fpath) and os.path.isdir(fpath):
                 os.chdir(fpath)
                 print(f'dir: {fpath}')
+                self.exit_code = 0
 
-            else: Console.print(f'[{FALERT}][-] Error: no such directory: \'{fpath}\'[/]')
+            else:
+                Console.print(f'[{FALERT}][-] Error: no such directory: \'{fpath}\'[/]')
+                self.exit_code = 1
 
         else:
             PATH: list=(os.getenv('PATH')+':').split(':')
@@ -263,7 +279,11 @@ class input_parser:
         else: prompt_str: str = f'\[probeKit]: [{FSTYLE}]({self.MODULE})[/]: [{COLOR}]{self.exit_code}[/]$> '
         if check == 0:
             value = Console.input(prompt_str)
-        else: value = ' '.join(sys.argv[1].split('\ ')); check = 0
+        else:
+            external_command: str = args.command
+            splitted: list = external_command.split('\ ')
+            splitted.append(';exit -q')
+            value = ' '.join(splitted); check = 0
 
         if value:
             value = utils.trim(value)
@@ -281,7 +301,7 @@ class input_parser:
         return 0
 
     def main(self):
-        check: int = 1 if utils.args(sys.argv, 1) else 0
+        check: int = 1 if args.command else 0
 
         readline.set_completer(completer.completion)
         readline.parse_and_bind("tab: complete")
