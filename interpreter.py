@@ -52,12 +52,16 @@ print(f'current session started at {utils.timefunc.datevalue()}')
 
 parser = argparse.ArgumentParser(description="Command line toolkit for basic reconnaisance")
 parser.add_argument('-c', '--command', help='custom command to run from outside the session')
+parser.add_argument('-m', '--module', help="Start with a specified module (Overrides default module set in config)")
 parser.add_argument('-q', '--quiet', help="Do not display banner on startup", action='store_true')
 
 args = parser.parse_args()
 
 if not args.quiet:
     banner.run()
+    
+if args.module and args.module not in _modules:
+    Console.print(f'[{FALERT}]Alert: Invalid module `{args.module}`, defaulting to no module[/]')
 
 # Checks if history file already exists or not
 if 'Windows' not in platform.platform():
@@ -76,7 +80,7 @@ class input_parser:
         # Variables also known as options to the user
         self.option_dict: dict = option_dict
 
-        self.MODULE: str = MODULE
+        self.MODULE: str = MODULE if not args.module or args.module not in _modules else args.module
         self.MODLIST: list = []
         self.aliases: dict = aliases
 
