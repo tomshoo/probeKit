@@ -5,3 +5,4 @@ pyfiglet>=0.8.post1
 multipledispatch>=0.6.0
 rich>=10.12.0
 requests>=2.26.0
+argparse>=1.4.0
