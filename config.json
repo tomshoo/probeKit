@@ -1,6 +1,6 @@
 {
     "modules": {
-        "probe": {"options": ["thost", "tport", "protocol", "timeout", "tryct", "verbose", "threading"]},
+        "ports": {"options": ["thost", "tport", "protocol", "timeout", "tryct", "verbose", "threading"]},
         "osprobe": {"options": ["thost", "tryct", "nmap"]},
         "fuzz": {"options": ["turl", "mode", "wordlist", "depth", "verbose"]}
     },

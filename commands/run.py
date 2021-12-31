@@ -12,7 +12,7 @@ _BALERT = _colors.BALERT
 def run(module: str, options: dict) -> int:
     if module in _modules:
         try:
-            if module == "probe":
+            if module == "ports":
                 if not options['tport']['value']['value']:
                     Console.print(f'[bold {_FALERT}]Error: Invalid value for tport[/]')
                     return 1
