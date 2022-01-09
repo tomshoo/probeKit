@@ -14,7 +14,8 @@ from rich import traceback, console
 traceback.install()
 Console = console.Console()
 
-print(f'Importing custom modules', end='\r') if utils.args(sys.argv, 1) not in ['-h', '--help'] else 0
+if not ('-h' in sys.argv or '--help' in sys.argv):
+    print(f'Importing custom modules', end='\r')
 start = utils.timefunc.timestamp()
 
 import modules.data.AboutList as aboutList
@@ -31,7 +32,8 @@ from config import (
 from modules.util.led import start_editor
 
 end = utils.timefunc.timestamp()
-Console.print(f'[{colors.FSUCCESS}]modules took {round(end-start, 7)} sec(s). to load[/]') if utils.args(sys.argv, 1) not in ['-h', '--help'] else 0
+if not ('-h' in sys.argv or '--help' in sys.argv):
+    Console.print(f'[{colors.FSUCCESS}]modules took {round(end-start, 7)} sec(s). to load[/]')
 
 class SudoError(Exception): pass
 
@@ -48,7 +50,8 @@ FURGENT = colors.FURGENT
 FSTYLE = colors.FPROMPT
 
 # Display time during statup
-print(f'current session started at {utils.timefunc.datevalue()}') if utils.args(sys.argv, 1) not in ['-h', '--help'] else 0
+if not ('-h' in sys.argv or '--help' in sys.argv):
+    print(f'current session started at {utils.timefunc.datevalue()}')
 
 if utils.args(sys.argv, 1) in ['-h', '--help']:
     banner.run()
