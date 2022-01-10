@@ -1,5 +1,6 @@
 from config import colors as _colors, OPTIONS
-from modules.util.utils import trim as _trim, args as _args, optionsparser as _optparser
+from modules.util.utils import trim as _trim, args as _args
+from modules.util import optparser
 from rich import console,traceback
 from typing import List, Union
 traceback.install()
@@ -23,7 +24,7 @@ class set_class:
                 if option_dict[option]['type'] == "dict": option_dict[option]['value']['value'] = OPTIONS[option]
                 else: option_dict[option]['value'] = OPTIONS[option]
 
-            parser = _optparser(option_dict)
+            parser = optparser.OptionsParser(option_dict)
             option_dict = parser.parse()
             self.ret_list[0] = option_dict
         elif ' ' in options:
@@ -51,7 +52,7 @@ class set_class:
             self.ret_list[1] = 1
             return
         
-        parser = _optparser(options)
+        parser = optparser.OptionsParser(options)
         options = parser.parse()
         print(option, '=>', value)
         self.ret_list[0] = options

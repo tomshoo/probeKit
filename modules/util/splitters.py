@@ -1,4 +1,4 @@
-class splitters:
+class Splitters:
     @staticmethod
     def bracket(string: str, bropen: str = '('):
         openbr: str = '({[<'

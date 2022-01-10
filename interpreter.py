@@ -9,7 +9,7 @@ import argparse
 import subprocess
 import re
 
-from modules.util import splitters, utils
+from modules.util import splitters, utils, optparser
 from rich import traceback, console
 traceback.install()
 Console = console.Console()
@@ -38,9 +38,10 @@ if not ('-h' in sys.argv or '--help' in sys.argv):
     Console.print(f'[{colors.FSUCCESS}]modules took {round(end-start, 7)} sec(s). to load[/]')
 
 class SudoError(Exception): pass
-splitter = splitters.splitters()
+splitter = splitters.Splitters()
+
 # Setup Utils
-optionparser = utils.optionsparser(option_dict)
+optionparser = optparser.OptionsParser(option_dict)
 option_dict = optionparser.parse()
 ExitException = utils.ExitException
 completer = utils.completer(utils.completers.interpreter)

@@ -1,5 +1,5 @@
 from config import colors as _colors
-from modules.util.utils import optionsparser as _optparser
+from modules.util import optparser
 from rich.console import Console
 from typing import List, Union
 
@@ -37,7 +37,7 @@ class unset_val:
             self.ret_list[1] = 1
             return
 
-        parser = _optparser(options_dict)
+        parser = optparser.OptionsParser(options_dict)
         options_dict = parser.parse()
         Console.print(f'[{_FURGENT}]unset {option}[/]')
         self.ret_list[0] = options_dict

@@ -4,7 +4,7 @@ from modules.util import splitters
 from rich import traceback, console
 traceback.install()
 Console = console.Console()
-splitter = splitters.splitters()
+splitter = splitters.Splitters()
 class alias:
     def __init__(self, get_cmd: list, aliases: dict):
         self.ret_list: list = [aliases, 0]
