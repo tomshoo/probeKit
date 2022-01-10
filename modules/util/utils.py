@@ -180,7 +180,6 @@ def trim(string: str, delimiter: str = " ") -> str:
     """Function to remove extra white spaces from the string"""
 
     strsplit : list = string.split() if delimiter == " " else string.split(delimiter)
-    print(strsplit)
     breaker: int = 0
     for char in strsplit:
         if not char: breaker+=1
@@ -193,7 +192,6 @@ def trim(string: str, delimiter: str = " ") -> str:
             counter+=1
             if counter == breaker: break
             
-    print(strsplit)
     return delimiter.join(strsplit)
 
 class ExitException(Exception):
