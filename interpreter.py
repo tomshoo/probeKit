@@ -9,7 +9,7 @@ import argparse
 import subprocess
 import re
 
-import modules.util.utils as utils
+from modules.util import splitters, utils
 from rich import traceback, console
 traceback.install()
 Console = console.Console()
@@ -38,7 +38,7 @@ if not ('-h' in sys.argv or '--help' in sys.argv):
     Console.print(f'[{colors.FSUCCESS}]modules took {round(end-start, 7)} sec(s). to load[/]')
 
 class SudoError(Exception): pass
-
+splitter = splitters.splitters()
 # Setup Utils
 optionparser = utils.optionsparser(option_dict)
 option_dict = optionparser.parse()
@@ -110,7 +110,7 @@ class input_parser:
             if '\\;' in value: value = value.replace('\\;', '\\semicolon')
 
             # commandlets: list = re.findall('\{.*?\}', value)
-            commandlets: list = utils.splitters().bracket(value, '{')
+            commandlets: list = splitter.bracket(value, '{')
             if commandlets is None:
                 self.exit_code = 3
                 return
@@ -121,7 +121,7 @@ class input_parser:
             for replacer in cmdletdict:
                 value = value.replace('{'+cmdletdict.get(replacer)+'}', replacer)
 
-            commandlist: list = utils.splitters.dbreaker(value, delimiter=';')
+            commandlist: list = splitter.dbreaker(value, delimiter=';')
 
             for command in commandlist:
                 command = utils.trim(command)
@@ -139,7 +139,7 @@ class input_parser:
                     command = ''.join(emp_list)
                     print(command)
                 if ';' in command:
-                    for x in utils.splitters.dbreaker(command, delimiter=';'):
+                    for x in splitter.dbreaker(command, delimiter=';'):
                         if '\\semicolon' in command:
                             command = command.replace('\\semicolon', ';')
                         for cmdlet_idx in cmdletdict:
@@ -157,8 +157,7 @@ class input_parser:
 
     def executor(self, command: str):
         cmd_split: list = command.split()
-        # cmd_split_quoted = utils.splitters.quote(' ', '"', command)
-        cmd_split_quoted = utils.splitters.quote(command, ' ')
+        cmd_split_quoted = splitter.quote(command, ' ')
 
         verb: str = cmd_split[0].lower()
 
