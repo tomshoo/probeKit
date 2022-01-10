@@ -176,11 +176,25 @@ class string(str):
             else: return True
         else: return False
 
-def trim(string: str) -> str:
+def trim(string: str, delimiter: str = " ") -> str:
     """Function to remove extra white spaces from the string"""
 
-    strsplit : list = string.split()
-    return ' '.join(strsplit)
+    strsplit : list = string.split() if delimiter == " " else string.split(delimiter)
+    print(strsplit)
+    breaker: int = 0
+    for char in strsplit:
+        if not char: breaker+=1
+    counter: int = 0
+    if delimiter != " ":
+        while True:
+            for idx, char in enumerate(strsplit):
+                if not char:
+                    strsplit.pop(idx)
+            counter+=1
+            if counter == breaker: break
+            
+    print(strsplit)
+    return delimiter.join(strsplit)
 
 class ExitException(Exception):
     """Custom "dummy" exception to exit the session"""
