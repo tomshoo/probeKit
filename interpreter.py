@@ -9,7 +9,7 @@ import argparse
 import subprocess
 import re
 
-from modules.util import splitters, utils, optparser
+from modules.util import splitters, utils, optparser, hist as histry
 from rich import traceback, console
 traceback.install()
 Console = console.Console()
@@ -334,7 +334,7 @@ class input_parser:
                 value = ''.join(concatinator)
             self.parser(value)
             if 'Windows' not in platform.platform():
-                hist = utils.register_history(value)
+                hist = histry.register_history(value)
                 hist.write_history()
         return 0
 
