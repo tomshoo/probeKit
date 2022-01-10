@@ -16,6 +16,7 @@ Console = console.Console()
 
 if not ('-h' in sys.argv or '--help' in sys.argv):
     print(f'Importing custom modules', end='\r')
+
 start = utils.timefunc.timestamp()
 
 import modules.data.AboutList as aboutList
@@ -32,6 +33,7 @@ from config import (
 from modules.util.led import start_editor
 
 end = utils.timefunc.timestamp()
+
 if not ('-h' in sys.argv or '--help' in sys.argv):
     Console.print(f'[{colors.FSUCCESS}]modules took {round(end-start, 7)} sec(s). to load[/]')
 

@@ -176,8 +176,6 @@ class portprobe:
         if self.protocol in ['tcp', 'tcp/ip', 'TCP', 'TCP/IP']:
             if self.__tscanner(port):
                 serv = self.__getServbyPort(port, 'tcp') if self.__getServbyPort(port, 'tcp') else 'Undefined'
-                if not (self.verbose or self.threading):
-                    Console.print(f'\r[{FSUCCESS}][+] {self.protocol}: {self.thost}: {port} is open, service: {serv}[/]')
                 return f'[{FSUCCESS}][+] {self.protocol}: {self.thost}: {port} is open, service: {serv}[/]'
             
             elif self.verbose: return f'[{FALERT}][-] {self.protocol}: {self.thost}: {port} is closed'
@@ -201,7 +199,7 @@ class portprobe:
             # check if input is a single port or a range
             type = self.tport['type']
             port = self.tport
-            Console.print(f'[{BURGENT}][**] Scan started at {timefunc.datevalue()}[/]')
+            Console.print(f'[{BURGENT}][**] Scan started at {timefunc.datevalue()} [/]')
             start = timefunc.timestamp()
             if type.lower() == "common":
                 type = "group"
@@ -251,7 +249,6 @@ class portprobe:
                         openports.clear()
 
                     else:
-                        print(results)
                         for x in results: Console.print(x)
                     results.clear()
 
