@@ -1,5 +1,7 @@
 import sys
 from modules.util.utils import string
+from rich import traceback
+traceback.install()
 
 class OptionsParser:
     """

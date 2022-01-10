@@ -1,3 +1,7 @@
+from rich import traceback
+
+traceback.install()
+
 class Splitters:
     @staticmethod
     def bracket(string: str, bropen: str = '('):
