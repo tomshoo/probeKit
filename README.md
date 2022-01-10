@@ -34,7 +34,7 @@ pip install -r requirements.txt
 
 ---
 
-###  Windows 10
+###  Windows 10/11
 
 - Install `nmap` and `npcap` from the [official](https://nmap.org/download.html) website.
 - Install `python3.6>=x<10` from python's [official](https://www.python.org/downloads/) or from Micrsoft store.
