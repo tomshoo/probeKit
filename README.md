@@ -96,4 +96,4 @@ Also there is an option to provide default values to options.
 
 Please edit `config.py` file to change color settings or option settings.
 
-The config also provides a `powershell` and a `nonpowershell` theme (use the powershell theme if using windows powershell).
+The config also provides a `powershell` and a `nonpowershell` theme (use the powershell theme if using `windows powershell`, not required in windows 11).
