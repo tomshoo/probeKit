@@ -12,7 +12,7 @@ from config import colors as colors
 from rich.console import Console as Con
 from typing import List, Union
 import nmap
-from modules.util.utils import isAdmin
+from modules.util.extra import isAdmin
 
 Console = Con()
 

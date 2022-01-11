@@ -1,6 +1,6 @@
 from platform import platform
 from os import system, path
-from modules.util.utils import args
+from modules.util.extra import args
 import readline
 from sys import exit
 

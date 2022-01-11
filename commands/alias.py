@@ -1,5 +1,5 @@
 from config import colors as _colors
-from modules.util.utils import args, trim
+from modules.util.extra import args, trim
 from modules.util import splitters
 from rich import traceback, console
 traceback.install()

@@ -9,7 +9,7 @@ import argparse
 import subprocess
 import re
 
-from modules.util import splitters, utils, optparser, hist as histry
+from modules.util import splitters, extra, optparser, hist as histry
 from rich import traceback, console
 traceback.install()
 Console = console.Console()
@@ -17,7 +17,7 @@ Console = console.Console()
 if not ('-h' in sys.argv or '--help' in sys.argv):
     print(f'Importing custom modules', end='\r')
 
-start = utils.timefunc.timestamp()
+start = extra.timefunc.timestamp()
 
 import modules.data.AboutList as aboutList
 from commands import (
@@ -32,7 +32,7 @@ from config import (
 )
 from modules.util.led import start_editor
 
-end = utils.timefunc.timestamp()
+end = extra.timefunc.timestamp()
 
 if not ('-h' in sys.argv or '--help' in sys.argv):
     Console.print(f'[{colors.FSUCCESS}]modules took {round(end-start, 7)} sec(s). to load[/]')
@@ -43,8 +43,8 @@ splitter = splitters.Splitters()
 # Setup Utils
 optionparser = optparser.OptionsParser(option_dict)
 option_dict = optionparser.parse()
-ExitException = utils.ExitException
-completer = utils.completer(utils.completers.interpreter)
+ExitException = extra.ExitException
+completer = extra.completer(extra.completers.interpreter)
 
 # Setting up colors (edit these in config.py)
 FSUCCESS = colors.FSUCCESS
@@ -54,9 +54,9 @@ FSTYLE = colors.FPROMPT
 
 # Display time during statup
 if not ('-h' in sys.argv or '--help' in sys.argv):
-    print(f'current session started at {utils.timefunc.datevalue()}')
+    print(f'current session started at {extra.timefunc.datevalue()}')
 
-if utils.args(sys.argv, 1) in ['-h', '--help']:
+if extra.args(sys.argv, 1) in ['-h', '--help']:
     banner.run()
     print()
 
@@ -78,7 +78,7 @@ if 'Windows' not in platform.platform():
     histfile : str = os.path.join(os.path.expanduser('~'), '.probeKit.history')
     if os.path.exists(histfile): readline.read_history_file(histfile)
 
-if not utils.isAdmin():
+if not extra.isAdmin():
     Console.print(f'[{FURGENT}]Warning: `osprobe` and `UDP Scanning` may not work as expected...')
 
 # Session starts over here
@@ -98,7 +98,7 @@ class input_parser:
     def parser(self, value: str):
         if '#' in value:
             vallist = value.split('#')
-            value = utils.trim(vallist.pop(0))
+            value = extra.trim(vallist.pop(0))
         else:
             pass
 
@@ -125,7 +125,7 @@ class input_parser:
             commandlist: list = splitter.dbreaker(value, delimiter=';')
 
             for command in commandlist:
-                command = utils.trim(command)
+                command = extra.trim(command)
                 if not command:
                     continue
                 #print (re.findall('\{.*?\}', command))
@@ -145,7 +145,7 @@ class input_parser:
                             command = command.replace('\\semicolon', ';')
                         for cmdlet_idx in cmdletdict:
                             command = command.replace(cmdlet_idx, cmdletdict.get(cmdlet_idx).replace(' ', '_'))
-                        self.executor(utils.trim(x))
+                        self.executor(extra.trim(x))
                         continue
                 else:
                     if '\\semicolon' in command:
@@ -179,11 +179,11 @@ class input_parser:
                 Console.print(f'[{FALERT}]Error: Invalid argument[/]')
 
         elif verb == 'help':
-            if not utils.args(cmd_split, 1):
+            if not extra.args(cmd_split, 1):
                 Data = Help.Help('')
                 self.exit_code = Data.showHelp()
             else:
-                Data = Help.Help(utils.args(cmd_split, 1))
+                Data = Help.Help(extra.args(cmd_split, 1))
                 self.exit_code = Data.showHelp()
 
         elif verb == 'led':
@@ -209,7 +209,7 @@ class input_parser:
 
         # Create an exception which exits the try block and then exits the session
         elif verb == 'exit':
-            if utils.args(cmd_split, 1) == '-q':
+            if extra.args(cmd_split, 1) == '-q':
                 raise ExitException()
             else:
                 raise ExitException(f'probeKit: exiting session')
@@ -242,8 +242,8 @@ class input_parser:
             self.exit_code = ret_list[1]
 
         elif verb == 'about':
-            if utils.args(cmd_split, 1):
-                mod = utils.args(cmd_split, 1)
+            if extra.args(cmd_split, 1):
+                mod = extra.args(cmd_split, 1)
                 aboutList.moduleHelp(mod).aboutModule(mod)
             else:
                 aboutList.moduleHelp(self.MODULE).aboutModule(self.MODULE)
@@ -261,7 +261,7 @@ class input_parser:
             self.exit_code = ret_list[1]
 
         elif verb in ['cd', 'chdir', 'set-location']:
-            fpath = utils.args(cmd_split, 1)
+            fpath = extra.args(cmd_split, 1)
             if os.path.exists(fpath) and os.path.isdir(fpath):
                 os.chdir(fpath)
                 print(f'dir: {fpath}')
@@ -289,7 +289,7 @@ class input_parser:
                 Console.print(f'[{FALERT}]Warning: using sudo is prohibited for security reasons[/]')
                 raise SudoError()
             try:
-                if not utils.isAdmin():
+                if not extra.isAdmin():
                     if 'Windows' not in platform.platform():
                         self.exit_code = subprocess.call((cmd_split_quoted))
                     else:
@@ -324,7 +324,7 @@ class input_parser:
             value = ' '.join(splitted); check = 0
 
         if value:
-            value = utils.trim(value)
+            value = extra.trim(value)
             if value[-1] == '\\':
                 concatinator: list = [value[:-1]]
                 while(True):
@@ -373,7 +373,7 @@ class input_parser:
 
         except ExitException as e:
             Console.print(f"[{FALERT}]"+e.__str__()+"[/]")
-            utils.Exit(self.exit_code) if 'Windows' in platform.platform() else utils.Exit(self.exit_code, histfile)
+            extra.Exit(self.exit_code) if 'Windows' in platform.platform() else extra.Exit(self.exit_code, histfile)
 
     def do(self, command: str, times: int = 1, noreturn: bool = False) -> int:
         command = command.replace('_', ' ')

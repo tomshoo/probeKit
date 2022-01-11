@@ -4,7 +4,7 @@
 import socket
 import concurrent.futures
 from config import colors as colors
-from modules.util.utils import timefunc
+from modules.util.extra import timefunc
 from rich import traceback, progress, console
 Console = console.Console()
 traceback.install()

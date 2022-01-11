@@ -1,5 +1,5 @@
 from config import colors as _colors, OPTIONS
-from modules.util.utils import trim as _trim, args as _args
+from modules.util.extra import trim as _trim, args as _args
 from modules.util import optparser
 from rich import console,traceback
 from typing import List, Union

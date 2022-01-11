@@ -6,7 +6,7 @@ It is a very basic and minimal text editor working on line based editing.
 
 import os
 import readline
-from modules.util.utils import args, completer, completers
+from modules.util.extra import args, completer, completers
 
 completer = completer(completers.led)
 class start_editor():
