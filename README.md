@@ -62,29 +62,17 @@ Usage: [verb] [options]
 Available verbs are: set, help, exit, back, clear, run
 
     use         use an available module(*)
-
     show        shows information on provided argument(*)
-
     set         assignes values to available options(*)
-
     help        prints this help message
-
     exit        exits the whole interpreter
-
     back        moves back to the module selector
-
     clear       clears screen
-
     run         runs the selected module
-
     about       prints details about specified module(*)
-
     list        prints available modules
-
     banner      prints an ascii banner
-
     alias       set an alias for a command(*)
-
     unalias     unset a pre-existing alias(*)
 
 ```
@@ -109,13 +97,3 @@ Also there is an option to provide default values to options.
 Please edit `config.py` file to change color settings or option settings.
 
 The config also provides a `powershell` and a `nonpowershell` theme (use the powershell theme if using windows powershell).
-
----
-
-## Note
-
-This project is still not completed as a whole and still requires a lot of rewriting any suggestions for improvement are kindly accepted but may require some time to be worked upon
-
----
-
-## Thank You
