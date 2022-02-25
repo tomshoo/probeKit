@@ -276,17 +276,17 @@ class input_parser:
             for path in PATH:
                 try:
                     with open(path+'/'+verb, 'r') if 'Windows' not in platform.platform() else open(path+'\\'+verb) as cmd:
-                        content = cmd.read()
+                        content = cmd.read().lower()
                 except UnicodeDecodeError:
                     pass
                 except FileNotFoundError:
                     pass
                 else:
-                    if len(re.findall('sudo*', content)) > 0 or 'sudo' in content:
-                        Console.print(f'[{FALERT}]Warning: sudo found in script, not running...')
+                    if max(len(re.findall('sudo*', content)), len(re.findall('gsudo', content))) > 0 or 'sudo' in content or 'gsudo' in content:
+                        Console.print(f'[{FALERT}]Warning: sudo or gsudo found in script, not running...')
                         raise SudoError()
-            if verb.lower() == 'sudo':
-                Console.print(f'[{FALERT}]Warning: using sudo is prohibited for security reasons[/]')
+            if verb.lower() in ['sudo', 'gsudo']:
+                Console.print(f'[{FALERT}]Warning: using sudo or gsudo is prohibited for security reasons[/]')
                 raise SudoError()
             try:
                 if not extra.isAdmin():

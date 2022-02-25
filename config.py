@@ -1,7 +1,6 @@
 import json
 from os import path
 from pathlib import Path
-from platform import platform
 
 # configure colors in this class
 class nonpowershell():
