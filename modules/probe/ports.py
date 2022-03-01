@@ -208,8 +208,8 @@ class portprobe:
             if type == 'single':
                 single_port: int = self.tport['value']
                 portstatus = self.__scanner(single_port)
-                if portstatus: print(portstatus)
-                else: print(f'{self.protocol}: {self.host}: {single_port} is closed')
+                if portstatus: Console.print(portstatus)
+                else: print(f'{self.protocol}: {self.thost}: {single_port} is closed')
                 return 0
 
             else:
