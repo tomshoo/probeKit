@@ -18,7 +18,7 @@ class Info():
         """Display the options for available modules."""
         module: str = self.module
 
-        if module == 'probe':
+        if module == 'ports':
             Console.print(f'\n\t[*] THOST => hosts ip4 address (required) (THOST => thost)\n'
             f'\t[*] TPORT => ports to scan on host (required) (TPORT => tport)\n'
             f'[{FALERT}]\t             | values can be set as:[/]\n'

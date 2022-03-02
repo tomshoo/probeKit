@@ -138,7 +138,7 @@ class input_parser:
                             x = possible_macro
                         emp_list.append(x)
                     command = ''.join(emp_list)
-                    print(command)
+                    # print(command)
                 if ';' in command:
                     for x in splitter.dbreaker(command, delimiter=';'):
                         if '\\semicolon' in command:
