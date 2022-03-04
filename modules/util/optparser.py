@@ -8,9 +8,6 @@ class OptionsParser:
     Parse the dictionary read from `config.json`
     Assign desired values to the value key for each value
     """
-    class UndeterminedTypeError(Exception):
-        pass
-        
     def __init__(self, option_dict: dict) -> None:
         self.option_dict = option_dict
 
@@ -60,14 +57,8 @@ class OptionsParser:
                             break
                 else:
                     dtype = self.__typeset(rule.get("dtype"))
-                    try:
-                        data_value['value'] = '' if not data_value.get('value') and type(data_value.get('value')) is str else dtype(data_value.get('value'))
-                        data_value['type'] = scheme
-                    except ValueError:
-                        value = data_value.get("value")
-                        data_value['value'] = ''
-                        data_value['type'] = ''
-                        raise self.UndeterminedTypeError(f'Error: cannot determine type for value \'{value}\'')
+                    data_value['value'] = '' if not data_value.get('value') and type(data_value.get('value')) is str else dtype(data_value.get('value'))
+                    data_value['type'] = scheme
         self.option_dict = option_dict
 
     def parse(self) -> dict:
