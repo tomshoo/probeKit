@@ -1,4 +1,5 @@
 from modules.util.extra import args as _args
+from modules.data.Help import Help
 from rich.console import Console as con
 from config import colors, valid_modules
 from modules.data import Info, Options
@@ -12,6 +13,9 @@ def run(arguments: list=None, module: str=None, option_dict: str=None) -> int:
     if not _args(arguments, 0):
         Console.print(f'[{_FALERT}]Err: No argument found[/]')
         return 2
+
+    if _args(arguments, 0).lower() in ['-h', '--help']:
+        return Help('show').showHelp()
     
     if _args(arguments, 0).lower() == "options":
         options = Options.Options(module, option_dict)

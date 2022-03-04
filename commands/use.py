@@ -1,4 +1,5 @@
 from config import colors as _colors, valid_modules as _modules
+from modules.data.Help import Help
 from rich.console import Console
 from typing import List, Union
 
@@ -8,18 +9,22 @@ _FALERT = _colors.FALERT
 _FURGENT = _colors.FURGENT
 
 class use:
-    def __init__(self, module: list = None, modlist: list = None):
+    def __init__(self, module: list[str] = None, modlist: list[str] = None):
         self.ret_list = [modlist, 0]
         self.module = module
 
     def run(self) -> List[Union[str, int]]:
-        modlist: list = self.ret_list[0]
-        module = self.module
-        if not module:
+        args = [x.lower() for x in self.module]
+        if not args:
             self.ret_list[1] = 1
             Console.print(f'[{_FALERT}]Error: no module specified[/]')
+        
+        if '-h' in args or '--help' in args:
+            return ['', Help('use').showHelp()]
+        else:
+            module = args
 
-        elif len(module) > 1:
+        if len(module) > 1:
             self.ret_list[1] = 1
             Console.print(f'[{_FURGENT}]Alert: too many arguments[/]')
 

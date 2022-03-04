@@ -1,5 +1,6 @@
 from config import colors as _colors
 from modules.util import optparser
+from modules.data.Help import Help
 from rich.console import Console
 from typing import List, Union
 
@@ -8,13 +9,16 @@ _FALERT = _colors.FALERT
 _FURGENT = _colors.FURGENT
 
 class unset_val:
-    def __init__(self, option_dict: dict, options: list):
+    def __init__(self, option_dict: dict[str], options: list[str]):
         ret_list = [option_dict, 0]
         self.ret_list = ret_list
         self.options = options
 
     def run(self) -> List[Union[dict, int]]:
-        for option in self.options: self.unassign(option)
+        options = [x.lower() for x in self.options]
+        if '-h' in options or '--help' in options:
+            return [self.ret_list[0], Help('unset').showHelp()]
+        for option in options: self.unassign(option)
         return self.ret_list
 
     def unassign(self, option: str):

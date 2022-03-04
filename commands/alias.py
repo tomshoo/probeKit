@@ -1,6 +1,7 @@
 from config import colors as _colors
 from modules.util.extra import args, trim
 from modules.util import splitters
+from modules.data.Help import Help
 from rich import traceback, console
 traceback.install()
 Console = console.Console()
@@ -12,6 +13,8 @@ class alias:
         self.aliases = aliases
 
     def run(self) -> list:
+        if '-h' in [x.lower() for x in self.get_cmd] or '--help' in [x.lower() for x in self.get_cmd]:
+            return [self.ret_list[0], Help('alias').showHelp()]
         tmp_cmd_split = self.get_cmd
         tmp_cmd_split.pop(0)
         new_str = ' '.join(tmp_cmd_split)

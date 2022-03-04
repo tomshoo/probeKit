@@ -5,8 +5,6 @@ import readline
 from sys import exit
 
 def run(arg: list, exit_code: int, histfile: str = None) -> int:
-    if args(arg, 0) and args(arg, 0) == '-e': exit(exit_code)
-
     if args(arg, 0) and args(arg, 0) in ['-h', '--history']:
         readline.clear_history()
 
@@ -22,5 +20,7 @@ def run(arg: list, exit_code: int, histfile: str = None) -> int:
         print(chr(27)+'2[j')
         print('\033c')
         print('\x1bc')
+
+    if args(arg, 0) and args(arg, 0) == '-e': exit(exit_code)
 
     return 0

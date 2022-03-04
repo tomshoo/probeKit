@@ -1,4 +1,5 @@
 from config import colors as _colors
+from modules.data.Help import Help
 from rich.console import Console
 from typing import List, Union
 
@@ -16,8 +17,10 @@ class unalias:
             self.ret_list[1] = 1
             Console.print(f'[{_FALERT}][-] Error: no input provided[/]')
             return self.ret_list
-
-        for alias in self.alias_list: self.unassign(alias)
+        alias_list = [x.lower() for x in self.alias_list]
+        if '-h' in alias_list or '--help' in alias_list:
+            return [self.ret_list[0], Help('alias').showHelp()]
+        for alias in alias_list: self.unassign(alias.lower())
 
         return self.ret_list
 

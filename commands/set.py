@@ -1,6 +1,7 @@
 from config import colors as _colors, OPTIONS
 from modules.util.extra import trim as _trim, args as _args
 from modules.util import optparser
+from modules.data.Help import Help
 from rich import console,traceback
 from typing import List, Union
 traceback.install()
@@ -16,6 +17,9 @@ class set_class:
 
     def run(self) -> List[Union[dict, int]]:
         options: str = ' '.join(self.options)
+        args = [x.lower() for x in self.options]
+        if '-h' in args or '--help' in args:
+            return[self.ret_list[0], Help('set').showHelp()]
 
         if options.lower() == "all":
             Console.print(f'[{_FSUCCESS}]set all[/]')
