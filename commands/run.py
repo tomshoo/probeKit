@@ -13,32 +13,32 @@ def run(module: str, options: dict) -> int:
     if module in _modules:
         try:
             if module == "ports":
-                if not options['TPORT']['value']['value']:
+                if not options['tport']['value']['value']:
                     Console.print(f'[bold {_FALERT}]Error: Invalid value for tport[/]')
                     return 1
 
                 return _ports.portprobe(
-                    options['THOST']['value'],
-                    options['TPORT']['value'],
-                    options['TIMEOUT']['value'],
-                    options['PROTOCOL']['value'],
-                    options['TRYCT']['value'],
-                    options['VERBOSE']['value'],
-                    options['THREADING']['value']
+                    options['thost']['value'],
+                    options['tport']['value'],
+                    options['timeout']['value'],
+                    options['protocol']['value'],
+                    options['tryct']['value'],
+                    options['verbose']['value'],
+                    options['threading']['value']
                 ).display()
             elif module == "osprobe":
                 return _osprobe.checkOS(
-                    options['THOST']['value'],
-                    options['TRYCT']['value'],
-                    options['NMAP']['value']
+                    options['thost']['value'],
+                    options['tryct']['value'],
+                    options['nmap']['value']
                 ).scanner()
             elif module == "fuzz":
                 return _fuzz.fuzzer(
-                    options['TURL']['value'],
-                    options['MODE']['value'],
-                    options['WORDLIST']['value'],
-                    options['DEPTH']['value'],
-                    options['VERBOSE']['value']
+                    options['turl']['value'],
+                    options['mode']['value'],
+                    options['wordlist']['value'],
+                    options['depth']['value'],
+                    options['verbose']['value']
                 ).fuzz()
 
             return 0

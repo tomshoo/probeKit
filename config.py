@@ -49,7 +49,7 @@ OPTIONS = {
     "thost": "127.0.0.1",
     "tport": "",
     "protocol": "",
-    "verbose": "true",
+    "verbose": "",
     "turl": "https://www.example.com",
 }
 
@@ -81,7 +81,7 @@ valid_modules: dict = data['modules']
 option_dict: dict = data['options']
 
 #Override options with values provided by the user
-for option in OPTIONS:
-    if option_dict.get(option.upper()):
-        if option_dict[option.upper()]['type'] == "dict": option_dict[option.upper()]['value']['value'] = OPTIONS.get(option)
-        else: option_dict[option.upper()]['value'] = OPTIONS.get(option)
+for option in option_dict:
+    if OPTIONS.get(option):
+        if option_dict[option]['type'] == "dict": option_dict[option]['value']['value'] = OPTIONS.get(option)
+        else: option_dict[option]['value'] = OPTIONS.get(option)

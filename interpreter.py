@@ -131,7 +131,7 @@ class input_parser:
                 #print (re.findall('\{.*?\}', command))
                 if '$' in command:
                     for x in re.findall('\$\(.*?\)', command):
-                        command = command.replace(x, aliases.get(x[2:-1:], x[2:-1:]))
+                        command = command.replace(x, aliases.get(x[2:-1:]))
                     # print(command)
                 if ';' in command:
                     for x in splitter.dbreaker(command, delimiter=';'):
