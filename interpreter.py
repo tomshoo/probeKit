@@ -160,6 +160,9 @@ class input_parser:
             pass
 
     def executor(self, command: str):
+        arglist = command.split(' ')
+        arglist.pop(0)
+        arguments = ' '.join(arglist)
         cmd_split: list = command.split()
         cmd_split_quoted = splitter.quote(command, ' ')
 
@@ -225,10 +228,16 @@ class input_parser:
 
         # Verb(or command) to set options
         elif verb == 'set':
-            new_set  = setval.set_class(self.option_dict, cmd_split[1::])
-            ret_list = new_set.run()
-            self.option_dict = ret_list[0]
-            self.exit_code = ret_list[1]
+            # new_set  = setval.set_class(self.option_dict, cmd_split[1::])
+            # ret_list = new_set.run()
+            # self.option_dict = ret_list[0]
+            # self.exit_code = ret_list[1]
+            new_set = setval.Set(arguments, self.option_dict, self.aliases)
+            ret_val = new_set.run()
+            self.option_dict = ret_val[0]
+            self.aliases = ret_val[1]
+            self.exit_code = ret_val[2]
+
 
         # Verb(or command) to unset options
         elif verb == 'unset':
@@ -388,7 +397,7 @@ class input_parser:
                 print(e)
             self.exit_code = 0
         else:
-            for x in range(times):
+            for _ in range(times):
                 self.parser(command)
         pass
 

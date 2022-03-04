@@ -24,7 +24,7 @@ class Help():
             'Available verbs are:\n\n'+
             '\t use\t\t (*)use an available module\n'+
             '\t show\t\t (*)shows information on provided argument\n'+
-            '\t set\t\t (*)assignes values to available options\n'+
+            '\t set\t\t (*)assignes aliases and available options\n'+
             '\t unset\t\t (*)unassigns value from the provided option\n'+
             '\t help\t\t prints this help message\n'+
             '\t exit\t\t exits the whole interpreter\n'+
@@ -52,12 +52,15 @@ class Help():
             return 0
 
         elif command == 'set':
-            Console.print(f'[{FSUCCESS}]\n set:\t Sets the provided value to the provided option\n'
-            '\t Usage: set \[option1]=\[value1] \[option2]=\[value2] ...\n'
-            '\t Example: > set thost=127.0.0.1 tport=443,5432,8000 proto=tcp\n'
-            '\t          > set thost=127.0.0.1 tport=1/8000\n'
-            '\t          > set proto=tcp\n'
-            '\t | Refer to [show] command to get options[/]\n')
+            Console.print(f'[{FSUCCESS}]\n set:\t Sets options or aliases\n'
+            '\t Usage: set \[option or alias] \[key]=\[value]\n'
+            '\t\t Set options,\n'
+            '\t\t\t set option \[option_name]=\[option_value]\n'
+            '\n'
+            '\t\t Set aliases,\n'
+            '\t\t\t set alias \[alias]=\[command]\n'
+            '\t\t\t set alias \[alias]="\[long and complicated command]"\n'
+            '\t\t\t - Then call aliases via `$(alias)`\n[/]')
             return 0
 
         elif command == 'unset':

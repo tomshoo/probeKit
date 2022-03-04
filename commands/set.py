@@ -1,6 +1,8 @@
+from operator import index
 from config import colors as _colors, OPTIONS
-from modules.util.extra import trim as _trim, args as _args
+from modules.util.extra import trim, args
 from modules.util import optparser
+from modules.util.splitters import Splitters
 from modules.data.Help import Help
 from rich import console,traceback
 from typing import List, Union
@@ -8,56 +10,115 @@ traceback.install()
 Console = console.Console()
 
 _FALERT = _colors.FALERT
-_FSUCCESS = _colors.FSUCCESS
+_FSTYLE = _colors.FPROMPT
 
-class set_class:
-    def __init__(self, option_dict: dict, options: list):
-        self.ret_list = [option_dict, 0]
-        self.options = options
+class Set:
+    def __init__(self, args: str, option_dict: dict[str]=None, aliases: dict[str]=None):
+        self.args = args
+        self.option_dict = option_dict
+        self.aliases = aliases
+        self.exit_code: int = 0
 
     def run(self) -> List[Union[dict, int]]:
-        options: str = ' '.join(self.options)
-        args = [x.lower() for x in self.options]
-        if '-h' in args or '--help' in args:
-            return[self.ret_list[0], Help('set').showHelp()]
-
-        if options.lower() == "all":
-            Console.print(f'[{_FSUCCESS}]set all[/]')
-            option_dict: dict = self.ret_list[0]
-            for option in OPTIONS:
-                if option_dict[option]['type'] == "dict": option_dict[option]['value']['value'] = OPTIONS[option]
-                else: option_dict[option]['value'] = OPTIONS[option]
-
-            parser = optparser.OptionsParser(option_dict)
-            option_dict = parser.parse()
-            self.ret_list[0] = option_dict
-        elif ' ' in options:
-            assignment = options.split(' ')
-            for data in assignment:
-                option = _args(data.split('='), 0).lower()
-                value = _args(data.split('='), 1)
-                self.assign(option, value)
-
+        exit_code: int = 0
+        arglist: list[str] = Splitters.dbreaker(self.args)
+        temp_arglist = [x.lower() for x in arglist]
+        if '-h' in temp_arglist or '--help' in temp_arglist:
+            Help('set').showHelp()
+            del temp_arglist
+            return [self.option_dict, self.aliases, 0]
+        if not arglist or args(arglist, 0).lower() not in ['option', 'alias']:
+            Console.print(f'[{_FALERT}]Error set type not found or not valid[/]')
+            return [self.option_dict, self.aliases, 1]
+        if len(arglist) < 2: 
+            Console.print(f'[{_FALERT}]Error: no values to assign[/]')
+            return [self.option_dict, self.aliases, 1]
+        if args(arglist, 0).lower() == 'option': assignment_func = self.assign_options
+        if args(arglist, 0).lower() == 'alias': assignment_func = self.assign_alias
+        optlist = arglist[1::]
+        if 'all' in [x.lower() for x in optlist]:
+            if assignment_func == self.assign_options:
+                for option in self.option_dict:
+                    if OPTIONS.get(option):
+                        if self.option_dict[option]['type'] == "dict": self.option_dict[option]['value']['value'] = OPTIONS.get(option)
+                        else: self.option_dict[option]['value'] = OPTIONS.get(option)
+            else:
+                Console.print(f'[{_FALERT}]Error: keyword `all` is not available for alias assignment')
         else:
-            options = options.split('=')
-            option = _args(options, 0).lower()
-            value = _args(options, 1)
-            self.assign(_trim(option), _trim(value))
+            for x in optlist:
+                if '=' not in x and assignment_func == self.assign_options:
+                    if OPTIONS.get(x):
+                        self.assign_options(x, OPTIONS.get(x))
+                    else:
+                        Console.print(f'[{_FALERT}]Error: default value for option `{x}` not found[/]')
+                        exit_code = 1
+                else:
+                    if len(x) == 1:
+                        back_value = args(optlist, optlist.index(x)-1) if args(optlist, optlist.index(x)-1) and (optlist.index(x)-1) > 0 else '[]'
+                        front_value = args(optlist, optlist.index(x)+1) if args(optlist, optlist.index(x)+1) else '[]'
 
-        return self.ret_list
+                        Console.print(f'[{_FALERT}]What!!?? I need a KEY AND VALUE please...[/]')
+                        Console.print(f'[{_FALERT}]Go look for your self: > `[{_FSTYLE}]{back_value} >{x}< {front_value}[/]`')
+                        exit_code = 1
+                    else:
+                        assignment_list = Splitters.dbreaker(x, '=')
+                        if len(assignment_list) == 1:
+                            back_value = args(optlist, optlist.index(x)-1) if args(optlist, optlist.index(x)-1) and (optlist.index(x)-1) > 0 else '[]'
+                            front_value = args(optlist, optlist.index(x)+1) if args(optlist, optlist.index(x)+1) else '[]'
+                            if back_value == x: back_value = '[]'
 
-    def assign(self, option: str, value: str):
-        options = self.ret_list[0]
+                            Console.print(f'[{_FALERT}]AND a VALUE for god\'s sake[/]')
+                            Console.print(f'[{_FALERT}]Man!! what a beautiful pair of eyes you have over there: > `[{_FSTYLE}]{back_value} >{x}< {front_value}[/]`')
+                            exit_code = 1
+                            break
+                        elif not args(assignment_list, 0):
+                            back_value = args(optlist, optlist.index(x)-1) if args(optlist, optlist.index(x)-1) and (optlist.index(x)-1) > 0 else '[]'
+                            front_value = args(optlist, optlist.index(x)+1) if args(optlist, optlist.index(x)+1) else '[]'
+                            if back_value == x: back_value = '[]'
+
+                            Console.print(f'[{_FALERT}]What!!!? Where is the KEY...[/]')
+                            Console.print(f'[{_FALERT}]Look over here if you are blind: > `[{_FSTYLE}]{back_value} >{x}< {front_value}[/]`')
+                            exit_code = 1
+                            break
+                        else:
+                            for idx,data in enumerate(assignment_list):
+                                if not data:
+                                    assignment_list.pop(idx)
+                            assignment_func(assignment_list[0], assignment_list[1])
+
+        if exit_code:
+            self.exit_code = exit_code
+            exit_code = 0
+        ret_code = self.exit_code
+        self.exit_code = 0
+        return [self.option_dict, self.aliases, ret_code]
+
+    def assign_options(self, option: str, value: str):
+        options = self.option_dict
         if options.get(option):
             if options[option]['type'] != "dict": options[option]['value'] = value
             else: options[option]['value']['value'] = value
         else:
             Console.print(f'[{_FALERT}]Error: Invalid option \'{option}\'[/]')
-            self.ret_list[1] = 1
+            self.exit_code = 1
             return
         
         parser = optparser.OptionsParser(options)
         options = parser.parse()
         print(option, '=>', value)
-        self.ret_list[0] = options
-        self.ret_list[1] = 0
+        self.option_dict = options
+        self.exit_code = 0
+
+    def assign_alias(self, alias: str=None, command: str=None) -> list:
+        aliases = self.aliases
+        exit_code = self.exit_code
+
+        alias = trim(alias)
+        command = trim(command)
+        command = command.strip('"')
+        command = command.strip('\'')
+        print(alias, ":",command)
+        aliases[alias]=command
+
+        self.aliases = aliases
+        self.exit_code = exit_code
