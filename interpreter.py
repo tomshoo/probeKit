@@ -130,14 +130,8 @@ class input_parser:
                     continue
                 #print (re.findall('\{.*?\}', command))
                 if '$' in command:
-                    alias_cmd: list = command.split('$')
-                    emp_list: list = []
-                    for x in alias_cmd:
-                        if ' ' not in x and x:
-                            possible_macro = self.aliases.get(x, x)
-                            x = possible_macro
-                        emp_list.append(x)
-                    command = ''.join(emp_list)
+                    for x in re.findall('\$\(.*?\)', command):
+                        command = command.replace(x, aliases.get(x[2:-1:]))
                     # print(command)
                 if ';' in command:
                     for x in splitter.dbreaker(command, delimiter=';'):
