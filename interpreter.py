@@ -12,7 +12,7 @@ import re
 from modules.util import splitters, extra, optparser, hist as histry
 from rich import traceback, console
 traceback.install()
-Console = console.Console()
+Console = console.Console(soft_wrap=True, highlight=False)
 
 if not ('-h' in sys.argv or '--help' in sys.argv):
     print(f'Importing custom modules', end='\r')
@@ -53,7 +53,7 @@ FURGENT = colors.FURGENT
 FSTYLE = colors.FPROMPT
 
 # Display time during statup
-if not ('-h' in sys.argv or '--help' in sys.argv):
+if not ('-h' in sys.argv or '--help' in sys.argv or '-l' in sys.argv or '--list' in sys.argv):
     print(f'current session started at {extra.timefunc.datevalue()}')
 
 if extra.args(sys.argv, 1) in ['-h', '--help']:
@@ -64,8 +64,17 @@ parser = argparse.ArgumentParser(description="Command line toolkit for basic rec
 parser.add_argument('-c', '--command', help='custom command to run from outside the session')
 parser.add_argument('-m', '--module', help="Start with a specified module (Overrides default module set in config)")
 parser.add_argument('-q', '--quiet', help="Do not display banner on startup", action='store_true')
+parser.add_argument('-l', '--list', help="list available modules", action="store_true")
 
 args = parser.parse_args()
+
+if args.list:
+    Console.print(f"[{FSUCCESS}]Available module are:")
+    for module in _modules:
+        Console.print(f'\t-> [{FURGENT}]{module}[/]')
+    print()
+    sys.exit(0)
+
 
 if not args.quiet:
     banner.run()
