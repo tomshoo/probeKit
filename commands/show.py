@@ -29,13 +29,16 @@ def run(arguments: list=None, module: str=None, option_dict: str=None) -> int:
     elif _args(arguments, 0).lower() == "modules":
         print()
         print('Aviable modules are:')
+        if module:
+            status = " (in use)"
+        else: status = ""
         for data in valid_modules:
-            Console.print(f'\t[{_FSUCCESS}]{data}[/]')
+            Console.print(f'\t[{_FSUCCESS}]{data}[/][{_FHIGHLIGHT}]{status if data == module else ""}[/]')
         print()
 
-        if module:
-            Console.print(f'Current selected module: [{_FSUCCESS}]{module}[/]')
-            print('type "about" to list more details about the selected module\n')
+        # if module:
+        #     Console.print(f'Current selected module: [{_FSUCCESS}]{module}[/]')
+        #     print('type "about" to list more details about the selected module\n')
 
         print('type "about [modulename]" to list details about a specific module\n')
         return 0

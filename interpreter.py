@@ -319,7 +319,7 @@ class input_parser:
         else:
             prompt_str: str = f'\[probeKit]: [{FSTYLE}]({self.MODULE})[/]: [{COLOR}]{self.exit_code}[/]$> '
         if check == 0:
-            value = Console.input(prompt_str)
+            value = console.Console(soft_wrap=True).input(prompt_str)
         else:
             external_command: str = args.command
             splitted: list = external_command.split('\ ')
