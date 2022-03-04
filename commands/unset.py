@@ -23,7 +23,8 @@ class unset_val:
 
     def unassign(self, option: str):
         options_dict: dict = self.ret_list[0]
-        if option == "all":
+        option = option.upper()
+        if option.lower() == "all":
             for data in options_dict:
                 if options_dict[data]['type'] == "dict":
                     options_dict[data]['value']['value'] = ""

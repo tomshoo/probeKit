@@ -29,7 +29,12 @@ class set_class:
                 else: option_dict[option]['value'] = OPTIONS[option]
 
             parser = optparser.OptionsParser(option_dict)
-            option_dict = parser.parse()
+            try:
+                print(1)
+                option_dict = parser.parse()
+                print()
+            except parser.UndeterminedTypeError as err:
+                Console.print(f'[{_FALERT}]{err}[/]')
             self.ret_list[0] = option_dict
         elif ' ' in options:
             assignment = options.split(' ')
@@ -48,6 +53,7 @@ class set_class:
 
     def assign(self, option: str, value: str):
         options = self.ret_list[0]
+        option=option.upper()
         if options.get(option):
             if options[option]['type'] != "dict": options[option]['value'] = value
             else: options[option]['value']['value'] = value
@@ -57,7 +63,10 @@ class set_class:
             return
         
         parser = optparser.OptionsParser(options)
-        options = parser.parse()
-        print(option, '=>', value)
-        self.ret_list[0] = options
-        self.ret_list[1] = 0
+        try:
+            options = parser.parse()
+            print(option, '=>', value)
+            self.ret_list[0] = options
+            self.ret_list[1] = 0
+        except parser.UndeterminedTypeError as err:
+            Console.print(f'[{_FALERT}]{err}')

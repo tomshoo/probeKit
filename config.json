@@ -1,18 +1,18 @@
 {
     "modules": {
-        "ports": {"options": ["thost", "tport", "protocol", "timeout", "tryct", "verbose", "threading"]},
-        "osprobe": {"options": ["thost", "tryct", "nmap"]},
-        "fuzz": {"options": ["turl", "mode", "wordlist", "depth", "verbose"]}
+        "ports": {"options": ["THOST", "TPORT", "PROTOCOL", "TIMEOUT", "TRYCT", "VERBOSE", "THREADING"]},
+        "osprobe": {"options": ["THOST", "TRYCT", "NMAP"]},
+        "fuzz": {"options": ["TURL", "MODE", "WORDLIST", "DEPTH", "VERBOSE"]}
     },
 
     "options": {
-        "thost": {
+        "THOST": {
             "description": "Domain name or ip address of target",
             "required": true,
             "type": "str",
             "value": ""
         },
-        "tport": {
+        "TPORT": {
             "description": "Ports to scan for",
             "required": true,
             "type": "dict",
@@ -45,61 +45,61 @@
                 "type": ""
             }
         },
-        "protocol": {
+        "PROTOCOL": {
             "description": "Protocol to use",
             "required": true,
             "type": "str",
             "value": ""
         },
-        "verbose": {
+        "VERBOSE": {
             "description": "Display verbose(exapnded) output",
             "required": false,
             "type": "bool",
             "value": ""
         },
-        "threading": {
+        "THREADING": {
             "description": "enable multithreading?",
             "required": false,
             "type": "bool",
             "value": ""
         },
-        "nmap": {
+        "NMAP": {
             "description": "use NMAP for OS detection(active)",
             "required": false,
             "type": "int",
             "value": ""
         },
-        "tryct": {
+        "TRYCT": {
             "description": "Number of tries before giving up",
             "required": false,
             "type": "int",
             "value": ""
         },
-        "timeout": {
+        "TIMEOUT": {
             "description": "time in seconds to wait before giving up",
             "required": false,
             "type": "float",
             "value": ""
         },
-        "depth": {
-            "description": "depth of directories to check",
+        "DEPTH": {
+            "description": "Depth of directories to check",
             "required": false,
             "type": "int",
             "value": ""
         },
-        "turl": {
+        "TURL": {
             "description": "URL of target host, must be a proper URL",
             "required": true,
             "type": "str",
             "value": ""
         },
-        "mode" :{
-            "description": "mode of bruteforcing to perform",
+        "MODE" :{
+            "description": "Mode of bruteforcing to perform",
             "required": true,
             "type": "str",
             "value": ""
         },
-        "wordlist": {
+        "WORDLIST": {
             "description": "path to wordlist to use",
             "required": true,
             "type": "str",
