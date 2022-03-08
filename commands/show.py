@@ -9,7 +9,7 @@ _FHIGHLIGHT = colors.FPROMPT
 _FSUCCESS = colors.FSUCCESS
 
 Console = con()
-def run(arguments: list=None, module: str=None, option_dict: str=None) -> int:
+def run(arguments: list=None, module: str=None, option_dict: dict[str]=None, aliases: dict[str]=None) -> int:
     if not _args(arguments, 0):
         Console.print(f'[{_FALERT}]Err: No argument found[/]')
         return 2
@@ -38,6 +38,14 @@ def run(arguments: list=None, module: str=None, option_dict: str=None) -> int:
         print()
 
         print('type "about [modulename]" to list details about a specific module\n')
+        return 0
+    
+    elif _args(arguments, 0).lower() == "aliases":
+        print()
+        max_len = max([len(x) for x in aliases])
+        for key in aliases:
+            Console.print(f'{key:{max_len}} -> [{_FHIGHLIGHT}]{aliases.get(key)}[/]')
+        print()
         return 0
 
     else:

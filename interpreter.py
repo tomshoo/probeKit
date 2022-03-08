@@ -197,7 +197,7 @@ class input_parser:
             init_editor.start_led()
 
         elif verb == 'show':
-            self.exit_code = show.run(cmd_split[1::], self.MODULE, self.option_dict)
+            self.exit_code = show.run(cmd_split[1::], self.MODULE, self.option_dict, self.aliases)
 
         elif verb == 'back':
             if not self.MODULE:
