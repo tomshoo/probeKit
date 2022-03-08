@@ -25,7 +25,7 @@ class Help():
             '\t use\t\t (*)use an available module\n'+
             '\t show\t\t (*)shows information on provided argument\n'+
             '\t set\t\t (*)assignes aliases and available options\n'+
-            '\t unset\t\t (*)unassigns value from the provided option\n'+
+            '\t unset\t\t (*)unassigns given alias or option\n'+
             '\t help\t\t prints this help message\n'+
             '\t exit\t\t exits the whole interpreter\n'+
             '\t back\t\t moves back to the module selector\n'+
@@ -65,8 +65,8 @@ class Help():
 
         elif command == 'unset':
             Console.print(f'[{FSUCCESS}]\n unset:\t Unassigns any value provided to the given option\n'
-            '\t Usage: unset \[option1] \[option2] ...\n'
-            '\t | Note: It also unassigns the values defined in \[config.py][/]\n')
+            '\t Usage: unset \[option or alias] \[key1] \[key2]...\[keyN]\n'
+            '\t | Note: It also unassigns any of the values defined in `config.py`[/]\n')
             return 0
 
         elif command == 'about':

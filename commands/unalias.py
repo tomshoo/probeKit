@@ -13,6 +13,7 @@ class unalias:
         self.ret_list = [aliases, 0]
 
     def run(self) -> List[Union[dict, int]]:
+        Console.print(f'[{_FURGENT}]Warning: this command is deprecated. Use `unset` instead')
         if not self.alias_list:
             self.ret_list[1] = 1
             Console.print(f'[{_FALERT}][-] Error: no input provided[/]')

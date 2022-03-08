@@ -228,10 +228,6 @@ class input_parser:
 
         # Verb(or command) to set options
         elif verb == 'set':
-            # new_set  = setval.set_class(self.option_dict, cmd_split[1::])
-            # ret_list = new_set.run()
-            # self.option_dict = ret_list[0]
-            # self.exit_code = ret_list[1]
             new_set = setval.Set(arguments, self.option_dict, self.aliases)
             ret_val = new_set.run()
             self.option_dict = ret_val[0]
@@ -241,10 +237,11 @@ class input_parser:
 
         # Verb(or command) to unset options
         elif verb == 'unset':
-            new_unset = unset.unset_val(self.option_dict, cmd_split[1::])
+            new_unset = unset.unset_val(arguments, self.option_dict, self.aliases)
             ret_list = new_unset.run()
             self.option_dict = ret_list[0]
-            self.exit_code = ret_list[1]
+            self.aliases = ret_list[1]
+            self.exit_code = ret_list[2]
 
         elif verb == 'use':
             new_use = use.use(cmd_split[1::], self.MODLIST)
