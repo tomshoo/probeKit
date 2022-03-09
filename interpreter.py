@@ -8,6 +8,7 @@ import os
 import argparse
 import subprocess
 import re
+from fuzzywuzzy import process
 
 from modules.util import splitters, extra, optparser, hist as histry
 from rich import traceback, console
@@ -302,7 +303,7 @@ class input_parser:
                     if 'Windows' not in platform.platform():
                         self.exit_code = subprocess.call((cmd_split_quoted))
                     else:
-                        self.exit_code = subprocess.run(command, shell=True).returncode
+                        self.exit_code = subprocess.run(command).returncode
                         
                 else:
                     Console.print(f'[{FALERT}]Error: Invalid command \'{verb}\'[/]')
@@ -310,6 +311,10 @@ class input_parser:
 
             except FileNotFoundError:
                 Console.print(f'[{FALERT}]Error: Invalid command \'{verb}\'[/]')
+                fuzzy_match_list: list[str] = [x for x in process.extractBests(verb, extra.completers.interpreter)]
+                Console.print(f'[{colors.FURGENT}]Perhaps you meant: [/]')
+                for match in fuzzy_match_list:
+                    Console.print(f'\t[{colors.FPROMPT}]{match[0]}[/]')
                 self.exit_code = 1
 
     def prompt(self, check: int = 0) -> int:

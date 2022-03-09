@@ -4,6 +4,7 @@ from modules.util.extra import args
 from modules.data.Help import Help
 from rich.console import Console
 from typing import List, Union
+from fuzzywuzzy import fuzz
 
 Console = Console()
 _FALERT = _colors.FALERT
@@ -31,7 +32,14 @@ class unset_val:
             else:
                 unassignment_func = self.unassign_alias
         else:
-            Console.print(f'[{_FALERT}]Error: unset type was invalid required: \'option\' (or) \'alias\', found: {self.args[0]}[/]')
+            if fuzz.partial_ratio(args(self.args, 0).lower(), "option") > 80:
+                Console.print(f'[{_FALERT}]Error: invalid unset type!')
+                Console.print(f'[{_FURGENT}]Did you mean `option`?')
+            elif fuzz.partial_ratio(args(self.args, 0).lower(), "alias") > 80:
+                Console.print(f'[{_FALERT}]Error: invalid unset type!')
+                Console.print(f'[{_FURGENT}]Did you mean `alias`?')
+            else:
+                Console.print(f'[{_FALERT}]Error: unset type was invalid required: \'option\' (or) \'alias\', found: {self.args[0]}[/]')
             return [self.option_dict, self.aliases, 1]
 
         keylist: list[str] = self.args[1::]

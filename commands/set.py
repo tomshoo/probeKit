@@ -6,11 +6,13 @@ from modules.util.splitters import Splitters
 from modules.data.Help import Help
 from rich import console,traceback
 from typing import List, Union
+from fuzzywuzzy import fuzz
 traceback.install()
 Console = console.Console()
 
 _FALERT = _colors.FALERT
 _FSTYLE = _colors.FPROMPT
+_FURGENT = _colors.FURGENT
 
 class Set:
     def __init__(self, args: str, option_dict: dict[str]=None, aliases: dict[str]=None):
@@ -27,8 +29,12 @@ class Set:
             Help('set').showHelp()
             del temp_arglist
             return [self.option_dict, self.aliases, 0]
-        if not arglist or args(arglist, 0).lower() not in ['option', 'alias']:
-            Console.print(f'[{_FALERT}]Error set type not found or not valid[/]')
+        if args(arglist, 0).lower() not in ['option', 'alias']:
+            Console.print(f'[{_FALERT}]Error set type not valid[/]')
+            if fuzz.partial_ratio(args(arglist, 0).lower(), "option") > 80:
+                Console.print(f'[{_FURGENT}]Did you mean `option`?')
+            if fuzz.partial_ratio(args(arglist, 0).lower(), "alias") > 80:
+                Console.print(f'[{_FURGENT}]Did you mean `alias`?')
             return [self.option_dict, self.aliases, 1]
         if len(arglist) < 2: 
             Console.print(f'[{_FALERT}]Error: no values to assign[/]')
