@@ -60,6 +60,11 @@ aliases : dict = {
     'options': 'show options'
 }
 
+macros: dict = {
+    'localhost': '127.0.0.1',
+    'example': 'https://www.example.com',
+}
+
 #############################NOTE#############################
 # Everything after this point is used to process all the     #
 # configuration provided by the user.                        #

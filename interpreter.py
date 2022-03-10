@@ -28,7 +28,7 @@ from commands import (
 )
 from modules.data import Help
 from config import (
-    MODULE, colors, aliases,
+    MODULE, colors, aliases, macros,
     option_dict, valid_modules as _modules
 )
 from modules.util.led import start_editor
@@ -104,6 +104,7 @@ class input_parser:
         self.MODULE: str = MODULE if not args.module or args.module not in _modules else args.module
         self.MODLIST: list = []
         self.aliases: dict = aliases
+        self.macros: dict = macros
 
     def parser(self, value: str):
         if '#' in value:
@@ -138,10 +139,20 @@ class input_parser:
                 command = extra.trim(command)
                 if not command:
                     continue
-                #print (re.findall('\{.*?\}', command))
+                
+                command = command.replace(command.split()[0], aliases.get(command.split()[0], command.split()[0]), 1)
                 if '$' in command:
                     for x in re.findall('\$\(.*?\)', command):
-                        command = command.replace(x, aliases.get(x[2:-1:], x))
+                        command = command.replace(x, macros.get(x[2:-1:], x[2:-1:]))
+                    print(command)
+                    cmd_list = command.split(' ')
+                    for x in cmd_list:
+                        if x.strip('"').strip('\'').startswith('$'):
+                            command=command.replace(x, macros.get(x.strip('$'), ''))
+                    cmd_list=command.split('=')
+                    for x in cmd_list:
+                        if x.strip('"').strip('\'').strip().startswith('$'):
+                            command=command.replace(x, macros.get(x.strip('$'), ''))
                     # print(command)
                 if ';' in command:
                     for x in splitter.dbreaker(command, delimiter=';'):
@@ -176,8 +187,6 @@ class input_parser:
             try:
                 times: int = 1
                 if ('-t' in command):
-                    argument: str = ''
-                    check: int = 0
                     times = command[command.find('-t')+3]
                 noreturn: bool = True if '-n' in command else False
                 self.do(cmd_split[1], int(times), noreturn)
@@ -198,7 +207,7 @@ class input_parser:
             init_editor.start_led()
 
         elif verb == 'show':
-            self.exit_code = show.run(cmd_split[1::], self.MODULE, self.option_dict)
+            self.exit_code = show.run(cmd_split[1::], self.MODULE, self.option_dict, self.aliases, self.macros)
 
         elif verb == 'back':
             if not self.MODULE:
@@ -229,20 +238,22 @@ class input_parser:
 
         # Verb(or command) to set options
         elif verb == 'set':
-            new_set = setval.Set(arguments, self.option_dict, self.aliases)
+            new_set = setval.Set(arguments, self.option_dict, self.aliases, self.macros)
             ret_val = new_set.run()
             self.option_dict = ret_val[0]
             self.aliases = ret_val[1]
-            self.exit_code = ret_val[2]
+            self.macros = ret_val[2]
+            self.exit_code = ret_val[3]
 
 
         # Verb(or command) to unset options
         elif verb == 'unset':
-            new_unset = unset.unset_val(arguments, self.option_dict, self.aliases)
+            new_unset = unset.unset_val(arguments, self.option_dict, self.aliases, self.macros)
             ret_list = new_unset.run()
             self.option_dict = ret_list[0]
             self.aliases = ret_list[1]
-            self.exit_code = ret_list[2]
+            self.macros = ret_list[2]
+            self.exit_code = ret_list[3]
 
         elif verb == 'use':
             new_use = use.use(cmd_split[1::], self.MODLIST)

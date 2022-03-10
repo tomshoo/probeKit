@@ -1,4 +1,3 @@
-from operator import index
 from config import colors as _colors, OPTIONS
 from modules.util.extra import trim, args
 from modules.util import optparser
@@ -15,10 +14,11 @@ _FSTYLE = _colors.FPROMPT
 _FURGENT = _colors.FURGENT
 
 class Set:
-    def __init__(self, args: str, option_dict: dict[str]=None, aliases: dict[str]=None):
+    def __init__(self, args: str, option_dict: dict[str]=None, aliases: dict[str]=None, macros: dict[str]=None):
         self.args = args
         self.option_dict = option_dict
         self.aliases = aliases
+        self.macros = macros
         self.exit_code: int = 0
 
     def run(self) -> List[Union[dict, int]]:
@@ -28,20 +28,44 @@ class Set:
         if '-h' in temp_arglist or '--help' in temp_arglist:
             Help('set').showHelp()
             del temp_arglist
-            return [self.option_dict, self.aliases, 0]
-        if args(arglist, 0).lower() not in ['option', 'alias']:
+            return [self.option_dict, self.aliases, self.macros, 0]
+        if args(arglist, 0).lower() not in ['option', 'alias', 'macro']:
             Console.print(f'[{_FALERT}]Error set type not valid[/]')
             if fuzz.partial_ratio(args(arglist, 0).lower(), "option") > 80:
                 Console.print(f'[{_FURGENT}]Did you mean `option`?')
             if fuzz.partial_ratio(args(arglist, 0).lower(), "alias") > 80:
                 Console.print(f'[{_FURGENT}]Did you mean `alias`?')
-            return [self.option_dict, self.aliases, 1]
+            return [self.option_dict, self.aliases, self.macros, 1]
         if len(arglist) < 2: 
             Console.print(f'[{_FALERT}]Error: no values to assign[/]')
-            return [self.option_dict, self.aliases, 1]
+            return [self.option_dict, self.aliases, self.macros, 1]
+        optlist = arglist[1::]
         if args(arglist, 0).lower() == 'option': assignment_func = self.assign_options
         if args(arglist, 0).lower() == 'alias': assignment_func = self.assign_alias
-        optlist = arglist[1::]
+        if args(arglist, 0).lower() == 'macro':
+            if len(optlist) > 1:
+                Console.print(f'[{_FALERT}]Error: Defining multiple macros at once is nor supported not recommended.[/]')
+                self.exit_code = 1
+            else:
+                if '=' not in args(optlist, 0):
+                    Console.print(f'[{_FALERT}]What!!? What am I supposed to assign to what again??[/]')
+                else:
+                    assignment_list = Splitters.dbreaker(args(optlist, 0), '=')
+                    if len(assignment_list) == 2:
+                        if not args(assignment_list, 0):
+                            Console.print(f'[{_FALERT}]Again... to whom am I supposed to assign the value!![/]')
+                            self.exit_code = 1
+                        else:
+                            self.macros[args(assignment_list,0)]=args(assignment_list, 1)
+                            self.exit_code = 0
+                    else:
+                        if len(assignment_list) > 2:
+                            Console.print(f'[{_FALERT}]Whoa!!! Don\'t the macro!![/]')
+                            self.exit_code = 1
+                        else:
+                            Console.print(f'[{_FALERT}]What am I supposed to assignt to this thing!![/]')
+                            self.exit_code = 1
+            return [self.option_dict, self.aliases, self.macros, self.exit_code]
         if 'all' in [x.lower() for x in optlist]:
             if assignment_func == self.assign_options:
                 for option in self.option_dict:
@@ -97,7 +121,7 @@ class Set:
             exit_code = 0
         ret_code = self.exit_code
         self.exit_code = 0
-        return [self.option_dict, self.aliases, ret_code]
+        return [self.option_dict, self.aliases, self.macros, ret_code]
 
     def assign_options(self, option: str, value: str):
         options = self.option_dict
