@@ -14,14 +14,19 @@ def run(arguments: list=None, module: str=None, option_dict: str=None, aliases:d
         Console.print(f'[{_FALERT}]Err: No argument found[/]')
         return 2
 
-    if _args(arguments, 1) and _args(arguments, 1) in valid_modules:
-        module=_args(arguments, 1)
-    else:
-        Console.print(f'[{_FALERT}]Specified module was not invalid \'{_args(arguments, 1)}\'[/]')
-        return 2
-
     if _args(arguments, 0).lower() in ['-h', '--help']:
         return Help('show').showHelp()
+
+    if _args(arguments, 1):
+        if _args(arguments, 1) in valid_modules:
+            if _args(arguments, 0).lower == "options":
+                module=_args(arguments, 1)
+            elif _args(arguments, 0) in ["info", "modules", "aliases", "macros"]:
+                Console.print(f'[{_FALERT}]Error: \'{_args(arguments, 0)}\' did not expect any further argument.[/]')
+                return 3
+        else:
+            Console.print(f'[{_FALERT}]Specified module was not invalid \'{_args(arguments, 1)}\'[/]')
+            return 2
     
     if _args(arguments, 0).lower() == "options":
         options = Options.Options(module, option_dict)
