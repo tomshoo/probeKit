@@ -8,10 +8,16 @@ _FALERT = colors.FALERT
 _FHIGHLIGHT = colors.FPROMPT
 _FSUCCESS = colors.FSUCCESS
 
-Console = con()
-def run(arguments: list=None, module: str=None, option_dict: str=None) -> int:
+Console = con(highlight=False)
+def run(arguments: list=None, module: str=None, option_dict: str=None, aliases:dict[str] = None, macros:dict[str] = None) -> int:
     if not _args(arguments, 0):
         Console.print(f'[{_FALERT}]Err: No argument found[/]')
+        return 2
+
+    if _args(arguments, 1) and _args(arguments, 1) in valid_modules:
+        module=_args(arguments, 1)
+    else:
+        Console.print(f'[{_FALERT}]Specified module was not invalid \'{_args(arguments, 1)}\'[/]')
         return 2
 
     if _args(arguments, 0).lower() in ['-h', '--help']:
@@ -38,6 +44,21 @@ def run(arguments: list=None, module: str=None, option_dict: str=None) -> int:
         print()
 
         print('type "about [modulename]" to list details about a specific module\n')
+        return 0
+    elif _args(arguments, 0).lower() == "aliases":
+        print('\nAvailable aliases are:')
+        max_len = max([len(x) for x in aliases])
+        for alias in aliases:
+            Console.print(f'{alias:{max_len}} -> [{_FHIGHLIGHT}]{aliases[alias]}')
+        print()
+        return 0
+
+    elif _args(arguments, 0).lower() == "macros":
+        print('\nAvailable macros are:')
+        max_len = max([len(x) for x in macros])
+        for macro in macros:
+            Console.print(f'{macro:{max_len}} ==> [{_FHIGHLIGHT}]{macros[macro]}')
+        print()
         return 0
 
     else:
