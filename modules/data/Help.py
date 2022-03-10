@@ -42,30 +42,40 @@ class Help():
 
         elif command == 'show':
             Console.print(f'[{FSUCCESS}]\n show:\t Shows information on provided argument\n'
-            '\t Usage: show [argument]\n'
+            '\t Usage: show [argument] [module name (optional if argument is options and no module is selected by default)]\n'
             '\t Available arguments are:\n'
             '\t\t | options: shows values assigned to the options available for the selected module\n'
             '\t\t\t - shows all assigned values if no module is selected\n\n'
             '\t\t | info: shows available options for selected module\n'
-            '\t\t | status: prints exit status of previous command[/]\n'
-            '\t\t | modules: list all available modules\n')
+            '\t\t | status: prints exit status of previous command\n'
+            '\t\t | modules: list all available modules\n'
+            '\t\t | aliases: list defined aliases\n'
+            '\t\t | macros: list all defined macros[/]\n')
             return 0
 
         elif command == 'set':
             Console.print(f'[{FSUCCESS}]\n set:\t Sets options or aliases\n'
-            '\t Usage: set \[option or alias] \[key]=\[value]\n'
+            '\t Usage: set \[option or alias or macro] \[key]=\[value]\n'
             '\t\t Set options,\n'
             '\t\t\t set option \[option_name]=\[option_value]\n'
             '\n'
             '\t\t Set aliases,\n'
             '\t\t\t set alias \[alias]=\[command]\n'
             '\t\t\t set alias \[alias]="\[long and complicated command]"\n'
-            '\t\t\t - Then call aliases via `$(alias)`\n[/]')
+            '\t\t Set macro,\n',
+            '\t\t\t set macro \[macro]=\[macro_value]\n'
+            f'\t\t\t *note: [{FALERT}]macro accepts only one key value pair at once.[/]\n',
+            f'\t\t\t    [{FALERT}]Definition of multiple macros is not supported nor recommended.[/]\n'
+            ## Well Console.print() straight up refused to work properly from this point in this statement...
+            f'[{FSUCCESS}]\t\t\t - Then call macros via `$(macro) or $macro`[/]\n',
+            f'[{FSUCCESS}]\t\t\t -> Difference between $(macro) and $macro is:\n[/]',
+            f'[{FSUCCESS}]\t\t\t\t - $(macro) allows tu use the macro name as value if the macro is not found\n[/]',
+            f'[{FSUCCESS}]\t\t\t\t - $macro on other hand does not allow using macro name as a value\n[/]')
             return 0
 
         elif command == 'unset':
             Console.print(f'[{FSUCCESS}]\n unset:\t Unassigns any value provided to the given option\n'
-            '\t Usage: unset \[option or alias] \[key1] \[key2]...\[keyN]\n'
+            '\t Usage: unset \[option or alias or macro] \[key1] \[key2]...\[keyN]\n'
             '\t | Note: It also unassigns any of the values defined in `config.py`[/]\n')
             return 0
 
