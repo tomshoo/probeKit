@@ -56,7 +56,7 @@ def run(arguments: list=None, module: str=None, option_dict: str=None, aliases:d
         return 0
     elif _args(arguments, 0).lower() == "aliases":
         print('\nAvailable aliases are:')
-        max_len = max([len(x) for x in aliases])
+        max_len = max([len(x) for x in aliases]) if aliases else 0
         for alias in aliases:
             Console.print(f'{alias:{max_len}} -> [{_FHIGHLIGHT}]{aliases[alias]}')
         print()
@@ -64,7 +64,7 @@ def run(arguments: list=None, module: str=None, option_dict: str=None, aliases:d
 
     elif _args(arguments, 0).lower() == "macros":
         print('\nAvailable macros are:')
-        max_len = max([len(x) for x in macros])
+        max_len = max([len(x) for x in macros]) if macros else 0
         for macro in macros:
             Console.print(f'{macro:{max_len}} ==> [{_FHIGHLIGHT}]{macros[macro]}')
         print()
