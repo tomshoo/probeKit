@@ -76,7 +76,7 @@ class Help():
         elif command == 'unset':
             Console.print(f'[{FSUCCESS}]\n unset:\t Unassigns any value provided to the given option\n'
             '\t Usage: unset \[option or alias or macro] \[key1] \[key2]...\[keyN]\n'
-            '\t | Note: It also unassigns any of the values defined in `config.py`[/]\n')
+            '\t | Note: It also unassigns any of the values defined in `UserConfig.py`[/]\n')
             return 0
 
         elif command == 'about':

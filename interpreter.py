@@ -47,7 +47,7 @@ option_dict = optionparser.parse()
 ExitException = extra.ExitException
 completer = extra.completer(extra.completers.interpreter)
 
-# Setting up colors (edit these in config.py)
+# Setting up colors (edit these in UserConfig.py)
 FSUCCESS = colors.FSUCCESS
 FALERT = colors.FALERT
 FURGENT = colors.FURGENT
