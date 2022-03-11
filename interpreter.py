@@ -259,7 +259,7 @@ class input_parser:
             new_use = use.use(cmd_split[1::], self.MODLIST)
             ret_list = new_use.run()
             self.MODLIST = ret_list[0]
-            self.MODULE = self.MODLIST[-1]
+            self.MODULE = self.MODLIST[-1] if extra.args(self.MODLIST, -1) else ''
             self.exit_code = ret_list[1]
 
         elif verb == 'about':

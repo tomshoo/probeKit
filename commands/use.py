@@ -16,8 +16,9 @@ class use:
     def run(self) -> List[Union[str, int]]:
         args = [x.lower() for x in self.module]
         if not args:
-            self.ret_list[1] = 1
+            self.ret_list[1] = 2
             Console.print(f'[{_FALERT}]Error: no module specified[/]')
+            return self.ret_list
         
         if '-h' in args or '--help' in args:
             return ['', Help('use').showHelp()]
@@ -25,8 +26,9 @@ class use:
             module = args
 
         if len(module) > 1:
-            self.ret_list[1] = 1
+            self.ret_list[1] = 3
             Console.print(f'[{_FURGENT}]Alert: too many arguments[/]')
+            return self.ret_list
 
         else:
             if module[0] in _modules:
@@ -41,5 +43,6 @@ class use:
                 self.ret_list[1] = 1
                 Console.print(f'[{_FALERT}]Error: Invalid module \'{module[0]}\'[/]')
                 Console.print(f'[{_FURGENT}]*Hint: Refer to command `show modules` for a list of available modules[/]')
+                return self.ret_list
 
         return self.ret_list
