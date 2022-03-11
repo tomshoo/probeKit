@@ -35,36 +35,37 @@ class Set:
                 Console.print(f'[{_FURGENT}]Did you mean `option`?')
             if fuzz.partial_ratio(args(arglist, 0).lower(), "alias") > 80:
                 Console.print(f'[{_FURGENT}]Did you mean `alias`?')
-            return [self.option_dict, self.aliases, self.macros, 1]
+            return [self.option_dict, self.aliases, self.macros, 2]
         if len(arglist) < 2: 
             Console.print(f'[{_FALERT}]Error: no values to assign[/]')
-            return [self.option_dict, self.aliases, self.macros, 1]
+            return [self.option_dict, self.aliases, self.macros, 3]
         optlist = arglist[1::]
         if args(arglist, 0).lower() == 'option': assignment_func = self.assign_options
         if args(arglist, 0).lower() == 'alias': assignment_func = self.assign_alias
         if args(arglist, 0).lower() == 'macro':
             if len(optlist) > 1:
                 Console.print(f'[{_FALERT}]Error: Defining multiple macros at once is nor supported not recommended.[/]')
-                self.exit_code = 1
+                self.exit_code = 3
             else:
                 if '=' not in args(optlist, 0):
                     Console.print(f'[{_FALERT}]What!!? What am I supposed to assign to what again??[/]')
+                    self.exit_code = 3
                 else:
                     assignment_list = Splitters.dbreaker(args(optlist, 0), '=')
                     if len(assignment_list) == 2:
                         if not args(assignment_list, 0):
                             Console.print(f'[{_FALERT}]Again... to whom am I supposed to assign the value!![/]')
-                            self.exit_code = 1
+                            self.exit_code = 3
                         else:
                             self.macros[args(assignment_list,0)]=args(assignment_list, 1).strip('"').strip('\'')
                             self.exit_code = 0
                     else:
                         if len(assignment_list) > 2:
                             Console.print(f'[{_FALERT}]Whoa!!! Don\'t the macro!![/]')
-                            self.exit_code = 1
+                            self.exit_code = 3
                         else:
                             Console.print(f'[{_FALERT}]What am I supposed to assignt to this thing!![/]')
-                            self.exit_code = 1
+                            self.exit_code = 3
             return [self.option_dict, self.aliases, self.macros, self.exit_code]
         if 'all' in [x.lower() for x in optlist]:
             if assignment_func == self.assign_options:
@@ -74,6 +75,7 @@ class Set:
                         else: self.option_dict[option]['value'] = OPTIONS.get(option)
             else:
                 Console.print(f'[{_FALERT}]Error: keyword `all` is not available for alias assignment')
+                self.exit_code = 3
         else:
             for x in optlist:
                 if '=' not in x and assignment_func == self.assign_options:
@@ -89,7 +91,7 @@ class Set:
 
                         Console.print(f'[{_FALERT}]What!!?? I need a KEY AND VALUE please...[/]')
                         Console.print(f'[{_FALERT}]Go look for your self: > `[{_FSTYLE}]{back_value} >{x}< {front_value}[/]`')
-                        exit_code = 1
+                        exit_code = 3
                     else:
                         assignment_list = Splitters.dbreaker(x, '=')
                         if len(assignment_list) == 1:
@@ -99,7 +101,7 @@ class Set:
 
                             Console.print(f'[{_FALERT}]AND a VALUE for god\'s sake[/]')
                             Console.print(f'[{_FALERT}]Man!! what a beautiful pair of eyes you have over there: > `[{_FSTYLE}]{back_value} >{x}< {front_value}[/]`')
-                            exit_code = 1
+                            exit_code = 3
                             break
                         elif not args(assignment_list, 0):
                             back_value = args(optlist, optlist.index(x)-1) if args(optlist, optlist.index(x)-1) and (optlist.index(x)-1) > 0 else '[]'
@@ -108,7 +110,7 @@ class Set:
 
                             Console.print(f'[{_FALERT}]What!!!? Where is the KEY...[/]')
                             Console.print(f'[{_FALERT}]Look over here if you are blind: > `[{_FSTYLE}]{back_value} >{x}< {front_value}[/]`')
-                            exit_code = 1
+                            exit_code = 3
                             break
                         else:
                             for idx,data in enumerate(assignment_list):
