@@ -1,3 +1,4 @@
+from operator import le
 from modules.util.extra import args as _args
 from modules.data.Help import Help
 from rich.console import Console as con
@@ -14,23 +15,26 @@ def run(arguments: list=None, module: str=None, option_dict: str=None, aliases:d
         Console.print(f'[{_FALERT}]Err: No argument found[/]')
         return 2
 
-    if _args(arguments, 0).lower() in ['-h', '--help']:
+    if '-h' in [x.lower() for x in arguments] or '--help' in [x.lower() for x in arguments]:
         return Help('show').showHelp()
+    elif '-t' in [x.lower() for x in arguments] or '--true' in [x.lower() for x in arguments]:
+        trueval: bool = True
+    else:
+        trueval = False
 
-    if _args(arguments, 1):
-        if _args(arguments, 1) in valid_modules:
-            if _args(arguments, 0).lower == "options":
-                module=_args(arguments, 1)
-            elif _args(arguments, 0) in ["info", "modules", "aliases", "macros"]:
-                Console.print(f'[{_FALERT}]Error: \'{_args(arguments, 0)}\' did not expect any further argument.[/]')
-                return 3
+    if len(arguments) > 1:
+        if _args(arguments, 0) in ["info", "modules", "aliases", "macros"]:
+            Console.print(f'[{_FALERT}]Error: {_args(arguments, 0)} did not expect any argument but found `{_args(arguments, 1)}`')
+            return 3
+        elif _args(arguments, 1) in [x.lower() for x in valid_modules]:
+            module = _args(arguments, 1)
         else:
-            Console.print(f'[{_FALERT}]Specified module was not invalid \'{_args(arguments, 1)}\'[/]')
+            Console.print(f'[{_FALERT}]Error: invalid module found... refer `[{_FHIGHLIGHT}]show modules[/]` to get a list of available modules[/]')
             return 2
-    
+
     if _args(arguments, 0).lower() == "options":
         options = Options.Options(module, option_dict)
-        options.showOptions(trueval=True) if _args(arguments, 1) in ['-t', '--true'] else options.showOptions(trueval=False)
+        options.showOptions(trueval=True) if trueval else options.showOptions(trueval=False)
         return 0
 
     elif _args(arguments, 0).lower() == "info":
