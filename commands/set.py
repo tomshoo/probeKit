@@ -56,7 +56,7 @@ class Set:
                             Console.print(f'[{_FALERT}]Again... to whom am I supposed to assign the value!![/]')
                             self.exit_code = 1
                         else:
-                            self.macros[args(assignment_list,0)]=args(assignment_list, 1)
+                            self.macros[args(assignment_list,0)]=args(assignment_list, 1).strip('"').strip('\'')
                             self.exit_code = 0
                     else:
                         if len(assignment_list) > 2:
