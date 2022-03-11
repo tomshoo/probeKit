@@ -3,7 +3,7 @@ Update all the user configuration in this file
 '''
 
 # configure colors in this class
-class nonpowershell():
+class NonWindows10PowerShell():
     """
     Colorscheme for terminal emulators other than default powershell in windows,
     Contains dark blue for style coloring.
@@ -21,7 +21,7 @@ class nonpowershell():
     BURGENT  : str = "bold black on yellow"
 
 
-class powershell():
+class Windows10PowerShell():
     """
     Colorscheme for the default powershell in windows,
     Contains lighter shade of blue (cyan) for more visible style coloring
@@ -38,8 +38,8 @@ class powershell():
     BSUCCESS : str = "bold white on green"
     BURGENT  : str = "bold black on yellow"
 
-# Chose color scheme(light or dark)
-colors = nonpowershell
+# Chose color scheme(for Windows 10 powershell or otherwise)
+colors = NonWindows10PowerShell
 
 #Assign what module to use at startup
 MODULE = ""
