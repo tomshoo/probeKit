@@ -30,7 +30,7 @@ def run(arguments: list=None, module: str=None, option_dict: str=None, aliases:d
             module = _args(arguments, 1)
         else:
             Console.print(f'[{_FALERT}]Error: invalid module found... refer `[{_FHIGHLIGHT}]show modules[/]` to get a list of available modules[/]')
-            return 2
+            return 1
 
     if _args(arguments, 0).lower() == "options":
         options = Options.Options(module, option_dict)
@@ -73,4 +73,4 @@ def run(arguments: list=None, module: str=None, option_dict: str=None, aliases:d
     else:
         Console.print(f'[{_FALERT}]Error: Invalid argument\n'
         f'\trefer [{_FHIGHLIGHT}]help show[/] for more information.[/]\n')
-        return 3
+        return 2
