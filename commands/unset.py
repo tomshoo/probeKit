@@ -35,18 +35,15 @@ class unset_val:
             else:
                 unassignment_func = self.unassign_macro
         else:
+            Console.print(f'[{_FALERT}]Error: unset type was invalid required: \'option\' (or) \'alias\', found: {self.args[0]}[/]')
             if fuzz.partial_ratio(args(self.args, 0).lower(), "option") > 80:
-                Console.print(f'[{_FALERT}]Error: invalid unset type!')
                 Console.print(f'[{_FURGENT}]Did you mean `option`?')
             elif fuzz.partial_ratio(args(self.args, 0).lower(), "alias") > 80:
-                Console.print(f'[{_FALERT}]Error: invalid unset type!')
                 Console.print(f'[{_FURGENT}]Did you mean `alias`?')
             elif fuzz.partial_ratio(args(self.args, 0).lower(), "macro") > 80:
-                Console.print(f'[{_FALERT}]Error: invalid unset type!')
                 Console.print(f'[{_FURGENT}]Did you mean `macro`?')
-            else:
-                Console.print(f'[{_FALERT}]Error: unset type was invalid required: \'option\' (or) \'alias\', found: {self.args[0]}[/]')
-            return [self.option_dict, self.aliases, self.macros, 1]
+
+            return [self.option_dict, self.aliases, self.macros, 2]
 
         keylist: list[str] = self.args[1::]
 
@@ -67,8 +64,12 @@ class unset_val:
 
 
         else:
-            for key in keylist:
-                unassignment_func(key)
+            if [x for x in keylist if '=' in x]:
+                self.exit_code = 3
+                Console.print(f'[{_FALERT}]Error: cannot assign values in unset command[/]')
+            else:
+                for key in keylist:
+                    unassignment_func(key)
 
         return [self.option_dict, self.aliases, self.macros, self.exit_code]
 
@@ -82,7 +83,7 @@ class unset_val:
 
         else:
             Console.print(f'[{_FALERT}]Error: invalid option \'{option}\'[/]')
-            self.exit_code
+            self.exit_code = 1
             return
 
         parser = optparser.OptionsParser(options_dict)
