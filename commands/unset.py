@@ -54,11 +54,17 @@ class unset_val:
             if unassignment_func == self.unassign_option:
                 for key in self.option_dict:
                     unassignment_func(key)
-            else:
+            elif unassignment_func == self.unassign_alias:
                 temp_dict = self.aliases.copy()
                 for key in temp_dict:
                     unassignment_func(key)
                 del temp_dict
+            else:
+                temp_dict = self.macros.copy()
+                for key in temp_dict:
+                    unassignment_func(key)
+                del temp_dict
+
 
         else:
             for key in keylist:
