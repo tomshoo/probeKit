@@ -24,7 +24,7 @@ import modules.data.AboutList as aboutList
 from commands import (
     run, set as setval, unset,
     alias, unalias, use,
-    banner, show, clear
+    banner, show, clear, doc
 )
 from modules.data import Help
 from config import (
@@ -268,6 +268,10 @@ class input_parser:
                 aboutList.moduleHelp(mod).aboutModule(mod)
             else:
                 aboutList.moduleHelp(self.MODULE).aboutModule(self.MODULE)
+
+        elif verb == "doc":
+            new_doc = doc.Docs(splitters.Splitters.dbreaker(arguments))
+            self.exit_code = new_doc.run()
 
         elif verb == 'alias':
             new_alias = alias.alias(cmd_split, self.aliases)
