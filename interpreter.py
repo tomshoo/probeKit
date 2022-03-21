@@ -236,6 +236,10 @@ class input_parser:
         elif verb == 'run':
             self.exit_code = run.run(self.MODULE, self.option_dict)
 
+        elif verb == "doc":
+            new_doc = doc.Doc(splitter.dbreaker(arguments))
+            new_doc.run()
+
         # Verb(or command) to set options
         elif verb == 'set':
             new_set = setval.Set(arguments, self.option_dict, self.aliases, self.macros)
