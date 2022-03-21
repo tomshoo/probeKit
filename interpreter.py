@@ -237,7 +237,7 @@ class input_parser:
             self.exit_code = run.run(self.MODULE, self.option_dict)
 
         elif verb == "doc":
-            new_doc = doc.Doc(splitter.dbreaker(arguments))
+            new_doc = doc.Docs(splitter.dbreaker(arguments))
             new_doc.run()
 
         # Verb(or command) to set options
