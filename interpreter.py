@@ -181,7 +181,7 @@ class input_parser:
 
         verb: str = cmd_split[0].lower()
 
-        if verb in ["use", "banner"]:
+        if verb in ["use", "banner", "run"]:
             CommandStruct = CreateCommand(
                 arguments=splitter.dbreaker(arguments),
                 option_dict=self.option_dict,
@@ -252,7 +252,8 @@ class input_parser:
             self.exit_code = clear.run(cmd_split[1::], self.exit_code, histfile) if 'Windows' not in platform.platform() else clear.run(cmd_split[1::], self.exit_code)
 
         elif verb == 'run':
-            self.exit_code = run.run(self.MODULE, self.option_dict)
+            pass
+            # self.exit_code = run.run(self.MODULE, self.option_dict)
 
         elif verb == "doc":
             new_doc = doc.Docs(splitter.dbreaker(arguments))
