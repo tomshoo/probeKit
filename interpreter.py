@@ -9,6 +9,7 @@ import argparse
 import subprocess
 import re
 from fuzzywuzzy import process
+from modules.util.CommandStruct import CreateCommand
 
 from modules.util import splitters, extra, optparser, hist as histry
 from rich import traceback, console
@@ -23,7 +24,7 @@ start = extra.timefunc.timestamp()
 import modules.data.AboutList as aboutList
 from commands import (
     run, set as setval, unset,
-    alias, unalias, use,
+    alias, unalias,
     banner, show, clear, doc
 )
 from modules.data import Help
@@ -180,6 +181,23 @@ class input_parser:
 
         verb: str = cmd_split[0].lower()
 
+        if verb in ["use"]:
+            CommandStruct = CreateCommand(
+                arguments=splitter.dbreaker(arguments),
+                option_dict=self.option_dict,
+                aliases=self.aliases,
+                macros=self.macros,
+                activated_module_list=self.MODLIST,
+                module=self.MODULE
+            ).run(verb)
+
+            self.option_dict = CommandStruct.option_dict
+            self.aliases = CommandStruct.aliases
+            self.macros = CommandStruct.macros
+            self.MODLIST = CommandStruct.activated_module_list
+            self.MODULE = CommandStruct.module
+            self.exit_code = CommandStruct.exit_code
+
         if verb == "banner":
             self.exit_code = banner.run()
 
@@ -260,11 +278,12 @@ class input_parser:
             self.exit_code = ret_list[3]
 
         elif verb == 'use':
-            new_use = use.use(cmd_split[1::], self.MODLIST)
-            ret_list = new_use.run()
-            self.MODLIST = ret_list[0]
-            self.MODULE = self.MODLIST[-1] if extra.args(self.MODLIST, -1) else ''
-            self.exit_code = ret_list[1]
+            pass
+        #     new_use = use.use(cmd_split[1::], self.MODLIST)
+        #     ret_list = new_use.run()
+        #     self.MODLIST = ret_list[0]
+        #     self.MODULE = self.MODLIST[-1] if extra.args(self.MODLIST, -1) else ''
+        #     self.exit_code = ret_list[1]
 
         elif verb == 'about':
             if extra.args(cmd_split, 1):
@@ -282,6 +301,9 @@ class input_parser:
             ret_list = new_alias.run()
             self.aliases = ret_list[0]
             self.exit_code = ret_list[1]
+
+        elif verb == "crcmd":
+            _RunCommand(splitter.dbreaker(arguments)[0])()
 
         elif verb == 'unalias':            
             new_unalias = unalias.unalias(self.aliases, cmd_split[1::])
