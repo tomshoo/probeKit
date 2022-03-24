@@ -21,7 +21,7 @@ class use:
             return self.ReturnStruct
         
         if '-h' in args or '--help' in args:
-            self.ReturnStruct.exit_code = 0
+            self.ReturnStruct.exit_code = Help('use').showHelp()
             return self.ReturnStruct
         else:
             module = args
