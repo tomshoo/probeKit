@@ -44,7 +44,7 @@ class _RunCommand:
     def __call__(self, arguments: list[str], ReturnObject: RetObject) -> RetObject:
         command = Commands.get(self.command)
         if isinstance(command, FunctionType):
-            return command.run(arguments, ReturnObject)
+            return command(arguments, ReturnObject)
         else:
             command_object = command(arguments, ReturnObject)
             return command_object.run()

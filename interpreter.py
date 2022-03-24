@@ -59,7 +59,7 @@ if not ('-h' in sys.argv or '--help' in sys.argv or '-l' in sys.argv or '--list'
     print(f'current session started at {extra.timefunc.datevalue()}')
 
 if extra.args(sys.argv, 1) in ['-h', '--help']:
-    banner.run()
+    banner.paint()
     print()
 
 parser = argparse.ArgumentParser(description="Command line toolkit for basic reconnaisance")
@@ -79,7 +79,7 @@ if args.list:
 
 
 if not args.quiet:
-    banner.run()
+    banner.paint()
     
 if args.module and args.module not in _modules:
     Console.print(f'[{FALERT}]Alert: Invalid module `{args.module}`, defaulting to no module[/]')
@@ -181,7 +181,7 @@ class input_parser:
 
         verb: str = cmd_split[0].lower()
 
-        if verb in ["use"]:
+        if verb in ["use", "banner"]:
             CommandStruct = CreateCommand(
                 arguments=splitter.dbreaker(arguments),
                 option_dict=self.option_dict,
@@ -199,7 +199,7 @@ class input_parser:
             self.exit_code = CommandStruct.exit_code
 
         if verb == "banner":
-            self.exit_code = banner.run()
+            pass
 
         elif verb == 'do':
             try:
@@ -279,11 +279,6 @@ class input_parser:
 
         elif verb == 'use':
             pass
-        #     new_use = use.use(cmd_split[1::], self.MODLIST)
-        #     ret_list = new_use.run()
-        #     self.MODLIST = ret_list[0]
-        #     self.MODULE = self.MODLIST[-1] if extra.args(self.MODLIST, -1) else ''
-        #     self.exit_code = ret_list[1]
 
         elif verb == 'about':
             if extra.args(cmd_split, 1):
