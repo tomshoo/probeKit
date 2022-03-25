@@ -20,6 +20,7 @@ class CreateCommand:
         self.macros = kwargs['macros']
         self.activated_module_list = kwargs['activated_module_list']
         self.module = kwargs['module']
+        self.histfile = kwargs['histfile']
 
     def create_struct(self) -> RetObject:
         Struct: RetObject = RetObject()
@@ -28,6 +29,7 @@ class CreateCommand:
         Struct.macros = self.macros
         Struct.activated_module_list = self.activated_module_list
         Struct.module = self.module
+        Struct.histfile = self.histfile
         return Struct
     
     def run(self, command: str) -> Union[RetObject, None]:

@@ -88,6 +88,8 @@ if args.module and args.module not in _modules:
 if 'Windows' not in platform.platform():
     histfile : str = os.path.join(os.path.expanduser('~'), '.probeKit.history')
     if os.path.exists(histfile): readline.read_history_file(histfile)
+else:
+    histfile = None
 
 if not extra.isAdmin():
     Console.print(f'[{FURGENT}]Warning: `osprobe` and `UDP Scanning` may not work as expected...')
@@ -181,14 +183,15 @@ class input_parser:
 
         verb: str = cmd_split[0].lower()
 
-        if verb in ["use", "banner", "run"]:
+        if verb in ["use", "banner", "run", "clear"]:
             CommandStruct = CreateCommand(
                 arguments=splitter.dbreaker(arguments),
                 option_dict=self.option_dict,
                 aliases=self.aliases,
                 macros=self.macros,
                 activated_module_list=self.MODLIST,
-                module=self.MODULE
+                module=self.MODULE,
+                histfile=histfile
             ).run(verb)
 
             self.option_dict = CommandStruct.option_dict
@@ -249,7 +252,8 @@ class input_parser:
                 raise ExitException(f'probeKit: exiting session')
 
         elif verb == 'clear':
-            self.exit_code = clear.run(cmd_split[1::], self.exit_code, histfile) if 'Windows' not in platform.platform() else clear.run(cmd_split[1::], self.exit_code)
+            pass
+        #     self.exit_code = clear.run(cmd_split[1::], self.exit_code, histfile) if 'Windows' not in platform.platform() else clear.run(cmd_split[1::], self.exit_code)
 
         elif verb == 'run':
             pass

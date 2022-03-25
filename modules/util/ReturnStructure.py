@@ -5,6 +5,7 @@ class RetObject:
     exit_code: int = 0
     module: str = 0
     activated_module_list: list[str] = []
+    histfile: str = None
 
     def __init__(self) -> None:
         pass
