@@ -183,7 +183,7 @@ class input_parser:
 
         verb: str = cmd_split[0].lower()
 
-        if verb in ["use", "banner", "run", "clear", "doc", "show"]:
+        if verb in ["banner", "clear", "doc", "run", "set", "show", "use"]:
             CommandStruct = CreateCommand(
                 arguments=splitter.dbreaker(arguments),
                 option_dict=self.option_dict,
@@ -225,7 +225,8 @@ class input_parser:
             init_editor.start_led()
 
         elif verb == 'show':
-            self.exit_code = show.run(cmd_split[1::], self.MODULE, self.option_dict, self.aliases, self.macros)
+            pass
+            # self.exit_code = show.run(cmd_split[1::], self.MODULE, self.option_dict, self.aliases, self.macros)
 
         elif verb == 'back':
             if not self.MODULE:
