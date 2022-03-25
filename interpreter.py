@@ -183,7 +183,7 @@ class input_parser:
 
         verb: str = cmd_split[0].lower()
 
-        if verb in ["use", "banner", "run", "clear"]:
+        if verb in ["use", "banner", "run", "clear", "doc"]:
             CommandStruct = CreateCommand(
                 arguments=splitter.dbreaker(arguments),
                 option_dict=self.option_dict,
@@ -200,9 +200,6 @@ class input_parser:
             self.MODLIST = CommandStruct.activated_module_list
             self.MODULE = CommandStruct.module
             self.exit_code = CommandStruct.exit_code
-
-        if verb == "banner":
-            pass
 
         elif verb == 'do':
             try:
@@ -251,18 +248,6 @@ class input_parser:
             else:
                 raise ExitException(f'probeKit: exiting session')
 
-        elif verb == 'clear':
-            pass
-        #     self.exit_code = clear.run(cmd_split[1::], self.exit_code, histfile) if 'Windows' not in platform.platform() else clear.run(cmd_split[1::], self.exit_code)
-
-        elif verb == 'run':
-            pass
-            # self.exit_code = run.run(self.MODULE, self.option_dict)
-
-        elif verb == "doc":
-            new_doc = doc.Docs(splitter.dbreaker(arguments))
-            new_doc.run()
-
         # Verb(or command) to set options
         elif verb == 'set':
             new_set = setval.Set(arguments, self.option_dict, self.aliases, self.macros)
@@ -282,19 +267,12 @@ class input_parser:
             self.macros = ret_list[2]
             self.exit_code = ret_list[3]
 
-        elif verb == 'use':
-            pass
-
         elif verb == 'about':
             if extra.args(cmd_split, 1):
                 mod = extra.args(cmd_split, 1)
                 aboutList.moduleHelp(mod).aboutModule(mod)
             else:
                 aboutList.moduleHelp(self.MODULE).aboutModule(self.MODULE)
-
-        elif verb == "doc":
-            new_doc = doc.Docs(splitters.Splitters.dbreaker(arguments))
-            self.exit_code = new_doc.run()
 
         elif verb == 'alias':
             new_alias = alias.alias(cmd_split, self.aliases)
