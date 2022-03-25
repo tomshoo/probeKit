@@ -183,7 +183,7 @@ class input_parser:
 
         verb: str = cmd_split[0].lower()
 
-        if verb in ["use", "banner", "run", "clear", "doc"]:
+        if verb in ["use", "banner", "run", "clear", "doc", "show"]:
             CommandStruct = CreateCommand(
                 arguments=splitter.dbreaker(arguments),
                 option_dict=self.option_dict,
