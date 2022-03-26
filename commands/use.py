@@ -1,7 +1,7 @@
 from config import colors as _colors, valid_modules as _modules
 from modules.data.Help import Help
 from rich.console import Console
-from modules.util.CommandUtils.ReturnStructure import RetObject
+from modules.util.ReturnStructure import RetObject
 
 Console = Console(soft_wrap=True, highlight=False)
 

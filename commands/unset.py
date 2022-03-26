@@ -1,7 +1,7 @@
 from config import colors as _colors
 from modules.util import optparser, splitters
 from modules.util.extra import args
-from modules.util.CommandUtils.ReturnStructure import RetObject
+from modules.util.ReturnStructure import RetObject
 from modules.data.Help import Help
 from rich.console import Console
 from typing import List, Union

@@ -1,7 +1,7 @@
 from platform import platform
 from os import system, path
 from modules.util.extra import args
-from modules.util.CommandUtils.ReturnStructure import RetObject
+from modules.util.ReturnStructure import RetObject
 import readline
 from sys import exit
 

@@ -1,4 +1,4 @@
-from modules.util.CommandUtils.ReturnStructure import RetObject
+from modules.util.ReturnStructure import RetObject
 from rich.console import Console
 from config import colors
 Console = Console(soft_wrap=True, highlight=False)
