@@ -183,7 +183,7 @@ class input_parser:
 
         verb: str = cmd_split[0].lower()
 
-        if verb in ["banner", "clear", "doc", "run", "set", "show", "unset", "use"]:
+        if verb in ["banner", "clear", "doc", "run", "set", "show", "unset", "use", "help"]:
             CommandStruct = CreateCommand(
                 arguments=splitter.dbreaker(arguments),
                 option_dict=self.option_dict,
@@ -211,14 +211,6 @@ class input_parser:
                 pass
             except ValueError:
                 Console.print(f'[{FALERT}]Error: Invalid argument[/]')
-
-        elif verb == 'help':
-            if not extra.args(cmd_split, 1):
-                Data = Help.Help('')
-                self.exit_code = Data.showHelp()
-            else:
-                Data = Help.Help(extra.args(cmd_split, 1))
-                self.exit_code = Data.showHelp()
 
         elif verb == 'led':
             init_editor = start_editor(cmd_split)
