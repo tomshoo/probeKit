@@ -3,7 +3,7 @@ from modules.util.extra import trim, args
 from modules.util import optparser
 from modules.util.splitters import Splitters
 from modules.data.Help import Help
-from modules.util.ReturnStructure import RetObject
+from modules.util.CommandUtils.ReturnStructure import RetObject
 from rich import console,traceback
 from typing import List, Union
 from fuzzywuzzy import fuzz

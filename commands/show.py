@@ -4,7 +4,7 @@ from modules.data.Help import Help
 from rich.console import Console as con
 from config import colors, valid_modules
 from modules.data import Info, Options
-from modules.util.ReturnStructure import RetObject
+from modules.util.CommandUtils.ReturnStructure import RetObject
 
 _FALERT = colors.FALERT
 _FHIGHLIGHT = colors.FPROMPT

@@ -9,7 +9,7 @@ import argparse
 import subprocess
 import re
 from fuzzywuzzy import process
-from modules.util.CommandStruct import CreateCommand
+from modules.util.CommandUtils.CommandStruct import CreateCommand
 
 from modules.util import splitters, extra, optparser, hist as histry
 from rich import traceback, console
@@ -180,13 +180,13 @@ class input_parser:
         verb: str = cmd_split[0].lower()
 
         CommandStruct = CreateCommand(
-                arguments=splitter.dbreaker(arguments),
-                option_dict=self.option_dict,
-                aliases=self.aliases,
-                macros=self.macros,
-                activated_module_list=self.MODLIST,
-                module=self.MODULE,
-                histfile=histfile
+            arguments=splitter.dbreaker(arguments),
+            option_dict=self.option_dict,
+            aliases=self.aliases,
+            macros=self.macros,
+            activated_module_list=self.MODLIST,
+            module=self.MODULE,
+            histfile=histfile
         ).run(verb)
 
         self.option_dict = CommandStruct.option_dict
