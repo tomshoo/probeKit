@@ -183,7 +183,7 @@ class input_parser:
 
         verb: str = cmd_split[0].lower()
 
-        if verb in ["banner", "clear", "doc", "run", "set", "show", "use"]:
+        if verb in ["banner", "clear", "doc", "run", "set", "show", "unset", "use"]:
             CommandStruct = CreateCommand(
                 arguments=splitter.dbreaker(arguments),
                 option_dict=self.option_dict,
@@ -224,10 +224,6 @@ class input_parser:
             init_editor = start_editor(cmd_split)
             init_editor.start_led()
 
-        elif verb == 'show':
-            pass
-            # self.exit_code = show.run(cmd_split[1::], self.MODULE, self.option_dict, self.aliases, self.macros)
-
         elif verb == 'back':
             if not self.MODULE:
                 Console.print(f'[{FURGENT}]Alert: No module selected... nothing to back from.')
@@ -248,25 +244,6 @@ class input_parser:
                 raise ExitException()
             else:
                 raise ExitException(f'probeKit: exiting session')
-
-        # Verb(or command) to set options
-        elif verb == 'set':
-            new_set = setval.Set(arguments, self.option_dict, self.aliases, self.macros)
-            ret_val = new_set.run()
-            self.option_dict = ret_val[0]
-            self.aliases = ret_val[1]
-            self.macros = ret_val[2]
-            self.exit_code = ret_val[3]
-
-
-        # Verb(or command) to unset options
-        elif verb == 'unset':
-            new_unset = unset.unset_val(arguments, self.option_dict, self.aliases, self.macros)
-            ret_list = new_unset.run()
-            self.option_dict = ret_list[0]
-            self.aliases = ret_list[1]
-            self.macros = ret_list[2]
-            self.exit_code = ret_list[3]
 
         elif verb == 'about':
             if extra.args(cmd_split, 1):
