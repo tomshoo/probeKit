@@ -34,9 +34,14 @@ class CreateCommand:
     
     def run(self, command: str) -> Union[RetObject, None]:
         if command in Commands:
-            return _RunCommand(command)(self.arguments, self.create_struct())
+            ReturnObject = _RunCommand(command)(self.arguments, self.create_struct())
+            ReturnObject.command_found = True
+            return ReturnObject
         else:
-            return None
+            ReturnObject = RetObject()
+            ReturnObject.command_found = False
+            ReturnObject.exit_code = 1
+            return ReturnObject
 
 
 class _RunCommand:

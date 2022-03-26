@@ -33,8 +33,6 @@ class Help():
             '\t run\t\t runs the selected module\n'+
             '\t about\t\t (*)prints details about specified module\n'+
             '\t banner\t\t prints an ascii banner\n'+
-            '\t alias\t\t (*)set an alias for a command\n'+
-            '\t unalias\t (*)unset a pre-existing alias\n'+
             '\nRun help \[command] for more information:\n'+
             '\t -> only the commands marked with (*) have a seperate help[/]\n'
             )
@@ -83,23 +81,6 @@ class Help():
             Console.print(f'[{FSUCCESS}]\n about:\t Displays information about the provided module\n'
             '\t Usage: about \[module_name]\n'
             '\t\t | If no argument is provided it takes the selected module as argument[/]\n')
-            return 0
-
-        elif command == 'alias':
-            Console.print(f'[{FSUCCESS}]\n alias:\t Set an alias for a command\n'
-            '\t Usage: alias \[alias_name]<\[command]\n'
-            '\t Example: > alias u<use\n'
-            '\t          > u$\n'
-            '\t          > alias thost<set thost\n'
-            '\t          > thost$=127.0.0.1\n'
-            '\t          > alias localhost<127.0.0.1\n'
-            '\t          > set thost=$localhost$\n'
-            '\t | If ran without argument it lists all the available aliases[/]\n')
-            return 0
-
-        elif command == 'unalias':
-            Console.print(f'[{FSUCCESS}]\nunalias:\t Unset a pre-existing alias\n'
-            '\t\t | Usage: unalias \[alias_name][/]\n')
             return 0
 
         elif command == 'use':

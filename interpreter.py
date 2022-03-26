@@ -22,11 +22,7 @@ if not ('-h' in sys.argv or '--help' in sys.argv):
 start = extra.timefunc.timestamp()
 
 import modules.data.AboutList as aboutList
-from commands import (
-    run, set as setval, unset,
-    alias, unalias,
-    banner, show, clear, doc
-)
+from commands import banner
 from modules.data import Help
 from config import (
     MODULE, colors, aliases, macros,
@@ -183,8 +179,7 @@ class input_parser:
 
         verb: str = cmd_split[0].lower()
 
-        if verb in ["banner", "clear", "doc", "run", "set", "show", "unset", "use", "help"]:
-            CommandStruct = CreateCommand(
+        CommandStruct = CreateCommand(
                 arguments=splitter.dbreaker(arguments),
                 option_dict=self.option_dict,
                 aliases=self.aliases,
@@ -192,14 +187,17 @@ class input_parser:
                 activated_module_list=self.MODLIST,
                 module=self.MODULE,
                 histfile=histfile
-            ).run(verb)
+        ).run(verb)
 
-            self.option_dict = CommandStruct.option_dict
-            self.aliases = CommandStruct.aliases
-            self.macros = CommandStruct.macros
-            self.MODLIST = CommandStruct.activated_module_list
-            self.MODULE = CommandStruct.module
-            self.exit_code = CommandStruct.exit_code
+        self.option_dict = CommandStruct.option_dict
+        self.aliases = CommandStruct.aliases
+        self.macros = CommandStruct.macros
+        self.MODLIST = CommandStruct.activated_module_list
+        self.MODULE = CommandStruct.module
+        self.exit_code = CommandStruct.exit_code
+
+        if CommandStruct.command_found:
+            pass
 
         elif verb == 'do':
             try:
@@ -243,21 +241,6 @@ class input_parser:
                 aboutList.moduleHelp(mod).aboutModule(mod)
             else:
                 aboutList.moduleHelp(self.MODULE).aboutModule(self.MODULE)
-
-        elif verb == 'alias':
-            new_alias = alias.alias(cmd_split, self.aliases)
-            ret_list = new_alias.run()
-            self.aliases = ret_list[0]
-            self.exit_code = ret_list[1]
-
-        elif verb == "crcmd":
-            _RunCommand(splitter.dbreaker(arguments)[0])()
-
-        elif verb == 'unalias':            
-            new_unalias = unalias.unalias(self.aliases, cmd_split[1::])
-            ret_list = new_unalias.run()
-            self.aliases = ret_list[0]
-            self.exit_code = ret_list[1]
 
         elif verb in ['cd', 'chdir', 'set-location']:
             fpath = extra.args(cmd_split, 1)

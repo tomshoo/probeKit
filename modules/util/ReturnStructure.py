@@ -6,6 +6,7 @@ class RetObject:
     module: str = 0
     activated_module_list: list[str] = []
     histfile: str = None
+    command_found: bool = False
 
     def __init__(self) -> None:
         pass
