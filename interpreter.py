@@ -214,20 +214,6 @@ class input_parser:
             init_editor = start_editor(cmd_split)
             init_editor.start_led()
 
-        elif verb == 'back':
-            if not self.MODULE:
-                Console.print(f'[{FURGENT}]Alert: No module selected... nothing to back from.')
-            else:
-                if self.MODULE == (self.MODLIST[-1] if self.MODLIST else None):
-                    try:
-                        self.MODLIST.pop()
-                    except Exception as e:
-                        print(e)
-                else:
-                    pass
-
-                self.MODULE = self.MODLIST.pop() if self.MODLIST else ''
-
         # Create an exception which exits the try block and then exits the session
         elif verb == 'exit':
             if extra.args(cmd_split, 1) == '-q':

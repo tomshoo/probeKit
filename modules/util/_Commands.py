@@ -1,7 +1,7 @@
 from commands import (
     run, banner, clear, show,
     doc, set, unset, use,
-    help
+    help, back
 )
 
 Commands: dict = {
@@ -13,5 +13,6 @@ Commands: dict = {
     'set': set.Set,
     'unset': unset.unset_val,
     'use': use.use,
-    'help': help.run
+    'help': help.run,
+    'back': back.run
 }
