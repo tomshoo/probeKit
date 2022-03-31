@@ -61,6 +61,7 @@ def run(arguments: list[str], ReturnObject: RetObject) -> RetObject:
         print()
 
         print('type "about [modulename]" to list details about a specific module\n')
+
         ReturnObject.exit_code = 0
     elif _args(arguments, 0).lower() == "aliases":
         print('\nAvailable aliases are:')
