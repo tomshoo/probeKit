@@ -1,14 +1,15 @@
 from platform import platform
 from os import system, path
 from modules.util.extra import args
+from modules.util.ReturnStructure import RetObject
 import readline
 from sys import exit
 
-def run(arg: list, exit_code: int, histfile: str = None) -> int:
+def run(arg: list, ReturnObject: RetObject) -> RetObject:
     if args(arg, 0) and args(arg, 0) in ['-h', '--history']:
         readline.clear_history()
 
-        if histfile:
+        if ReturnObject.histfile:
             if path.exists(histfile):
                 with open(histfile, 'w') as hist_cls:
                     hist_cls.write('#Clear\n')
@@ -21,6 +22,7 @@ def run(arg: list, exit_code: int, histfile: str = None) -> int:
         print('\033c')
         print('\x1bc')
 
-    if args(arg, 0) and args(arg, 0) == '-e': exit(exit_code)
+    if args(arg, 0) and args(arg, 0) == '-e': exit(ReturnObject.exit_code)
 
-    return 0
+    ReturnObject.exit_code = 1
+    return ReturnObject

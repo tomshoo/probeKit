@@ -17,7 +17,7 @@ class moduleHelp():
     def aboutModule(self, moduleName):
         """Prints data about a give module will print data without argument if a module is active"""
 
-        if moduleName == 'probe':
+        if moduleName == 'ports':
             Console.print(f'[{FALERT}]\nName:\t\t{moduleName}\n'
             'Type:\t\tRecon\n'
             'Description:\tThis module is meant to perform a basic port scan on the specidied host.\n[/]')
@@ -77,7 +77,7 @@ class moduleHelp():
             '\tVERBOSE => Display an expanded output if set to true[/]\n')
 
         elif moduleName == '':
-            print(FALERT+'[-] Error: no module selected')
+            Console.print(f'[{FALERT}][-] Error: no module selected[/]')
 
         else:
-            print(f'{FALERT}[-] Error: Invalid module \'{moduleName}\'')
+            print(f'[{FALERT}][-] Error: Invalid module \'{moduleName}\'[/]')

@@ -8,6 +8,8 @@ import os
 import argparse
 import subprocess
 import re
+from fuzzywuzzy import process
+from modules.util.CommandStruct import CreateCommand
 
 from modules.util import splitters, extra, optparser, hist as histry
 from rich import traceback, console
@@ -20,14 +22,10 @@ if not ('-h' in sys.argv or '--help' in sys.argv):
 start = extra.timefunc.timestamp()
 
 import modules.data.AboutList as aboutList
-from commands import (
-    run, set as setval, unset,
-    alias, unalias, use,
-    banner, show, clear
-)
+from commands import banner
 from modules.data import Help
 from config import (
-    MODULE, colors, aliases,
+    MODULE, colors, aliases, macros,
     option_dict, valid_modules as _modules
 )
 from modules.util.led import start_editor
@@ -46,7 +44,7 @@ option_dict = optionparser.parse()
 ExitException = extra.ExitException
 completer = extra.completer(extra.completers.interpreter)
 
-# Setting up colors (edit these in config.py)
+# Setting up colors (edit these in UserConfig.py)
 FSUCCESS = colors.FSUCCESS
 FALERT = colors.FALERT
 FURGENT = colors.FURGENT
@@ -57,7 +55,7 @@ if not ('-h' in sys.argv or '--help' in sys.argv or '-l' in sys.argv or '--list'
     print(f'current session started at {extra.timefunc.datevalue()}')
 
 if extra.args(sys.argv, 1) in ['-h', '--help']:
-    banner.run()
+    banner.paint()
     print()
 
 parser = argparse.ArgumentParser(description="Command line toolkit for basic reconnaisance")
@@ -77,7 +75,7 @@ if args.list:
 
 
 if not args.quiet:
-    banner.run()
+    banner.paint()
     
 if args.module and args.module not in _modules:
     Console.print(f'[{FALERT}]Alert: Invalid module `{args.module}`, defaulting to no module[/]')
@@ -86,6 +84,8 @@ if args.module and args.module not in _modules:
 if 'Windows' not in platform.platform():
     histfile : str = os.path.join(os.path.expanduser('~'), '.probeKit.history')
     if os.path.exists(histfile): readline.read_history_file(histfile)
+else:
+    histfile = None
 
 if not extra.isAdmin():
     Console.print(f'[{FURGENT}]Warning: `osprobe` and `UDP Scanning` may not work as expected...')
@@ -103,6 +103,7 @@ class input_parser:
         self.MODULE: str = MODULE if not args.module or args.module not in _modules else args.module
         self.MODLIST: list = []
         self.aliases: dict = aliases
+        self.macros: dict = macros
 
     def parser(self, value: str):
         if '#' in value:
@@ -137,10 +138,20 @@ class input_parser:
                 command = extra.trim(command)
                 if not command:
                     continue
-                #print (re.findall('\{.*?\}', command))
+                
+                command = command.replace(command.split()[0], aliases.get(command.split()[0], command.split()[0]), 1)
                 if '$' in command:
                     for x in re.findall('\$\(.*?\)', command):
-                        command = command.replace(x, aliases.get(x[2:-1:], x))
+                        command = command.replace(x, macros.get(x[2:-1:], x[2:-1:]))
+                    print(command)
+                    cmd_list = command.split(' ')
+                    for x in cmd_list:
+                        if x.strip('"').strip('\'').startswith('$'):
+                            command=command.replace(x, macros.get(x.strip('$'), ''))
+                    cmd_list=command.split('=')
+                    for x in cmd_list:
+                        if x.strip('"').strip('\'').strip().startswith('$'):
+                            command=command.replace(x, macros.get(x.strip('$'), ''))
                     # print(command)
                 if ';' in command:
                     for x in splitter.dbreaker(command, delimiter=';'):
@@ -168,15 +179,30 @@ class input_parser:
 
         verb: str = cmd_split[0].lower()
 
-        if verb == "banner":
-            self.exit_code = banner.run()
+        CommandStruct = CreateCommand(
+                arguments=splitter.dbreaker(arguments),
+                option_dict=self.option_dict,
+                aliases=self.aliases,
+                macros=self.macros,
+                activated_module_list=self.MODLIST,
+                module=self.MODULE,
+                histfile=histfile
+        ).run(verb)
+
+        self.option_dict = CommandStruct.option_dict
+        self.aliases = CommandStruct.aliases
+        self.macros = CommandStruct.macros
+        self.MODLIST = CommandStruct.activated_module_list
+        self.MODULE = CommandStruct.module
+        self.exit_code = CommandStruct.exit_code
+
+        if CommandStruct.command_found:
+            pass
 
         elif verb == 'do':
             try:
                 times: int = 1
                 if ('-t' in command):
-                    argument: str = ''
-                    check: int = 0
                     times = command[command.find('-t')+3]
                 noreturn: bool = True if '-n' in command else False
                 self.do(cmd_split[1], int(times), noreturn)
@@ -184,34 +210,9 @@ class input_parser:
             except ValueError:
                 Console.print(f'[{FALERT}]Error: Invalid argument[/]')
 
-        elif verb == 'help':
-            if not extra.args(cmd_split, 1):
-                Data = Help.Help('')
-                self.exit_code = Data.showHelp()
-            else:
-                Data = Help.Help(extra.args(cmd_split, 1))
-                self.exit_code = Data.showHelp()
-
         elif verb == 'led':
             init_editor = start_editor(cmd_split)
             init_editor.start_led()
-
-        elif verb == 'show':
-            self.exit_code = show.run(cmd_split[1::], self.MODULE, self.option_dict, self.aliases)
-
-        elif verb == 'back':
-            if not self.MODULE:
-                Console.print(f'[{FURGENT}]Alert: No module selected... nothing to back from.')
-            else:
-                if self.MODULE == (self.MODLIST[-1] if self.MODLIST else None):
-                    try:
-                        self.MODLIST.pop()
-                    except Exception as e:
-                        print(e)
-                else:
-                    pass
-
-                self.MODULE = self.MODLIST.pop() if self.MODLIST else ''
 
         # Create an exception which exits the try block and then exits the session
         elif verb == 'exit':
@@ -220,54 +221,12 @@ class input_parser:
             else:
                 raise ExitException(f'probeKit: exiting session')
 
-        elif verb == 'clear':
-            self.exit_code = clear.run(cmd_split[1::], self.exit_code, histfile) if 'Windows' not in platform.platform() else clear.run(cmd_split[1::], self.exit_code)
-
-        elif verb == 'run':
-            self.exit_code = run.run(self.MODULE, self.option_dict)
-
-        # Verb(or command) to set options
-        elif verb == 'set':
-            new_set = setval.Set(arguments, self.option_dict, self.aliases)
-            ret_val = new_set.run()
-            self.option_dict = ret_val[0]
-            self.aliases = ret_val[1]
-            self.exit_code = ret_val[2]
-
-
-        # Verb(or command) to unset options
-        elif verb == 'unset':
-            new_unset = unset.unset_val(arguments, self.option_dict, self.aliases)
-            ret_list = new_unset.run()
-            self.option_dict = ret_list[0]
-            self.aliases = ret_list[1]
-            self.exit_code = ret_list[2]
-
-        elif verb == 'use':
-            new_use = use.use(cmd_split[1::], self.MODLIST)
-            ret_list = new_use.run()
-            self.MODLIST = ret_list[0]
-            self.MODULE = self.MODLIST[-1]
-            self.exit_code = ret_list[1]
-
         elif verb == 'about':
             if extra.args(cmd_split, 1):
                 mod = extra.args(cmd_split, 1)
                 aboutList.moduleHelp(mod).aboutModule(mod)
             else:
                 aboutList.moduleHelp(self.MODULE).aboutModule(self.MODULE)
-
-        elif verb == 'alias':
-            new_alias = alias.alias(cmd_split, self.aliases)
-            ret_list = new_alias.run()
-            self.aliases = ret_list[0]
-            self.exit_code = ret_list[1]
-
-        elif verb == 'unalias':            
-            new_unalias = unalias.unalias(self.aliases, cmd_split[1::])
-            ret_list = new_unalias.run()
-            self.aliases = ret_list[0]
-            self.exit_code = ret_list[1]
 
         elif verb in ['cd', 'chdir', 'set-location']:
             fpath = extra.args(cmd_split, 1)
@@ -302,7 +261,7 @@ class input_parser:
                     if 'Windows' not in platform.platform():
                         self.exit_code = subprocess.call((cmd_split_quoted))
                     else:
-                        self.exit_code = subprocess.run(command, shell=True).returncode
+                        self.exit_code = subprocess.run(command).returncode
                         
                 else:
                     Console.print(f'[{FALERT}]Error: Invalid command \'{verb}\'[/]')
@@ -310,6 +269,10 @@ class input_parser:
 
             except FileNotFoundError:
                 Console.print(f'[{FALERT}]Error: Invalid command \'{verb}\'[/]')
+                fuzzy_match_list: list[str] = [x for x in process.extractBests(verb, extra.completers.interpreter)]
+                Console.print(f'[{colors.FURGENT}]Perhaps you meant: [/]')
+                for match in fuzzy_match_list:
+                    Console.print(f'\t[{colors.FPROMPT}]{match[0]}[/]')
                 self.exit_code = 1
 
     def prompt(self, check: int = 0) -> int:

@@ -1,8 +1,14 @@
 import pyfiglet
 from random import randint
+from modules.util.ReturnStructure import RetObject
 
-def run() -> int:
+def run(_arguments: list[str], ReturnObject: RetObject) -> RetObject:
     """Function to print the introductory banner"""
+    paint()
+    ReturnObject.exit_code = 0
+    return RetObject()
+
+def paint():
     fontlist: list = pyfiglet.FigletFont().getFonts()
     maxind: int = len(fontlist)-1
     fontstyle: str = fontlist[randint(0, maxind)]
@@ -12,5 +18,3 @@ def run() -> int:
     fontlist.clear()
 
     print('-- by theEndurance-del')
-
-    return 0

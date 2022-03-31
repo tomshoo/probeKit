@@ -1,41 +1,73 @@
-from operator import index
 from config import colors as _colors, OPTIONS
 from modules.util.extra import trim, args
 from modules.util import optparser
 from modules.util.splitters import Splitters
 from modules.data.Help import Help
+from modules.util.ReturnStructure import RetObject
 from rich import console,traceback
 from typing import List, Union
+from fuzzywuzzy import fuzz
 traceback.install()
 Console = console.Console()
 
 _FALERT = _colors.FALERT
 _FSTYLE = _colors.FPROMPT
+_FURGENT = _colors.FURGENT
 
 class Set:
-    def __init__(self, args: str, option_dict: dict[str]=None, aliases: dict[str]=None):
-        self.args = args
-        self.option_dict = option_dict
-        self.aliases = aliases
-        self.exit_code: int = 0
+    # def __init__(self, args: str, option_dict: dict[str]=None, aliases: dict[str]=None, macros: dict[str]=None):
+    def __init__(self, arguments, ReturnObject: RetObject) -> None:
+        self.args = arguments
+        self.ReturnObject = ReturnObject
 
-    def run(self) -> List[Union[dict, int]]:
+    def run(self) -> RetObject:
         exit_code: int = 0
-        arglist: list[str] = Splitters.dbreaker(self.args)
-        temp_arglist = [x.lower() for x in arglist]
+        temp_arglist = [x.lower() for x in self.args]
         if '-h' in temp_arglist or '--help' in temp_arglist:
             Help('set').showHelp()
             del temp_arglist
-            return [self.option_dict, self.aliases, 0]
-        if not arglist or args(arglist, 0).lower() not in ['option', 'alias']:
-            Console.print(f'[{_FALERT}]Error set type not found or not valid[/]')
-            return [self.option_dict, self.aliases, 1]
-        if len(arglist) < 2: 
+            return self.ReturnObject
+        if args(self.args, 0).lower() not in ['option', 'alias', 'macro']:
+            Console.print(f'[{_FALERT}]Error set type not valid[/]')
+            if fuzz.partial_ratio(args(self.args, 0).lower(), "option") > 80:
+                Console.print(f'[{_FURGENT}]Did you mean `option`?')
+            if fuzz.partial_ratio(args(self.args, 0).lower(), "alias") > 80:
+                Console.print(f'[{_FURGENT}]Did you mean `alias`?')
+            self.ReturnObject.exit_code = 2
+            return self.ReturnObject
+        if len(self.args) < 2: 
             Console.print(f'[{_FALERT}]Error: no values to assign[/]')
-            return [self.option_dict, self.aliases, 1]
-        if args(arglist, 0).lower() == 'option': assignment_func = self.assign_options
-        if args(arglist, 0).lower() == 'alias': assignment_func = self.assign_alias
-        optlist = arglist[1::]
+            self.ReturnObject.exit_code = 3
+            return self.ReturnObject
+        optlist = self.args[1::]
+        if args(self.args, 0).lower() == 'option': assignment_func = self.assign_options
+        if args(self.args, 0).lower() == 'alias': assignment_func = self.assign_alias
+        if args(self.args, 0).lower() == 'macro':
+            if len(optlist) > 1:
+                Console.print(f'[{_FALERT}]Error: Defining multiple macros at once is nor supported not recommended.[/]')
+                self.ReturnObject.exit_code = 3
+            else:
+                if '=' not in args(optlist, 0):
+                    Console.print(f'[{_FALERT}]What!!? What am I supposed to assign to what again??[/]')
+                    self.ReturnObject.exit_code = 3
+                else:
+                    assignment_list = Splitters.dbreaker(args(optlist, 0), '=')
+                    if len(assignment_list) == 2:
+                        if not args(assignment_list, 0):
+                            Console.print(f'[{_FALERT}]Again... to whom am I supposed to assign the value!![/]')
+                            self.ReturnObject.exit_code = 3
+                        else:
+                            self.ReturnObject.macros[args(assignment_list,0)]=args(assignment_list, 1).strip('"').strip('\'')
+                            self.ReturnObject.exit_code = 0
+                    else:
+                        if len(assignment_list) > 2:
+                            Console.print(f'[{_FALERT}]Whoa!!! Don\'t the macro!![/]')
+                            self.ReturnObject.exit_code = 3
+                        else:
+                            Console.print(f'[{_FALERT}]What am I supposed to assignt to this thing!![/]')
+                            self.ReturnObject.exit_code = 3
+
+            return self.ReturnObject
         if 'all' in [x.lower() for x in optlist]:
             if assignment_func == self.assign_options:
                 for option in self.option_dict:
@@ -44,6 +76,7 @@ class Set:
                         else: self.option_dict[option]['value'] = OPTIONS.get(option)
             else:
                 Console.print(f'[{_FALERT}]Error: keyword `all` is not available for alias assignment')
+                self.ReturnObject.exit_code = 3
         else:
             for x in optlist:
                 if '=' not in x and assignment_func == self.assign_options:
@@ -59,7 +92,7 @@ class Set:
 
                         Console.print(f'[{_FALERT}]What!!?? I need a KEY AND VALUE please...[/]')
                         Console.print(f'[{_FALERT}]Go look for your self: > `[{_FSTYLE}]{back_value} >{x}< {front_value}[/]`')
-                        exit_code = 1
+                        exit_code = 3
                     else:
                         assignment_list = Splitters.dbreaker(x, '=')
                         if len(assignment_list) == 1:
@@ -69,7 +102,7 @@ class Set:
 
                             Console.print(f'[{_FALERT}]AND a VALUE for god\'s sake[/]')
                             Console.print(f'[{_FALERT}]Man!! what a beautiful pair of eyes you have over there: > `[{_FSTYLE}]{back_value} >{x}< {front_value}[/]`')
-                            exit_code = 1
+                            exit_code = 3
                             break
                         elif not args(assignment_list, 0):
                             back_value = args(optlist, optlist.index(x)-1) if args(optlist, optlist.index(x)-1) and (optlist.index(x)-1) > 0 else '[]'
@@ -78,7 +111,7 @@ class Set:
 
                             Console.print(f'[{_FALERT}]What!!!? Where is the KEY...[/]')
                             Console.print(f'[{_FALERT}]Look over here if you are blind: > `[{_FSTYLE}]{back_value} >{x}< {front_value}[/]`')
-                            exit_code = 1
+                            exit_code = 3
                             break
                         else:
                             for idx,data in enumerate(assignment_list):
@@ -89,29 +122,27 @@ class Set:
         if exit_code:
             self.exit_code = exit_code
             exit_code = 0
-        ret_code = self.exit_code
-        self.exit_code = 0
-        return [self.option_dict, self.aliases, ret_code]
+        return self.ReturnObject
 
     def assign_options(self, option: str, value: str):
-        options = self.option_dict
+        options = self.ReturnObject.option_dict
         if options.get(option):
             if options[option]['type'] != "dict": options[option]['value'] = value
             else: options[option]['value']['value'] = value
         else:
             Console.print(f'[{_FALERT}]Error: Invalid option \'{option}\'[/]')
-            self.exit_code = 1
+            self.ReturnObject.exit_code = 1
             return
         
         parser = optparser.OptionsParser(options)
         options = parser.parse()
         print(option, '=>', value)
-        self.option_dict = options
-        self.exit_code = 0
+        self.ReturnObject.option_dict = options
+        self.ReturnObject.exit_code = 0
 
     def assign_alias(self, alias: str=None, command: str=None) -> list:
-        aliases = self.aliases
-        exit_code = self.exit_code
+        aliases = self.ReturnObject.aliases
+        exit_code = self.ReturnObject.exit_code
 
         alias = trim(alias)
         command = trim(command)
@@ -120,5 +151,5 @@ class Set:
         print(alias, ":",command)
         aliases[alias]=command
 
-        self.aliases = aliases
-        self.exit_code = exit_code
+        self.ReturnObject.aliases = aliases
+        self.ReturnObject.exit_code = exit_code
