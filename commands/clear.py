@@ -10,8 +10,8 @@ def run(arg: list, ReturnObject: RetObject) -> RetObject:
         readline.clear_history()
 
         if ReturnObject.histfile:
-            if path.exists(histfile):
-                with open(histfile, 'w') as hist_cls:
+            if path.exists(ReturnObject.histfile):
+                with open(ReturnObject.histfile, 'w') as hist_cls:
                     hist_cls.write('#Clear\n')
 
 
@@ -24,5 +24,5 @@ def run(arg: list, ReturnObject: RetObject) -> RetObject:
 
     if args(arg, 0) and args(arg, 0) == '-e': exit(ReturnObject.exit_code)
 
-    ReturnObject.exit_code = 1
+    ReturnObject.exit_code = 0
     return ReturnObject
