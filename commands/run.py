@@ -3,7 +3,7 @@ import modules.probe.ports as _ports
 import modules.probe.osprobe as _osprobe
 import modules.probe.fuzz as _fuzz
 from rich import traceback, console
-from modules.util.ReturnStructure import RetObject
+from modules.util.CommandUtils.ReturnStructure import RetObject
 traceback.install()
 Console = console.Console()
 

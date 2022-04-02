@@ -9,7 +9,7 @@ import argparse
 import subprocess
 import re
 from fuzzywuzzy import process
-from modules.util.CommandStruct import CreateCommand
+from modules.util.CommandUtils.CommandStruct import CreateCommand
 
 from modules.util import splitters, extra, optparser, hist as histry
 from rich import traceback, console

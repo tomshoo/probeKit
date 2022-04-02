@@ -1,6 +1,6 @@
 from modules.util.extra import args
 from modules.data.Help import Help
-from modules.util.ReturnStructure import RetObject
+from modules.util.CommandUtils.ReturnStructure import RetObject
 
 def run(arguments: list[str], ReturnObject: RetObject):
     arguments = [x for x in arguments if x]

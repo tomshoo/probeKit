@@ -6,21 +6,23 @@ from modules.util.CommandUtils.ReturnStructure import RetObject
 class CreateCommand:
     """
     Required Keyword Arguments:
-    - argumnets
+    - arguments -> list[str]
     - option_dict -> dict[str]
     - aliases -> dict[str]
     - macros -> dict[str]
     - activated_module_list -> list[str] #list of active modules activated by the use command
+    - module -> str currently activated module
+    - histfile -> location of history file
     """
     def __init__(self, **kwargs) -> None:
-        self.arguments = kwargs['arguments']
-        self.option_dict = kwargs['option_dict']
+        self.arguments = kwargs.get('arguments')
+        self.option_dict = kwargs.get('option_dict')
         self.modules = [module for module in valid_modules]
-        self.aliases = kwargs['aliases']
-        self.macros = kwargs['macros']
-        self.activated_module_list = kwargs['activated_module_list']
-        self.module = kwargs['module']
-        self.histfile = kwargs['histfile']
+        self.aliases = kwargs.get('aliases')
+        self.macros = kwargs.get('macros')
+        self.activated_module_list = kwargs.get('activated_module_list')
+        self.module = kwargs.get('module')
+        self.histfile = kwargs.get('histfile')
 
     def create_struct(self) -> RetObject:
         Struct: RetObject = RetObject()

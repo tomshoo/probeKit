@@ -4,7 +4,7 @@ from modules.util.extra import args
 import config
 from os import path
 from rich import console, markdown, traceback
-from modules.util.ReturnStructure import RetObject
+from modules.util.CommandUtils.ReturnStructure import RetObject
 from fuzzywuzzy import process
 traceback.install()
 Console = console.Console(soft_wrap=True)
