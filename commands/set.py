@@ -70,10 +70,11 @@ class Set:
             return self.ReturnObject
         if 'all' in [x.lower() for x in optlist]:
             if assignment_func == self.assign_options:
-                for option in self.option_dict:
+                for option in self.ReturnObject.option_dict:
                     if OPTIONS.get(option):
-                        if self.option_dict[option]['type'] == "dict": self.option_dict[option]['value']['value'] = OPTIONS.get(option)
-                        else: self.option_dict[option]['value'] = OPTIONS.get(option)
+                        if self.ReturnObject.option_dict[option]['type'] == "dict":
+                            self.ReturnObject.option_dict[option]['value']['value'] = OPTIONS.get(option)
+                        else: self.ReturnObject.option_dict[option]['value'] = OPTIONS.get(option)
             else:
                 Console.print(f'[{_FALERT}]Error: keyword `all` is not available for alias assignment')
                 self.ReturnObject.exit_code = 3
