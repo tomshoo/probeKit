@@ -189,15 +189,13 @@ class input_parser:
                 histfile=histfile
         ).run(verb)
 
-        self.option_dict = CommandStruct.option_dict
-        self.aliases = CommandStruct.aliases
-        self.macros = CommandStruct.macros
-        self.MODLIST = CommandStruct.activated_module_list
-        self.MODULE = CommandStruct.module
-        self.exit_code = CommandStruct.exit_code
-
         if CommandStruct.command_found:
-            pass
+            self.option_dict = CommandStruct.option_dict
+            self.aliases = CommandStruct.aliases
+            self.macros = CommandStruct.macros
+            self.MODLIST = CommandStruct.activated_module_list
+            self.MODULE = CommandStruct.module
+            self.exit_code = CommandStruct.exit_code
 
         elif verb == 'do':
             try:
