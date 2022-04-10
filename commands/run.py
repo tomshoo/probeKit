@@ -10,7 +10,7 @@ Console = console.Console()
 _FALERT = _colors.FALERT
 _BALERT = _colors.BALERT
 
-def run(_arguments, ReturnObject: RetObject) -> RetObject:
+def run(_, ReturnObject: RetObject) -> RetObject:
     module = ReturnObject.module
     options = ReturnObject.option_dict
     if module in _modules:

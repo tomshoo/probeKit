@@ -3,7 +3,7 @@ from rich.console import Console
 from config import colors
 Console = Console(soft_wrap=True, highlight=False)
 
-def run(_arguments: list[str], ReturnObject: RetObject) -> RetObject:
+def run(_: list[str], ReturnObject: RetObject) -> RetObject:
     if not ReturnObject.module:
         Console.print(f'[{colors.FURGENT}]Alert: No module selected.. nothing to back from[/]')
         ReturnObject.exit_code = 1

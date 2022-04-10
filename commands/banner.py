@@ -2,7 +2,7 @@ import pyfiglet
 from random import randint
 from modules.util.CommandUtils.ReturnStructure import RetObject
 
-def run(_arguments: list[str], ReturnObject: RetObject) -> RetObject:
+def run(_: list[str], ReturnObject: RetObject) -> RetObject:
     """Function to print the introductory banner"""
     paint()
     ReturnObject.exit_code = 0
