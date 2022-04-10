@@ -3,6 +3,8 @@ from types import FunctionType
 from modules.util.CommandUtils._Commands import Commands
 from config import valid_modules
 from modules.util.CommandUtils.ReturnStructure import RetObject
+
+
 class CreateCommand:
     """
     Required Keyword Arguments:
@@ -17,7 +19,6 @@ class CreateCommand:
     def __init__(self, **kwargs) -> None:
         self.arguments = kwargs.get('arguments')
         self.option_dict = kwargs.get('option_dict')
-        self.modules = [module for module in valid_modules]
         self.aliases = kwargs.get('aliases')
         self.macros = kwargs.get('macros')
         self.activated_module_list = kwargs.get('activated_module_list')
