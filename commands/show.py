@@ -1,7 +1,7 @@
-from operator import le
 from modules.util.extra import args as _args
 from modules.data.Help import Help
 from rich.console import Console as con
+from rich import table, box
 from config import colors, valid_modules
 from modules.data import Info, Options
 from modules.util.CommandUtils.ReturnStructure import RetObject
@@ -22,34 +22,38 @@ def run(arguments: list[str], ReturnObject: RetObject) -> RetObject:
     if '-h' in [x.lower() for x in arguments] or '--help' in [x.lower() for x in arguments]:
         ReturnObject.exit_code = Help('show').showHelp()
         return ReturnObject
-    elif '-t' in [x.lower() for x in arguments] or '--true' in [x.lower() for x in arguments]:
-        trueval: bool = True
-    else:
-        trueval = False
 
-    if len(arguments) > 1:
-        if _args(arguments, 0) in ["info", "modules", "aliases", "macros"]:
-            Console.print(f'[{_FALERT}]Error: {_args(arguments, 0)} did not expect any argument but found `{_args(arguments, 1)}`')
-            ReturnObject.exit_code = 3
-            return ReturnObject
-        elif [y for y in arguments[1::] if y in [x.lower() for x in valid_modules]]:
-            module = [y for y in arguments[1::] if y in [x.lower() for x in valid_modules]][0]
-        else:
-            if '-t' not in [x.lower() for x in arguments[1::]] or '--true' not in [x.lower() for x in arguments[1::]]:
-                Console.print(f'[{_FALERT}]Error: invalid module found... refer `[{_FHIGHLIGHT}]show modules[/]` to get a list of available modules[/]')
+    sub_command: str = arguments[0].lower()
+    arguments.pop(0)
+    arguments_lower = [x.lower() for x in arguments]
+
+    if sub_command == "options":
+        trueval: bool = ('-t' in arguments_lower or '--true-value' in arguments_lower)
+        if ('-m' in arguments_lower) ^ ('--module' in arguments_lower):
+            flag = '-m' if '-m' in arguments_lower else '--module'
+            module_name = _args(arguments_lower, arguments_lower.index(flag)+1)
+            if module_name:
+                if module_name in valid_modules:
+                    module = module_name
+                else:
+                    Console.print(f'[{colors.FALERT}]Error: Invalid module {module_name}[/]')
+                    ReturnObject.exit_code = 1
+                    return ReturnObject
+            else:
+                Console.print(f'[{colors.FALERT}]Error: No module found to refer[/]')
                 ReturnObject.exit_code = 1
                 return ReturnObject
-
-    if _args(arguments, 0).lower() == "options":
+        elif ('-m' in arguments_lower) and ('--module' in arguments_lower):
+            Console.print(f'[{colors.FALERT}]Alert: Please use either the short OR the long format, not both at single time.[/]')
         options = Options.Options(module, ReturnObject.option_dict)
-        options.showOptions(trueval=True) if trueval else options.showOptions(trueval=False)
+        options.showOptions(trueval=trueval)
         ReturnObject.exit_code = 0
 
-    elif _args(arguments, 0).lower() == "info":
+    elif sub_command == "info":
         info = Info.Info(ReturnObject.module)
         ReturnObject.exit_code = info.showInfo()
 
-    elif _args(arguments, 0).lower() == "modules":
+    elif sub_command == "modules":
         print()
         print('Aviable modules are:')
         for data in valid_modules:
@@ -63,16 +67,27 @@ def run(arguments: list[str], ReturnObject: RetObject) -> RetObject:
         print('type "about [modulename]" to list details about a specific module\n')
 
         ReturnObject.exit_code = 0
-    elif _args(arguments, 0).lower() == "aliases":
-        print('\nAvailable aliases are:')
-        max_len = max([len(x) for x in ReturnObject.aliases]) if ReturnObject.aliases else 0
-        for alias in ReturnObject.aliases:
-            if not ReturnObject.aliases[alias][1]:
-                Console.print(f'{alias:{max_len}} -> [{_FHIGHLIGHT}]{ReturnObject.aliases[alias][0]}')
-        print()
+    elif sub_command == "aliases":
+        if '-e' in arguments_lower or '--expanded' in arguments_lower:
+            new_table = table.Table("Name", "Command", "IsDefault", box=box.SIMPLE)
+            for alias in ReturnObject.aliases:
+                new_table.add_row(
+                    f'[bold]{alias}[/]',
+                    ReturnObject.aliases[alias][0],
+                    '[green]*[/]' if ReturnObject.aliases[alias][1] else ''
+                )
+            Console.print(new_table)
+            pass
+        else:
+            print('\nAvailable aliases are:')
+            max_len = max([len(x) for x in ReturnObject.aliases]) if ReturnObject.aliases else 0
+            for alias in ReturnObject.aliases:
+                if not ReturnObject.aliases[alias][1]:
+                    Console.print(f'{alias:{max_len}} -> [{_FHIGHLIGHT}]{ReturnObject.aliases[alias][0]}')
+            print()
         ReturnObject.exit_code = 0
 
-    elif _args(arguments, 0).lower() == "macros":
+    elif sub_command == "macros":
         print('\nAvailable macros are:')
         max_len = max([len(x) for x in ReturnObject.macros]) if ReturnObject.macros else 0
         for macro in ReturnObject.macros:

@@ -45,7 +45,6 @@ class Help():
             '\t\t | options: shows values assigned to the options available for the selected module\n'
             '\t\t\t - shows all assigned values if no module is selected\n\n'
             '\t\t | info: shows available options for selected module\n'
-            '\t\t | status: prints exit status of previous command\n'
             '\t\t | modules: list all available modules\n'
             '\t\t | aliases: list defined aliases\n'
             '\t\t | macros: list all defined macros[/]\n')
