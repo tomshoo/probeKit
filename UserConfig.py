@@ -1,3 +1,5 @@
+from typing import Union
+
 '''
 Update all the user configuration in this file
 '''
@@ -42,10 +44,10 @@ class Windows10PowerShell():
 colors = NonWindows10PowerShell
 
 #Assign what module to use at startup
-MODULE = ""
+MODULE: str = ""
 
 #Assign values to options at startup
-OPTIONS = {
+OPTIONS: dict[str, str] = {
     "thost": "127.0.0.1",
     "tport": "",
     "protocol": "",
@@ -53,14 +55,20 @@ OPTIONS = {
     "turl": "https://www.example.com",
 }
 
+# Default command header,#
+# in case the user set aliases with names of default commands,
+# and is later unable to use the original command.
+# This same command would then be accessible by <default_command_header.command>
+default_command_header: str = "builtins"
+
 # Aliases for the user's comfort
-aliases : dict = {
-    'execute': 'run',
-    'info': 'show info',
-    'options': 'show options'
+aliases : dict[str, Union[list[str], list[str, bool]]] = {
+    'execute': ['run'],
+    'info': ['show info'],
+    'options': ['show options'],
 }
 
-macros: dict = {
+macros: dict[str, str] = {
     'localhost': '127.0.0.1',
     'example': 'https://www.example.com',
 }

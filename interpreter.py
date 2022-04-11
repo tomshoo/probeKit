@@ -11,7 +11,7 @@ import re
 from fuzzywuzzy import process
 from modules.util.CommandUtils.CommandStruct import CreateCommand
 
-from modules.util import splitters, extra, optparser, hist as histry
+from modules.util import splitters, extra, optparser, hist as history
 from rich import traceback, console
 traceback.install()
 Console = console.Console(soft_wrap=True, highlight=False)
@@ -139,7 +139,17 @@ class input_parser:
                 if not command:
                     continue
                 
-                command = command.replace(command.split()[0], aliases.get(command.split()[0], command.split()[0]), 1)
+                is_alias: bool = True if aliases.get(command.split()[0]) else False
+                while is_alias:
+                    token = command.split()[0]
+                    if aliases.get(token):
+                        if aliases.get(token)[0].split()[0] == token:
+                            is_alias = False
+                            break
+                        command = command.replace(token, aliases.get(token, [token])[0], 1)
+                    else:
+                        is_alias = False
+                command = command.replace(command.split()[0], aliases.get(command.split()[0], [command.split()[0]])[0], 1)
                 if '$' in command:
                     for x in re.findall('\$\(.*?\)', command):
                         command = command.replace(x, macros.get(x[2:-1:], x[2:-1:]))
@@ -304,7 +314,7 @@ class input_parser:
                 value = ''.join(concatinator)
             self.parser(value)
             if 'Windows' not in platform.platform():
-                hist = histry.register_history(value)
+                hist = history.register_history(value)
                 hist.write_history()
         return 0
 

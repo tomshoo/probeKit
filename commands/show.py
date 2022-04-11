@@ -67,7 +67,8 @@ def run(arguments: list[str], ReturnObject: RetObject) -> RetObject:
         print('\nAvailable aliases are:')
         max_len = max([len(x) for x in ReturnObject.aliases]) if ReturnObject.aliases else 0
         for alias in ReturnObject.aliases:
-            Console.print(f'{alias:{max_len}} -> [{_FHIGHLIGHT}]{ReturnObject.aliases[alias]}')
+            if not ReturnObject.aliases[alias][1]:
+                Console.print(f'{alias:{max_len}} -> [{_FHIGHLIGHT}]{ReturnObject.aliases[alias][0]}')
         print()
         ReturnObject.exit_code = 0
 

@@ -140,16 +140,21 @@ class Set:
         self.ReturnObject.option_dict = options
         self.ReturnObject.exit_code = 0
 
-    def assign_alias(self, alias: str=None, command: str=None) -> list:
+    def assign_alias(self, alias: str=None, command: str=None) -> None:
         aliases = self.ReturnObject.aliases
         exit_code = self.ReturnObject.exit_code
+
+        if not alias.isalnum():
+            Console.print("[red]Alert: Alias name can only contain alphabets and numbers[/]")
+            self.ReturnObject.exit_code = 1
+            return
 
         alias = trim(alias)
         command = trim(command)
         command = command.strip('"')
         command = command.strip('\'')
         print(alias, ":",command)
-        aliases[alias]=command
+        aliases[alias]=[command, False]
 
         self.ReturnObject.aliases = aliases
         self.ReturnObject.exit_code = exit_code

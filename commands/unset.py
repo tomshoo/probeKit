@@ -1,4 +1,4 @@
-from config import colors as _colors
+from config import colors as _colors, default_command_dict
 from modules.util import optparser
 from modules.util.extra import args
 from modules.util.CommandUtils.ReturnStructure import RetObject
@@ -88,7 +88,12 @@ class unset_val:
     def unassign_alias(self, alias: str) -> None:
         aliases: dict = self.ReturnObject.aliases
 
-        if alias in aliases:
+        if aliases.get(alias):
+            if default_command_dict.get(alias):
+                self.ReturnObject.aliases[alias] = default_command_dict[alias]
+                print(aliases)
+                self.ReturnObject.exit_code = 0
+                return
             print(alias)
             del(aliases[alias])
             self.ReturnObject.exit_code = 0
