@@ -18,7 +18,8 @@ Commands: dict = {
     f'{default_command_header}.unset': unset.unset_val,
     f'{default_command_header}.use': use.use,
     f'{default_command_header}.help': help.run,
-    f'{default_command_header}.back': back.run
+    f'{default_command_header}.back': back.run,
+    f'{default_command_header}': default_header.run
 }
 
 if 'Windows' in platform():
