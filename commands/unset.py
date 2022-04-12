@@ -91,7 +91,6 @@ class unset_val:
         if aliases.get(alias):
             if default_command_dict.get(alias):
                 self.ReturnObject.aliases[alias] = default_command_dict[alias]
-                print(aliases)
                 self.ReturnObject.exit_code = 0
                 return
             print(alias)
