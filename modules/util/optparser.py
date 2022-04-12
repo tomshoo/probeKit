@@ -21,7 +21,8 @@ class OptionsParser:
         elif dtype == "int": return int
         elif dtype == "float": return float
         elif dtype == "bool": return bool
-        else: raise Exception(f"Invalid dtype value \'{dtype}\'")
+        else:
+            raise Exception(f"Invalid dtype value \'{dtype}\'")
 
     def __dictparser(self, data: str) -> None:
         """
@@ -47,10 +48,10 @@ class OptionsParser:
                             if rule.get('delimeter'):
                                 data_value['value'] = data_value['value'].split(rule.get('delimeter'))
                                 break
-                            else: print('Err: no delimeter found... cannot split.')
+                            else:
+                                print('Err: no delimeter found... cannot split.')
                         else:
                             dtype = rule.get('dtype')
-                            _type = rule.get('type')
                             dtype = self.__typeset(dtype)
                             data_value['value'] = dtype(data_value['value'])
                             data_value['type'] = scheme
@@ -73,13 +74,16 @@ class OptionsParser:
                         'value': '',
                         'type': ''
                     }
-                else: option_dict[data]['value'] = ''
+                else:
+                    option_dict[data]['value'] = ''
 
             if option_dict[data].get('type'):
                 if option_dict[data]['type'] == "dict":
-                    if not option_dict[data].get('typerules'): print('Err: No type rule found... skipping value')
+                    if not option_dict[data].get('typerules'):
+                        print('Err: No type rule found... skipping value')
                     else:
-                        if type(option_dict[data]['typerules']) is not dict: print('Invalid type rule scheme... skipping value')
+                        if type(option_dict[data]['typerules']) is not dict:
+                            print('Invalid type rule scheme... skipping value')
                         else:
                             try: self.__dictparser(data)
                             except TypeError as e: print(f'Something went wrong... => {e}')
@@ -87,22 +91,29 @@ class OptionsParser:
 
                 elif option_dict[data]['type'] == "int": 
                     if type(option_dict[data]['value']) is not int:
-                        if option_dict[data]['value'].isdecimal(): option_dict[data]['value'] = int(option_dict[data]['value'])
-                        else: option_dict[data]['value'] = ""
+                        if option_dict[data]['value'].isdecimal():
+                            option_dict[data]['value'] = int(option_dict[data]['value'])
+                        else:
+                            option_dict[data]['value'] = ""
                     else: pass
 
                 elif option_dict[data]['type'] == "float": 
                     if type(option_dict[data]['value']) is not float:
-                        if string(option_dict[data]['value']).isfloat(): option_dict[data]['value'] = float(option_dict[data]['value'])
-                        else: option_dict[data]['value'] = ""
+                        if string(option_dict[data]['value']).isfloat():
+                            option_dict[data]['value'] = float(option_dict[data]['value'])
+                        else:
+                            option_dict[data]['value'] = ""
                     else: pass
 
                 elif option_dict[data]['type'] == "bool":
                     if type(option_dict[data]['value']) is not bool:
                         if option_dict[data]['value'].lower() in ['true', 'false']:
-                            if option_dict[data]['value'].lower() == "true": option_dict[data]['value'] = True
-                            else: option_dict[data]['value'] = False
-                        else: option_dict[data]['value'] = ""
+                            if option_dict[data]['value'].lower() == "true":
+                                option_dict[data]['value'] = True
+                            else:
+                                option_dict[data]['value'] = False
+                        else:
+                            option_dict[data]['value'] = ""
                     else: pass
 
                 elif option_dict[data]['type'] == "str": pass

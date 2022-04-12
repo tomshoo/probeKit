@@ -59,13 +59,14 @@ OPTIONS: dict[str, str] = {
 # in case the user set aliases with names of default commands,
 # and is later unable to use the original command.
 # This same command would then be accessible by <default_command_header.command>
-default_command_header: str = "builtins"
+default_command_header: str = "self"
 
 # Aliases for the user's comfort
 aliases : dict[str, Union[list[str], list[str, bool]]] = {
     'execute': ['run'],
     'info': ['show info'],
     'options': ['show options'],
+    'option': ['set option']
 }
 
 macros: dict[str, str] = {

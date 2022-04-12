@@ -23,7 +23,6 @@ start = extra.timefunc.timestamp()
 
 import modules.data.AboutList as aboutList
 from commands import banner
-from modules.data import Help
 from config import (
     MODULE, colors, aliases, macros,
     option_dict, valid_modules as _modules
@@ -153,7 +152,6 @@ class input_parser:
                 if '$' in command:
                     for x in re.findall('\$\(.*?\)', command):
                         command = command.replace(x, macros.get(x[2:-1:], x[2:-1:]))
-                    print(command)
                     cmd_list = command.split(' ')
                     for x in cmd_list:
                         if x.strip('"').strip('\'').startswith('$'):
@@ -162,7 +160,7 @@ class input_parser:
                     for x in cmd_list:
                         if x.strip('"').strip('\'').strip().startswith('$'):
                             command=command.replace(x, macros.get(x.strip('$'), ''))
-                    # print(command)
+                    print(command)
                 if ';' in command:
                     for x in splitter.dbreaker(command, delimiter=';'):
                         if '\\semicolon' in command:
