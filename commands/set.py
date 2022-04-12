@@ -153,6 +153,16 @@ class Set:
         command = trim(command)
         command = command.strip('"')
         command = command.strip('\'')
+        is_alias: bool = bool(aliases.get(command.split()[0]))
+        while is_alias:
+            token = command.split()[0]
+            if aliases.get(token):
+                if aliases.get(token)[0] == token:
+                    is_alias = False
+                    break
+                command = command.replace(token, aliases.get(token, [token])[0], 1)
+            else:
+                is_alias = False
         print(alias, ":",command)
         aliases[alias]=[command, False]
 
