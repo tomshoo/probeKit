@@ -37,12 +37,32 @@ default_command_dict: dict[str, list[str, bool]] = {
 
 for alias in aliases:
     try:
-        aliases[alias][1]
+        aliases[alias][1] = False
     except IndexError:
         aliases[alias].append(False)
+    
 
 for default_token in default_command_dict:
     aliases[default_token] = default_command_dict[default_token]
+
+temp_aliases = aliases.copy()
+for alias_token in temp_aliases:
+    is_alias = True
+    command = aliases[alias_token][0]
+    is_default: bool = aliases[alias_token][1]
+    while is_alias:
+        token = command.split()[0]
+        # print('------------------------')
+        # print(alias_token, '->', aliases.get(alias_token))
+        if aliases.get(token):
+            if aliases.get(token)[0].split()[0] == token:
+                is_alias = False
+            else:
+                command = command.replace(token, aliases.get(token, [token])[0], 1)
+        else:
+            is_alias = False
+    # print(alias_token, '->', command)
+    aliases[alias_token] = [command, is_default]
 
 #List valid modules from config.json
 valid_modules: dict = data['modules']
