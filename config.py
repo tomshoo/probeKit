@@ -23,23 +23,23 @@ data = json.loads(data_str)
 
 default_command_dict: dict[str, list[str, bool]] = {    
     # Default aliases
-    'back':   [f'{default_command_header}.back',   True],
-    'banner': [f'{default_command_header}.banner', True],
-    'clear':  [f'{default_command_header}.clear',  True],
-    'doc':    [f'{default_command_header}.doc',    True],
-    'help':   [f'{default_command_header}.help',   True],
-    'run':    [f'{default_command_header}.run',    True],
-    'set':    [f'{default_command_header}.set',    True],
-    'show':   [f'{default_command_header}.show',   True],
-    'unset':  [f'{default_command_header}.unset',  True],
-    'use':    [f'{default_command_header}.use',    True]
+    #Name     |             Value                    |IsDefault
+    #----------------------------------------------------------
+    'back':   [f'{default_command_header}.back'      ,    True],
+    'banner': [f'{default_command_header}.banner'    ,    True],
+    'clear':  [f'{default_command_header}.clear'     ,    True],
+    'doc':    [f'{default_command_header}.doc'       ,    True],
+    'help':   [f'{default_command_header}.help'      ,    True],
+    'run':    [f'{default_command_header}.run'       ,    True],
+    'set':    [f'{default_command_header}.set'       ,    True],
+    'show':   [f'{default_command_header}.show'      ,    True],
+    'unset':  [f'{default_command_header}.unset'     ,    True],
+    'use':    [f'{default_command_header}.use'       ,    True],
+    'cd':     [f'{default_command_header}.cd --path' ,    True]
 }
-
-for alias in aliases:
-    try:
-        aliases[alias][1] = False
-    except IndexError:
-        aliases[alias].append(False)
+aliases: dict[str, Union[list[str, bool]]] = {}
+for alias in user_aliases:
+    aliases[alias] = [user_aliases[alias], False]
     
 
 for default_token in default_command_dict:

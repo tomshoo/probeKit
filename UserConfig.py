@@ -62,10 +62,10 @@ OPTIONS: dict[str, str] = {
 default_command_header: str = "builtins"
 
 # Aliases for the user's comfort
-aliases : dict[str, Union[list[str], list[str, bool]]] = {
-    'execute': ['run'],
-    'info': ['show info'],
-    'options': ['show options'],
+user_aliases : dict[str, str] = {
+    'execute': 'run',
+    'info': 'show info',
+    'options': 'show options',
 }
 
 macros: dict[str, str] = {
