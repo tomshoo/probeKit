@@ -1,4 +1,5 @@
-from os import path, chdir
+from os import path, chdir, getenv
+from platform import platform
 from config import colors
 from rich import console
 from modules.util.CommandUtils.ReturnStructure import RetObject
@@ -11,8 +12,15 @@ def run(arguments: list[str], ReturnObject: RetObject) -> RetObject:
     for idx, argument in enumerate(arguments):
         ArgumentMap[argument.strip('-').lower()] = args(arguments, idx+1)
     if not ArgumentMap.get('path'):
-        Console.print(f'[{colors.FALERT}]Error: Could not find shift path...[/]')
-        ReturnObject.exit_code = 1
+        if 'Windows' in platform():
+            home = getenv('USERPROFILE')
+        else:
+            home = getenv('HOME')
+        if not home:
+            Console.print(f'[{colors.FALERT}]Error: Could not find shift path...[/]')
+            ReturnObject.exit_code = 1
+        else:
+            chdir(home)
     else:
         path_arg = ArgumentMap.get('path')
         path_arg = path.expanduser(path_arg)

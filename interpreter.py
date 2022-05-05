@@ -73,7 +73,6 @@ if args.list:
     print()
     sys.exit(0)
 
-
 if not args.quiet:
     banner.paint()
     
@@ -190,7 +189,7 @@ class input_parser:
         verb: str = cmd_split[0].lower()
 
         CommandStruct = CreateCommand(
-                arguments=splitter.dbreaker(arguments),
+                arguments=splitter.quote(arguments),
                 option_dict=self.option_dict,
                 aliases=self.aliases,
                 macros=self.macros,
@@ -235,17 +234,6 @@ class input_parser:
                 aboutList.moduleHelp(mod).aboutModule(mod)
             else:
                 aboutList.moduleHelp(self.MODULE).aboutModule(self.MODULE)
-
-        elif verb in ['cd', 'chdir', 'set-location']:
-            fpath = extra.args(cmd_split, 1)
-            if os.path.exists(fpath) and os.path.isdir(fpath):
-                os.chdir(fpath)
-                print(f'dir: {fpath}')
-                self.exit_code = 0
-
-            else:
-                Console.print(f'[{FALERT}][-] Error: no such directory: \'{fpath}\'[/]')
-                self.exit_code = 1
 
         else:
             PATH: list=(os.getenv('PATH')+':').split(':')

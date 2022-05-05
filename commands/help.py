@@ -5,7 +5,7 @@ from modules.util.CommandUtils.ReturnStructure import RetObject
 def run(arguments: list[str], ReturnObject: RetObject):
     arguments = [x for x in arguments if x]
     if not arguments:
-        ReturnObject.exit_code = Help('').showHelp()
+        ReturnObject.exit_code = Help().showHelp()
     else:
         for command in arguments:
             print(f'---------------------{command}----------------------')
