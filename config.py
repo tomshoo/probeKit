@@ -37,7 +37,7 @@ default_command_dict: dict[str, list[str, bool]] = {
     'use':    [f'{default_command_header}.use'       ,    True],
     'cd':     [f'{default_command_header}.cd --path' ,    True]
 }
-aliases: dict[str, Union[list[str, bool]]] = {}
+aliases: dict[str, list[str, bool]] = {}
 for alias in user_aliases:
     aliases[alias] = [user_aliases[alias], False]
     
