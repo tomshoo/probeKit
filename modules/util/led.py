@@ -6,10 +6,12 @@ It is a very basic and minimal text editor working on line based editing.
 
 import os
 import readline
-from modules.util.extra import args, completer, completers
+from modules.util.extra import get_args, completer, completers
 
 completer = completer(completers.led)
-class start_editor():
+
+
+class start_editor:
     def __init__(self, argslist: list):
         """Initiate the editor with the arguments"""
 
@@ -32,9 +34,9 @@ class start_editor():
 
     def write(self, file_name, final_buffer):
         """write the buffer to given file"""
-        final_buffer_string = '\n'.join(final_buffer)
-        write_file = open(file_name, 'w')
-        write_file.write(final_buffer_string+'\n')
+        final_buffer_string = "\n".join(final_buffer)
+        write_file = open(file_name, "w")
+        write_file.write(final_buffer_string + "\n")
         write_file.close()
 
     def read_file(self):
@@ -46,11 +48,11 @@ class start_editor():
             file_path: str = self.args(1)
             if file_path:
                 if os.path.exists(file_path):
-                    fr = open(file_path, 'r')
+                    fr = open(file_path, "r")
                     file_content_string = fr.read()
                     fr.close()
-                    file_content = file_content_string.split('\n')
-                    file_content.pop(len(file_content)-1)
+                    file_content = file_content_string.split("\n")
+                    file_content.pop(len(file_content) - 1)
                     return file_content
                 else:
                     return []
@@ -60,71 +62,85 @@ class start_editor():
     def change(self, pos, original_buffer):
         """
         Function to change a specific replace
-        
+
         Not to be confised with search and replace(it is yet to be implemented)
         """
         temp_buffer = []
-        while(True):
+        while True:
             c = input()
-            if c != '~|':
+            if c != "~|":
                 temp_buffer.append(c)
             else:
                 break
 
-        temp_buffer_string = '\n'.join(temp_buffer)
+        temp_buffer_string = "\n".join(temp_buffer)
         original_buffer[pos] = temp_buffer_string
-        original_buffer_string = '\n'.join(original_buffer)
-        return original_buffer_string.split('\n')
-
+        original_buffer_string = "\n".join(original_buffer)
+        return original_buffer_string.split("\n")
 
     def led(self):
         """Start the interpreter for the interpreter."""
 
         try:
-            mode: str = 'normal'
+            mode: str = "normal"
             led_buffer: list = self.read_file()
             pos: int = 0
 
-            while(True):
-                if mode == 'normal':
-                    readline.parse_and_bind('tab: complete')
+            while True:
+                if mode == "normal":
+                    readline.parse_and_bind("tab: complete")
                     readline.set_completer(completer.completion)
-                    c = input(f'{mode}> ')
+                    c = input(f"{mode}> ")
                 else:
-                    readline.parse_and_bind('tab: nocomplete')
+                    readline.parse_and_bind("tab: nocomplete")
                     c = input()
 
                 cmd = c.split()
-                if mode == 'normal':
-                    if c in [None, '']: pass
+                if mode == "normal":
+                    if c in [None, ""]:
+                        pass
 
-                    elif args(cmd, 0) in ['insert', 'i']: mode = 'insert'
+                    elif get_args(cmd, 0) in ["insert", "i"]:
+                        mode = "insert"
 
-                    elif args(cmd, 0) in ['change', 'c']:
-                        if args(cmd, 1) and led_buffer[int(args(cmd, 1))-1]: led_buffer = self.change(int(args(cmd, 1))-1, led_buffer)
-                        else: print('Error')
+                    elif get_args(cmd, 0) in ["change", "c"]:
+                        if get_args(cmd, 1) and led_buffer[int(get_args(cmd, 1)) - 1]:
+                            led_buffer = self.change(
+                                int(get_args(cmd, 1)) - 1, led_buffer
+                            )
+                        else:
+                            print("Error")
 
-                    elif args(cmd, 0) in ['print', 'p']:
-                        for x in led_buffer: print(x)
+                    elif get_args(cmd, 0) in ["print", "p"]:
+                        for x in led_buffer:
+                            print(x)
 
-                    elif args(cmd, 0) in ['lineprint', 'n']:
+                    elif get_args(cmd, 0) in ["lineprint", "n"]:
                         for ln, text in enumerate(led_buffer):
-                            print(f'{ln+1}\t | {text}')
+                            print(f"{ln+1}\t | {text}")
 
-                    elif args(cmd, 0) in ['write', 'w']:
-                        if args(cmd, 1): self.write(args(cmd, 1), led_buffer)
-                        elif self.args(1): self.write(self.args(1), led_buffer)
-                        else: print('Err: Invalid Filename')
+                    elif get_args(cmd, 0) in ["write", "w"]:
+                        if get_args(cmd, 1):
+                            self.write(get_args(cmd, 1), led_buffer)
+                        elif self.args(1):
+                            self.write(self.args(1), led_buffer)
+                        else:
+                            print("Err: Invalid Filename")
 
-                    elif args(cmd, 0) in ['quit', 'q']: break
+                    elif get_args(cmd, 0) in ["quit", "q"]:
+                        break
 
-                    else: print(f'Err: Invalid instruction: {args(cmd, 0)}')
+                    else:
+                        print(f"Err: Invalid instruction: {get_args(cmd, 0)}")
 
-                elif mode == 'insert':
-                    if c != '~|':
+                elif mode == "insert":
+                    if c != "~|":
                         led_buffer.append(c)
-                        pos+=1
+                        pos += 1
 
-                    else: mode = 'normal'
-        except EOFError: pass
-        except KeyboardInterrupt: pass
+                    else:
+                        mode = "normal"
+        except EOFError:
+            pass
+        except KeyboardInterrupt:
+            pass
