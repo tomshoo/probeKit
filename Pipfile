@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+python-nmap = ">=0.6.4"
+scapy = ">=2.4.5"
+pyreadline = ">=2.1"
+pyfiglet = ">=0.8.post1"
+multipledispatch = ">=0.6.0"
+rich = ">=10.12.0"
+requests = ">=2.26.0"
+argparse = ">=1.4.0"
+fuzzywuzzy = ">=0.18.0"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"
