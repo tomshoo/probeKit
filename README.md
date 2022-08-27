@@ -9,7 +9,7 @@ Python: `3.6>=x<10`, Python `3.6>=x<10` compatible pip, nmap, python-scapy, pyth
 OS: Unix based operating system(macOS, Linux, etc.), Windows 10.
 
 - note: install [npcap](https://nmap.org/npcap/#download) before using this tool on Windows
-    - Also powershell commands feature would not work in windows
+  - Also powershell commands feature would not work in windows
 
 ---
 
@@ -17,7 +17,7 @@ OS: Unix based operating system(macOS, Linux, etc.), Windows 10.
 
 ### Debian/Ubuntu
 
-``` bash
+```bash
 git clone https://github.com/theEndurance-del/probeKit.git && cd ./probeKit
 sudo apt install nmap python-pip python3-wheel python3-dev
 pip install -r requirements.txt
@@ -25,27 +25,29 @@ pip install -r requirements.txt
 
 ### Arch based distributions
 
-``` bash
+```bash
 git clone https://github.com/theEndurance-del/probeKit.git && cd ./probeKit
 sudo pacman -Syu nmap python-pip
 pip install -r requirements.txt
 ```
- *Note: If possible try installing the dependencies listed in `requirements.txt` via `pacman`, since installing it via pip might break future pacman installations.*
+
+_Note: If possible try installing the dependencies listed in `requirements.txt` via `pacman`, since installing it via pip might break future pacman installations._
 
 ---
 
-###  Windows 10/11
+### Windows 10/11
 
 - Install `nmap` and `npcap` from the [official](https://nmap.org/download.html) website.
 - Install `python3.6>=x<10` from python's [official](https://www.python.org/downloads/) or from Micrsoft store.
 - Then copy and paste the following commands in windows powershell,
 
-``` pwsh
+```pwsh
 git clone https://github.com/theEndurance-del/probeKit.git
 set-location .\probeKit\
 python -m pip install -r .\requirements.txt
 ```
----
+
+_Note: There is a bug in the pyreadline library which might prevent launching this script, please refer to [this](https://github.com/pyreadline/pyreadline/issues/73#issuecomment-983188181) comment to fix it temporarily, till the issue is fixed in the `pyreadline` upstream._
 
 ## Usage
 
@@ -56,7 +58,7 @@ Show help by using the `help` command.
 
 This is the help shown:
 
-``` text
+```text
 
 Usage: [verb] [options]
 Available verbs are: set, help, exit, back, clear, run
@@ -85,7 +87,7 @@ Run `help [command]` for more information(only the commands marked with `(*)` ha
 
 This toolkit has it's own default set of colors.
 
-``` text
+```text
 red => Alerts or critical points
 yellow => warnings or significant changes
 green => successfull result or helpful text
