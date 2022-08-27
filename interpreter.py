@@ -327,11 +327,11 @@ class input_parser:
             except FileNotFoundError:
                 Console.print(f"[{FALERT}]Error: Invalid command '{verb}'[/]")
                 fuzzy_match_list: list[str] = [
-                    x for x in process.extractBests(verb, extra.completers.interpreter)
+                    x[0] for x in process.extractBests(verb, extra.completers.interpreter)
                 ]
                 Console.print(f"[{colors.FURGENT}]Perhaps you meant: [/]")
                 for match in fuzzy_match_list:
-                    Console.print(f"\t[{colors.FPROMPT}]{match[0]}[/]")
+                    Console.print(f"\t[{colors.FPROMPT}]{match}[/]")
                 self.exit_code = 1
 
     def prompt(self, check: int = 0) -> int:
