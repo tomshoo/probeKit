@@ -1,7 +1,7 @@
 from config import colors as _colors, OPTIONS
 from modules.util.extra import trim, get_args
 from modules.util import optparser
-from modules.util.splitters import Splitters
+from modules.util.splitters import splitter
 from modules.data.Help import Help
 from modules.util.CommandUtils.ReturnStructure import RetObject
 from rich import console, traceback
@@ -29,11 +29,11 @@ class Set:
             del temp_arglist
             return self.ReturnObject
         subcmd = get_args(self.args, 0)
-        if get_args(self.args, 0).lower() not in ["option", "alias", "macro"]:
+        if subcmd not in ["option", "alias", "macro"]:
             Console.print(f"[{_FALERT}]Error set type not valid[/]")
-            if fuzz.partial_ratio(get_args(self.args, 0).lower(), "option") > 80:
+            if fuzz.partial_ratio(subcmd, "option") > 80:
                 Console.print(f"[{_FURGENT}]Did you mean `option`?")
-            if fuzz.partial_ratio(get_args(self.args, 0).lower(), "alias") > 80:
+            if fuzz.partial_ratio(subcmd, "alias") > 80:
                 Console.print(f"[{_FURGENT}]Did you mean `alias`?")
             self.ReturnObject.exit_code = 2
             return self.ReturnObject
@@ -45,7 +45,7 @@ class Set:
         subcmd = get_args(self.args, 0)
         if not subcmd:
             return self.ReturnObject
-        
+
         if subcmd.lower() == "option":
             assignment_func = self.assign_options
         elif subcmd.lower() == "alias":
@@ -63,7 +63,7 @@ class Set:
                     )
                     self.ReturnObject.exit_code = 3
                 else:
-                    assignment_list = Splitters.dbreaker(get_args(optlist, 0), "=")
+                    assignment_list = splitter(get_args(optlist, 0), "=")
                     if len(assignment_list) == 2:
                         if not get_args(assignment_list, 0):
                             Console.print(
@@ -72,12 +72,14 @@ class Set:
                             self.ReturnObject.exit_code = 3
                         else:
                             self.ReturnObject.macros[get_args(assignment_list, 0)] = (
-                                get_args(assignment_list, 1).strip('"').strip("'")
+                                get_args(assignment_list, 1).strip(
+                                    '"').strip("'")
                             )
                             self.ReturnObject.exit_code = 0
                     else:
                         if len(assignment_list) > 2:
-                            Console.print(f"[{_FALERT}]Whoa!!! Don't the macro!![/]")
+                            Console.print(
+                                f"[{_FALERT}]Whoa!!! Don't the macro!![/]")
                             self.ReturnObject.exit_code = 3
                         else:
                             Console.print(
@@ -135,7 +137,7 @@ class Set:
                         )
                         exit_code = 3
                     else:
-                        assignment_list = Splitters.dbreaker(x, "=")
+                        assignment_list = splitter(x, "=")
                         if len(assignment_list) == 1:
                             back_value = (
                                 get_args(optlist, optlist.index(x) - 1)
@@ -151,7 +153,8 @@ class Set:
                             if back_value == x:
                                 back_value = "[]"
 
-                            Console.print(f"[{_FALERT}]AND a VALUE for god's sake[/]")
+                            Console.print(
+                                f"[{_FALERT}]AND a VALUE for god's sake[/]")
                             Console.print(
                                 f"[{_FALERT}]Man!! what a beautiful pair of eyes you have over there: > `[{_FSTYLE}]{back_value} >{x}< {front_value}[/]`"
                             )
@@ -172,7 +175,8 @@ class Set:
                             if back_value == x:
                                 back_value = "[]"
 
-                            Console.print(f"[{_FALERT}]What!!!? Where is the KEY...[/]")
+                            Console.print(
+                                f"[{_FALERT}]What!!!? Where is the KEY...[/]")
                             Console.print(
                                 f"[{_FALERT}]Look over here if you are blind: > `[{_FSTYLE}]{back_value} >{x}< {front_value}[/]`"
                             )
@@ -182,7 +186,8 @@ class Set:
                             for idx, data in enumerate(assignment_list):
                                 if not data:
                                     assignment_list.pop(idx)
-                            assignment_func(assignment_list[0], assignment_list[1])
+                            assignment_func(
+                                assignment_list[0], assignment_list[1])
 
         if exit_code:
             self.exit_code = exit_code
@@ -230,7 +235,8 @@ class Set:
                 if token_alias[0] == token:
                     is_alias = False
                     break
-                command = command.replace(token, aliases.get(token, [token])[0], 1)
+                command = command.replace(
+                    token, aliases.get(token, [token])[0], 1)
             else:
                 is_alias = False
         print(alias, ":", command)

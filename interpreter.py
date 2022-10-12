@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 
 # Imports
+from modules.util.led import start_editor
+from config import valid_modules as _modules
+from config import MODULE, aliases, colors, macros, option_dict
+from commands import banner
+import modules.data.AboutList as aboutList
 import argparse
 import os
 import platform
@@ -20,30 +25,10 @@ from modules.util.CommandUtils.CommandStruct import CreateCommand
 traceback.install()
 Console = console.Console(soft_wrap=True, highlight=False)
 
-if not ("-h" in sys.argv or "--help" in sys.argv):
-    print(f"Importing custom modules", end="\r")
-
-start = extra.timefunc.timestamp()
-
-import modules.data.AboutList as aboutList
-from commands import banner
-from config import MODULE, aliases, colors, macros, option_dict
-from config import valid_modules as _modules
-from modules.util.led import start_editor
-
-end = extra.timefunc.timestamp()
-
-if not ("-h" in sys.argv or "--help" in sys.argv):
-    Console.print(
-        f"[{colors.FSUCCESS}]modules took {round(end-start, 7)} sec(s). to load[/]"
-    )
-
 
 class SudoError(Exception):
     pass
 
-
-splitter = splitters.Splitters()
 
 # Setup Utils
 optionparser = optparser.OptionsParser(option_dict)
@@ -81,7 +66,8 @@ parser.add_argument(
 parser.add_argument(
     "-q", "--quiet", help="Do not display banner on startup", action="store_true"
 )
-parser.add_argument("-l", "--list", help="list available modules", action="store_true")
+parser.add_argument(
+    "-l", "--list", help="list available modules", action="store_true")
 
 args = parser.parse_args()
 
@@ -102,7 +88,8 @@ if args.module and args.module not in _modules:
 
 # Checks if history file already exists or not
 if "Windows" not in platform.platform():
-    histfile: str | None = os.path.join(os.path.expanduser("~"), ".probeKit.history")
+    histfile: str | None = os.path.join(
+        os.path.expanduser("~"), ".probeKit.history")
     if os.path.exists(histfile):
         readline.read_history_file(histfile)
 else:
@@ -113,129 +100,53 @@ if not extra.isAdmin():
         f"[{FURGENT}]Warning: `osprobe` and `UDP Scanning` may not work as expected..."
     )
 
+
 # Session starts over here
 # Not the best way to do it but it works so...
-
-
 class input_parser:
     def __init__(self):
         self.exit_code: int = 0
         # Variables also known as options to the user
         self.option_dict: dict = option_dict
 
-        self.MODULE: str = (
+        self.module: str = (
             MODULE if not args.module or args.module not in _modules else args.module
         )
-        self.MODLIST: list = []
+        self.modlist: list = []
         self.aliases: dict = aliases
         self.macros: dict = macros
 
     def parser(self, value: str):
-        if "#" in value:
-            vallist = value.split("#")
-            value = extra.trim(vallist.pop(0))
-        else:
-            pass
+        value = value.split('#', 1)[0]
 
-        try:
-            if value[-1] != ";":
-                vallist = list(value)
-                vallist.append(";")
-                value = "".join(vallist)
+        if not value:
+            return
 
-            if "\\;" in value:
-                value = value.replace("\\;", "\\semicolon")
+        macrolist: list[str] = re.findall("\\$\\(.*?\\)", value)
+        mlen = len(macrolist)
+        macrolist[mlen:mlen] = re.findall("(?<!\\w)\\$\\w+", value)
 
-            # commandlets: list = re.findall('\{.*?\}', value)
-            commandlets: list[str] | None = splitter.bracket(value, "{")
-            if commandlets is None:
-                self.exit_code = 3
-                return
-            cmdletdict: dict = {}
+        for ident in macrolist:
+            macroname = ident.lstrip("$").lstrip("(").rstrip(")")
 
-            for idx, commandlet in enumerate(commandlets):
-                cmdletdict["cmdlet_" + str(idx)] = commandlet
-            for replacer in cmdletdict:
-                replacement = cmdletdict.get(replacer)
-                if replacement is not None:
-                    value = value.replace("{" + replacement + "}", replacer)
+            value = value.replace(ident, macros.get(
+                macroname, macroname if ident.endswith(")") else ""))
 
-            commandlist: list = splitter.dbreaker(value, delimiter=";")
+        allcmds = splitters.splitter(value, outer_delm=';')
+        for toklist in allcmds:
+            toklist[0] = aliases.get(toklist[0], (toklist[0], False))[0]
+            self.executor([tok for tok in toklist if tok])
 
-            for command in commandlist:
-                command = extra.trim(command)
-                if not command:
-                    continue
-
-                is_alias: bool = True if aliases.get(command.split()[0]) else False
-                while is_alias:
-                    token = command.split()[0]
-                    alias = aliases.get(token)
-                    if alias is not None:
-                        if alias[0].split()[0] == token:
-                            is_alias = False
-                            break
-                        command = command.replace(
-                            token, aliases.get(token, [token])[0], 1
-                        )
-                    else:
-                        is_alias = False
-                command = command.replace(
-                    command.split()[0],
-                    aliases.get(command.split()[0], [command.split()[0]])[0],
-                    1,
-                )
-                if "$" in command:
-                    for x in re.findall("\\$\\(.*?\\)", command):
-                        command = command.replace(x, macros.get(x[2:-1:], x[2:-1:]))
-                    print(command)
-                    cmd_list = command.split(" ")
-                    for x in cmd_list:
-                        if x.strip('"').strip("'").startswith("$"):
-                            command = command.replace(x, macros.get(x.strip("$"), ""))
-                    cmd_list = command.split("=")
-                    for x in cmd_list:
-                        if x.strip('"').strip("'").strip().startswith("$"):
-                            command = command.replace(x, macros.get(x.strip("$"), ""))
-                    # print(command)
-                if ";" in command:
-                    for x in splitter.dbreaker(command, delimiter=";"):
-                        if "\\semicolon" in command:
-                            command = command.replace("\\semicolon", ";")
-                        for cmdlet_idx in cmdletdict:
-                            command = command.replace(
-                                cmdlet_idx, cmdletdict[cmdlet_idx].replace(" ", "_")
-                            )
-                        self.executor(extra.trim(x))
-                        continue
-                else:
-                    if "\\semicolon" in command:
-                        command = command.replace("\\semicolon", ";")
-                    for cmdlet_idx in cmdletdict:
-                        command = command.replace(
-                            cmdlet_idx, cmdletdict[cmdlet_idx].replace(" ", "_")
-                        )
-                    self.executor(command)
-        except IndexError:
-            pass
-
-    def executor(self, command: str):
-        arglist = command.split(" ")
-        arglist.pop(0)
-        arguments = " ".join(arglist)
-        cmd_split: list = command.split()
-        cmd_split_quoted = splitter.quote(command, " ")
-        print(cmd_split_quoted)
-
-        verb: str = cmd_split[0].lower()
+    def executor(self, toklist: list[str]):
+        verb: str = toklist[0].lower()
 
         CommandStruct = CreateCommand(
-            arguments=splitter.dbreaker(arguments),
+            arguments=toklist[1::],
             option_dict=self.option_dict,
             aliases=self.aliases,
             macros=self.macros,
-            activated_module_list=self.MODLIST,
-            module=self.MODULE,
+            activated_module_list=self.modlist,
+            module=self.module,
             histfile=histfile,
         ).run(verb)
 
@@ -243,38 +154,38 @@ class input_parser:
             self.option_dict = CommandStruct.option_dict
             self.aliases = CommandStruct.aliases
             self.macros = CommandStruct.macros
-            self.MODLIST = CommandStruct.activated_module_list
-            self.MODULE = CommandStruct.module
+            self.modlist = CommandStruct.activated_module_list
+            self.module = CommandStruct.module
             self.exit_code = CommandStruct.exit_code
 
         elif verb == "do":
             try:
                 times: int = 1
-                if "-t" in command:
-                    times = int(command[command.find("-t") + 3])
-                noreturn: bool = True if "-n" in command else False
-                self.do(cmd_split[1], times, noreturn)
-                pass
+                if "-t" in toklist:
+                    times = int(t) if (t := extra.get_args(
+                        toklist, toklist.index("-n") + 1)) is not None else 1
+                noreturn: bool = True if "-n" in toklist else False
+                self.do(toklist[1], times, noreturn)
             except ValueError:
                 Console.print(f"[{FALERT}]Error: Invalid argument[/]")
 
         elif verb == "led":
-            init_editor = start_editor(cmd_split)
+            init_editor = start_editor(toklist)
             init_editor.start_led()
 
         # Create an exception which exits the try block and then exits the session
         elif verb == "exit":
-            if extra.get_args(cmd_split, 1) == "-q":
+            if extra.get_args(toklist, 1) == "-q":
                 raise ExitException()
             else:
                 raise ExitException(f"probeKit: exiting session")
 
         elif verb == "about":
-            if extra.get_args(cmd_split, 1):
-                mod = extra.get_args(cmd_split, 1)
+            if extra.get_args(toklist, 1):
+                mod = extra.get_args(toklist, 1)
                 aboutList.moduleHelp(mod).aboutModule(mod)
             else:
-                aboutList.moduleHelp(self.MODULE).aboutModule(self.MODULE)
+                aboutList.moduleHelp(self.module).aboutModule(self.module)
 
         else:
             env_path: str | None = os.getenv("PATH")
@@ -295,15 +206,7 @@ class input_parser:
                 except FileNotFoundError:
                     pass
                 else:
-                    if (
-                        max(
-                            len(re.findall("sudo*", content)),
-                            len(re.findall("gsudo", content)),
-                        )
-                        > 0
-                        or "sudo" in content
-                        or "gsudo" in content
-                    ):
+                    if len(re.findall("(g)?sudo*", content)) > 0:
                         Console.print(
                             f"[{FALERT}]Warning: sudo or gsudo found in script, not running..."
                         )
@@ -316,18 +219,21 @@ class input_parser:
             try:
                 if not extra.isAdmin():
                     if "Windows" not in platform.platform():
-                        self.exit_code = subprocess.call((cmd_split_quoted))
+                        self.exit_code = subprocess.call((toklist))
                     else:
-                        self.exit_code = subprocess.run(command).returncode
+                        self.exit_code = subprocess.run(
+                            ' '.join(toklist)).returncode
 
                 else:
-                    Console.print(f"[{FALERT}]Error: Invalid command '{verb}'[/]")
+                    Console.print(
+                        f"[{FALERT}]Error: Invalid command '{verb}'[/]")
                     self.exit_code = 1
 
             except FileNotFoundError:
                 Console.print(f"[{FALERT}]Error: Invalid command '{verb}'[/]")
                 fuzzy_match_list: list[str] = [
-                    x[0] for x in process.extractBests(verb, extra.completers.interpreter)
+                    x[0]
+                    for x in process.extractBests(verb, extra.completers.interpreter)
                 ]
                 Console.print(f"[{colors.FURGENT}]Perhaps you meant: [/]")
                 for match in fuzzy_match_list:
@@ -342,10 +248,10 @@ class input_parser:
         else:
             COLOR: str = colors.FALERT
 
-        if not self.MODULE:
+        if not self.module:
             prompt_str: str = f"\\[probkit]: [{COLOR}]{self.exit_code}[/]$> "
         else:
-            prompt_str: str = f"\\[probeKit]: [{FSTYLE}]({self.MODULE})[/]: [{COLOR}]{self.exit_code}[/]$> "
+            prompt_str: str = f"\\[probeKit]: [{FSTYLE}]({self.module})[/]: [{COLOR}]{self.exit_code}[/]$> "
         if check == 0:
             value = console.Console(soft_wrap=True).input(prompt_str)
         else:
@@ -380,12 +286,12 @@ class input_parser:
         # Initial module is set to blank
         # Set it to any other module if you want a default module at startup
 
-        if self.MODULE in _modules or self.MODULE == "":
+        if self.module in _modules or self.module == "":
             pass
 
         else:
             Console.print(
-                f"[{FALERT}][-] No such module: [bold underline]'{self.MODULE}'[/][/]"
+                f"[{FALERT}][-] No such module: [bold underline]'{self.module}'[/][/]"
             )
             sys.exit(1)
 
