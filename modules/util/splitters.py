@@ -1,4 +1,3 @@
-from multipledispatch.dispatcher import str_signature
 from rich import traceback
 
 traceback.install()
@@ -45,17 +44,27 @@ def __single_delm_splitter(string: str, delm: str = ' ') -> list[str]:
     def checked_push(cond1, cond2, item1: str, item2) -> None:
         if cond1:
             split_stack.append(item1)
-        elif cond2:
+        elif cond2 and (split_stack[-1:] or (None, ))[0] is not None:
             split_stack[-1] += item2
+        elif cond2:
+            split_stack.append(item2)
 
     for _, ch in enumerate(string):
-        squote = (not squote and (not (dquote or brace) and ch == "'")) or (
-            squote and ch != "'")
-        dquote = (not dquote and (not (squote or brace) and ch == '"')) or (
-            dquote and ch != '"')
+        # squote = (not squote and (not (dquote or brace) and ch == "'")) or (squote and ch != "'")  # nopep8
+        # dquote = (not dquote and (not (squote or brace) and ch == '"')) or (dquote and ch != '"')  # nopep8
 
-        if squote or dquote:
-            checked_push(ch in ('"', "'"), True, "", ch)
+        if not (dquote or brace) and ch == "'":
+            squote = not squote
+            if squote:
+                split_stack.append('')
+
+        elif not (squote or brace) and ch == '"':
+            dquote = not dquote
+            if dquote:
+                split_stack.append('')
+
+        elif squote or dquote:
+            split_stack[-1] += ch
 
         elif ch in (')', ']', '}'):
             if not brace:
@@ -106,20 +115,31 @@ def __double_delm_splitter(string: str, inner_delm: str, outer_delm: str) -> lis
     brace: list[str] = []
     squote, dquote = False, False
 
-    def checked_push(cond1, cond2, item1: str, item2) -> None:
+    def checked_push(cond1, cond2, item1: str, item2: str) -> None:
         if cond1:
-            split_stack.append(item1)
-        elif cond2:
+            if (split_stack[-1:] or (None, ))[0] or not split_stack:
+                split_stack.append(item1)
+                return
+            if item1:
+                split_stack[-1] += item1
+        elif cond2 and (split_stack[-1:] or (None, ))[0] is not None:
             split_stack[-1] += item2
+        elif cond2:
+            split_stack.append(item2)
 
-    for _, ch in enumerate(string):
-        squote = (not squote and (not (dquote or brace) and ch == "'")) or (
-            squote and ch != "'")
-        dquote = (not dquote and (not (squote or brace) and ch == '"')) or (
-            dquote and ch != '"')
+    for idx, ch in enumerate(string):
+        if not (dquote or brace) and ch == "'":
+            squote = not squote
+            if squote:
+                split_stack.append('')
 
-        if squote or dquote:
-            checked_push(ch in ('"', "'"), True, "", ch)
+        elif not (squote or brace) and ch == '"':
+            dquote = not dquote
+            if dquote:
+                split_stack.append('')
+
+        elif squote or dquote:
+            split_stack[-1] += ch
 
         elif ch in (')', ']', '}'):
             if not brace:
@@ -140,20 +160,29 @@ def __double_delm_splitter(string: str, inner_delm: str, outer_delm: str) -> lis
         elif ch.isalnum() or (ch == '_' and inner_delm != '_'):
             checked_push(not split_stack, True, ch, ch)
 
-        elif ch == outer_delm:
-            super_stack.append([])
-            split_stack = super_stack[-1]
+        elif (ch == outer_delm):
+            if split_stack and idx < len(string) - 1:
+                if not split_stack[-1]:
+                    split_stack.pop()
+                super_stack.append([])
+                split_stack = super_stack[-1]
 
         else:
             checked_push((ch == inner_delm) or (
                 ch in ('"', "'")), True, "", ch)
 
-        # print(ch, squote, brace, dquote)
+        # print(ch, squote, dquote, bool(brace))
 
     if brace:
         cbrace = brace[-1]
         raise UnclosedBraceError(
             "(" if cbrace == ")" else "[" if cbrace == "]" else "{")
+
+    if super_stack:
+        if not super_stack[-1]:
+            super_stack.pop()
+        elif not super_stack[-1][-1]:
+            super_stack[-1].pop()
 
     return super_stack
 

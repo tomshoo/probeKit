@@ -42,34 +42,35 @@ FALERT = colors.FALERT
 FURGENT = colors.FURGENT
 FSTYLE = colors.FPROMPT
 
-# Display time during statup
-if not (
-    "-h" in sys.argv or "--help" in sys.argv or "-l" in sys.argv or "--list" in sys.argv
-):
-    print(f"current session started at {extra.timefunc.datevalue()}")
-
-if extra.get_args(sys.argv, 1) in ["-h", "--help"]:
-    banner.paint()
-    print()
 
 parser = argparse.ArgumentParser(
-    description="Command line toolkit for basic reconnaisance"
+    description="Command line toolkit for basic reconnaisance",
+    add_help=False
 )
+
 parser.add_argument(
-    "-c", "--command", help="custom command to run from outside the session"
-)
+    "-h", "--help", help="Print this help mesage and exit", action="store_true")
+
 parser.add_argument(
-    "-m",
-    "--module",
-    help="Start with a specified module (Overrides default module set in config)",
-)
+    "-c", "--command", help="custom command to run from outside the session")
+
 parser.add_argument(
-    "-q", "--quiet", help="Do not display banner on startup", action="store_true"
-)
+    "-m", "--module", help="Start with a specified module (Overrides default module set in config)")
+
+parser.add_argument(
+    "-q", "--quiet", help="Do not display banner on startup", action="store_true")
+
 parser.add_argument(
     "-l", "--list", help="list available modules", action="store_true")
 
 args = parser.parse_args()
+
+if args.help:
+    banner.paint()
+    parser.print_help()
+    sys.exit(0)
+else:
+    print(f"current session started at {extra.timefunc.datevalue()}")
 
 if args.list:
     Console.print(f"[{FSUCCESS}]Available module are:")
@@ -103,14 +104,14 @@ if not extra.isAdmin():
 
 # Session starts over here
 # Not the best way to do it but it works so...
-class input_parser:
+class Interpreter:
     def __init__(self):
         self.exit_code: int = 0
         # Variables also known as options to the user
         self.option_dict: dict = option_dict
 
         self.module: str = (
-            MODULE if not args.module or args.module not in _modules else args.module
+            MODULE if not args.module else args.module
         )
         self.modlist: list = []
         self.aliases: dict = aliases
@@ -130,7 +131,7 @@ class input_parser:
             macroname = ident.lstrip("$").lstrip("(").rstrip(")")
 
             value = value.replace(ident, macros.get(
-                macroname, macroname if ident.endswith(")") else ""))
+                macroname, macroname if ident.startswith("$(") else ""))
 
         allcmds = splitters.splitter(value, outer_delm=';')
         for toklist in allcmds:
@@ -165,7 +166,7 @@ class input_parser:
                     times = int(t) if (t := extra.get_args(
                         toklist, toklist.index("-n") + 1)) is not None else 1
                 noreturn: bool = True if "-n" in toklist else False
-                self.do(toklist[1], times, noreturn)
+                self.__do(toklist[1], times, noreturn)
             except ValueError:
                 Console.print(f"[{FALERT}]Error: Invalid argument[/]")
 
@@ -240,7 +241,7 @@ class input_parser:
                     Console.print(f"\t[{colors.FPROMPT}]{match}[/]")
                 self.exit_code = 1
 
-    def prompt(self, check: int = 0) -> int:
+    def parse_input(self, check: int = 0) -> int:
         if self.exit_code == 0:
             COLOR: str = colors.FSUCCESS
         elif self.exit_code == 130:
@@ -291,13 +292,11 @@ class input_parser:
 
         else:
             Console.print(
-                f"[{FALERT}][-] No such module: [bold underline]'{self.module}'[/][/]"
-            )
-            sys.exit(1)
+                f"[{FALERT}][-] No such module: [bold underline]'{self.module}'[/][/]")
+            Console.print(f"[{FURGENT}]Falling back to no module[/]")
 
-        try:
-            while True:
-                check = self.prompt(check)
+        try: #fmt: off
+            while True: check = self.parse_input(check) #fmt: on
 
         except EOFError:
             print()
@@ -313,14 +312,10 @@ class input_parser:
             self.main()
 
         except ExitException as e:
-            Console.print(f"[{FALERT}]" + e.__str__() + "[/]")
-            extra.ExitSession(
-                self.exit_code
-            ) if "Windows" in platform.platform() else extra.ExitSession(
-                self.exit_code, histfile
-            )
+            Console.print(f"[{FALERT}]{e}[/]")
+            extra.ExitSession(self.exit_code, histfile)
 
-    def do(self, command: str, times: int = 1, noreturn: bool = False) -> None:
+    def __do(self, command: str, times: int = 1, noreturn: bool = False) -> None:
         command = command.replace("_", " ")
         if noreturn:
             try:
@@ -336,5 +331,5 @@ class input_parser:
 
 
 if __name__ == "__main__":
-    new_parser = input_parser()
-    new_parser.main()
+    interpreter = Interpreter()
+    interpreter.main()

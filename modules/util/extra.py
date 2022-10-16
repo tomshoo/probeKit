@@ -57,21 +57,24 @@ completers = Completer(
 )
 
 
-@dispatch(list, int)
 def get_args(value: list[Any] | str, pos: int) -> str | None:
     """
     A simple function to return values in a list and raise exception
     in such a way that the interpreter doesn't break
     """
     if type(pos) is not int:
-        raise TypeError(f"error at argument: pos, required `int` found {type(pos)}")
+        raise TypeError(
+            f"error at argument: pos, required `int` found {type(pos)}")
     if not (type(value) is list or type(value) is str):
-        raise TypeError(f"error at argument: pos, required `list | str` found {type(str)}")
+        raise TypeError(
+            f"error at argument: pos, required `list | str` found {type(str)}")
 
-    try:
-        return str(value[int(pos)])
-    except Exception:
-        return None
+    return (value[pos:] or (None,))[0]
+    # try:
+    #     return str(value[int(pos)])
+    # except Exception:
+    #     return None
+
 
 class completer:
     """tab completion class(experimental)"""
