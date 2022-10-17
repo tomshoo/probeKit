@@ -133,7 +133,12 @@ class Interpreter:
             value = value.replace(ident, macros.get(
                 macroname, macroname if ident.startswith("$(") else ""))
 
-        allcmds = splitters.splitter(value, outer_delm=';')
+        try:
+            allcmds = splitters.splitter(value, outer_delm=';')
+        except splitters.SplitterError as err:
+            Console.print(f'[{FALERT}]{err.kind}: {err.msg}[/]')
+            self.exit_code = 1
+            return
         for toklist in allcmds:
             toklist[0] = aliases.get(toklist[0], (toklist[0], False))[0]
             self.executor([tok for tok in toklist if tok])

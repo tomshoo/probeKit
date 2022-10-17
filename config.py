@@ -9,6 +9,7 @@
 
 ************************************************************
 """
+# fmt:off
 
 import json
 from os import path
@@ -25,20 +26,21 @@ data = json.loads(data_str)
 
 default_command_dict: dict[str, tuple[str, bool]] = {
     # Default aliases
-    # Name     |             Value                    |IsDefault
+    # Name   | Value                                  | IsDefault
     # ----------------------------------------------------------
-    "back"   : (f"{default_command_header}.back"      , True) ,
-    "banner" : (f"{default_command_header}.banner"    , True) ,
-    "clear"  : (f"{default_command_header}.clear"     , True) ,
-    "doc"    : (f"{default_command_header}.doc"       , True) ,
-    "help"   : (f"{default_command_header}.help"      , True) ,
-    "run"    : (f"{default_command_header}.run"       , True) ,
-    "set"    : (f"{default_command_header}.set"       , True) ,
-    "show"   : (f"{default_command_header}.show"      , True) ,
-    "unset"  : (f"{default_command_header}.unset"     , True) ,
-    "use"    : (f"{default_command_header}.use"       , True) ,
-    "cd"     : (f"{default_command_header}.cd --path" , True) ,
+    "back"   : (f"{default_command_header}.back"      , True),
+    "banner" : (f"{default_command_header}.banner"    , True),
+    "clear"  : (f"{default_command_header}.clear"     , True),
+    "doc"    : (f"{default_command_header}.doc"       , True),
+    "help"   : (f"{default_command_header}.help"      , True),
+    "run"    : (f"{default_command_header}.run"       , True),
+    "set"    : (f"{default_command_header}.set"       , True),
+    "show"   : (f"{default_command_header}.show"      , True),
+    "unset"  : (f"{default_command_header}.unset"     , True),
+    "use"    : (f"{default_command_header}.use"       , True),
+    "cd"     : (f"{default_command_header}.cd --path" , True),
 }
+
 aliases: dict[str, tuple[str, bool]] = {}
 for alias in user_aliases:
     aliases[alias] = (user_aliases[alias], False)
