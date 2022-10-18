@@ -70,7 +70,7 @@ class Help:
                 "\t\t\t set macro \\[macro]=\\[macro_value]\n"
                 f"\t\t\t *note: [{FALERT}]macro accepts only one key value pair at once.[/]\n",
                 f"\t\t\t    [{FALERT}]Definition of multiple macros is not supported nor recommended.[/]\n"
-                ## Well Console.print() straight up refused to work properly from this point in this statement...
+                # Well Console.print() straight up refused to work properly from this point in this statement...
                 f"[{FSUCCESS}]\t\t\t - Then call macros via `$(macro) or $macro`[/]\n",
                 f"[{FSUCCESS}]\t\t\t -> Difference between $(macro) and $macro is:\n[/]",
                 f"[{FSUCCESS}]\t\t\t\t - $(macro) allows tu use the macro name as value if the macro is not found\n[/]",
@@ -108,5 +108,6 @@ class Help:
             return 3
 
         else:
-            Console.print(f"[{FALERT}]Error: No such command: '[bold]{command}[/]'[/]")
+            Console.print(
+                f"[{FALERT}]Error: No such command: '[bold]{command}[/]'[/]")
             return 1

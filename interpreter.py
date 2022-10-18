@@ -108,7 +108,7 @@ class Interpreter:
     def __init__(self):
         self.exit_code: int = 0
         # Variables also known as options to the user
-        self.option_dict: dict = option_dict
+        self.option_dict: dict = option_dict[0]
 
         self.module: str = (
             MODULE if not args.module else args.module

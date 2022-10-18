@@ -2,12 +2,15 @@ import pyfiglet
 from random import randint
 from modules.util.CommandUtils.ReturnStructure import RetObject
 
+from . import Runnable
 
-def run(_: list[str], ReturnObject: RetObject) -> RetObject:
-    """Function to print the introductory banner"""
-    paint()
-    ReturnObject.exit_code = 0
-    return RetObject()
+
+class Banner(Runnable):
+    def run(self) -> RetObject:
+        """Function to print the introductory banner"""
+        paint()
+        self.retobj.exit_code = 0
+        return RetObject()
 
 
 def paint():

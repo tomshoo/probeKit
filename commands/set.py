@@ -1,14 +1,14 @@
 from config import colors as _colors, OPTIONS
-from modules.util.extra import trim  # , get_args
+from modules.util.extra import trim
 from modules.util import optparser
 from modules.util.splitters import splitter
 from modules.data.Help import Help
 from modules.util.CommandUtils.ReturnStructure import RetObject
-from rich import console, traceback
-from fuzzywuzzy import fuzz
+from rich import console as _console, traceback
+from fuzzywuzzy import process
 
 traceback.install()
-Console = console.Console()
+console = _console.Console()
 
 _FALERT = _colors.FALERT
 _FSTYLE = _colors.FPROMPT
@@ -29,37 +29,45 @@ class Set:
             self.retobj.exit_code = Help("set").showHelp()
             return self.retobj
 
-        if not [x for x in ["option", "alias", "macro"] if x == self.args[0].lower()]:
-            Console.print(f"[{_FALERT}]Error: Not a valid action")
-            self.retobj.exit_code = 1
-            return self.retobj
-
         kvpairs = [[x.strip() for x in l1 if x]
                    for l1 in splitter(' '.join(self.args[1::]), inner_delm='=', outer_delm=',')]
-        # fmt:off 
-        if (func := { "option": self.assign_options, "alias": self.assign_alias }.get(self.args[0].lower())) is not None:
 
+        if (func := {
+            "option": self.assign_options,
+            "alias": self.assign_alias,
+            "macro": (lambda k, v: self.retobj.macros.update({k: v}))
+        }.get(self.args[0].lower())) is not None:
             if not kvpairs and func == self.assign_options:
-                for pair in OPTIONS.items(): func(*pair)
+                for pair in OPTIONS.items():
+                    func(*pair)
                 self.retobj.exit_code = 0
+                return self.retobj
+
+            elif not kvpairs:
+                console.print(
+                    f"[{_FALERT}]Error: Key value pair is required for [{_FSTYLE}]'{func.__name__}'[/][/]")
+                self.retobj.exit_code = 1
                 return self.retobj
 
             for kvpair in kvpairs:
                 if len(kvpair) != 2:
-                    Console.print(f'[{_FALERT}]Error: Invalid kvset for item [{_FSTYLE}]{kvpair}[/][/]')
+                    console.print(
+                        f'[{_FALERT}]Error: Invalid kvset for item [{_FSTYLE}]{kvpair}[/][/]')
                     self.retobj.exit_code = 1
                     return self.retobj
 
                 func(*kvpair)
         else:
-            for kvpair in kvpairs:
-                if len(kvpair) != 2:
-                    Console.print(f'[{_FALERT}]Error: Invalid kvset for item [{_FSTYLE}]{kvpair}[/][/]')
-                    self.retobj.exit_code = 1
-                    return self.retobj
-                self.retobj.macros[kvpair[0]]=kvpair[1]
+            value = process.extractOne(
+                self.args[0], ["option", "alias", "macro"])
+            if value is not None and value[1] > 50:
+                console.print(
+                    f"[{_FALERT}]Error unrecognized action: '{self.args[0]}'..." +
+                    f" Did you mean [{_FURGENT}]'{value[0]}'[/]?[/]")
+            else:
+                console.print(
+                    f"[{_FALERT}]Error: unrecognized action '{self.args[0]}'[/]")
             pass
-        #fmt: on
 
         return self.retobj
 
@@ -71,14 +79,17 @@ class Set:
             else:
                 options[option]["value"]["value"] = value
         else:
-            Console.print(f"[{_FALERT}]Error: Invalid option '{option}'[/]")
+            console.print(f"[{_FALERT}]Error: Invalid option '{option}'[/]")
             self.retobj.exit_code = 1
             return
 
         parser = optparser.OptionsParser(options)
         options = parser.parse()
+        if not options[1]:
+            self.retobj.exit_code = 1
+            return
         print(option, "=>", value)
-        self.retobj.option_dict = options
+        self.retobj.option_dict = options[0]
         self.retobj.exit_code = 0
 
     def assign_alias(self, alias: str, command: str) -> None:
@@ -86,7 +97,7 @@ class Set:
         exit_code = self.retobj.exit_code
 
         if not alias.isalnum():
-            Console.print(
+            console.print(
                 "[red]Alert: Alias name can only contain alphabets and numbers[/]"
             )
             self.retobj.exit_code = 1

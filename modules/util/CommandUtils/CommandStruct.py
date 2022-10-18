@@ -1,5 +1,5 @@
-from typing import Any
-from types import FunctionType
+from typing import Any, Type
+from commands import Runnable
 from modules.util.CommandUtils._Commands import Commands
 from modules.util.CommandUtils.ReturnStructure import RetObject
 
@@ -39,25 +39,20 @@ class CreateCommand:
     def run(self, command: str) -> RetObject:
         if (cmd := Commands.get(command)):
             retobj = _RunCommand(cmd)(
-                self.arguments, self.create_struct())
+                self.arguments,
+                self.create_struct())
             retobj.command_found = True
             return retobj
         else:
             retobj = RetObject()
             retobj.command_found = False
-            retobj.exit_code = 1
+            retobj.exit_code = 127
             return retobj
 
 
-# fmt: on
 class _RunCommand:
-    def __init__(self, command: Any):
+    def __init__(self, command: Type[Runnable]):
         self.command = command
 
     def __call__(self, arguments: list[str], ReturnObject: RetObject) -> RetObject:
-        command = self.command
-        if isinstance(command, FunctionType):
-            return command(arguments, ReturnObject)
-        else:
-            command_object = command(arguments, ReturnObject)
-            return command_object.run()
+        return self.command(arguments, ReturnObject).run()

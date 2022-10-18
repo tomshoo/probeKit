@@ -76,7 +76,7 @@ class OptionsParser:
                     data_value["type"] = scheme
         self.option_dict = option_dict
 
-    def parse(self) -> dict:
+    def parse(self) -> tuple[dict, bool]:
         """
         Parse the option dictionary assigning appropriate values for the options
         """
@@ -98,14 +98,16 @@ class OptionsParser:
                         else:
                             try:
                                 self.__dictparser(data)
-                            except TypeError as e:
+                            except (TypeError, ValueError) as e:
                                 print(f"Something went wrong... => {e}")
+                                return option_dict, False
                     pass
 
                 elif option_dict[data]["type"] == "int":
                     if type(option_dict[data]["value"]) is not int:
                         if option_dict[data]["value"].isdecimal():
-                            option_dict[data]["value"] = int(option_dict[data]["value"])
+                            option_dict[data]["value"] = int(
+                                option_dict[data]["value"])
                         else:
                             option_dict[data]["value"] = ""
                     else:
@@ -143,4 +145,4 @@ class OptionsParser:
                     del _type
                     sys.exit(1)
 
-        return option_dict
+        return option_dict, True

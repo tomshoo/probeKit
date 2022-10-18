@@ -4,18 +4,16 @@ from modules.util.extra import get_args
 from modules.util.CommandUtils.ReturnStructure import RetObject
 from modules.data.Help import Help
 from rich.console import Console
-# from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
+
+from . import Runnable
 
 console = Console()
 _FALERT = _colors.FALERT
 _FURGENT = _colors.FURGENT
 
 
-class unset_val:
-    def __init__(self, arguemnts: list[str], ReturnObject: RetObject):
-        self.args: list[str] = arguemnts
-        self.retobj = ReturnObject
-
+class Unset(Runnable):
     def run(self) -> RetObject:
         if not self.args:
             self.retobj.exit_code = 1
@@ -25,17 +23,12 @@ class unset_val:
             self.retobj.exit_code = Help("set").showHelp()
             return self.retobj
 
-        if not [x for x in ["option", "alias", "macro"] if x == self.args[0].lower()]:
-            console.print(f"[{_FALERT}]Error: Not a valid action")
-            self.retobj.exit_code = 1
-            return self.retobj
-
         if (func := {
             "option": self.unassign_option,
             "alias": self.unassign_alias,
             "macro": self.unassign_macro
         }.get(self.args[0].lower())) is not None:
-            if (k := get_args(self.args, 1) is not None) and k == "all":
+            if (k := get_args(self.args, 1)) is not None and k == "all":
                 if func == self.unassign_macro:
                     self.retobj.macros = {}
                 elif func == self.unassign_alias:
@@ -47,6 +40,17 @@ class unset_val:
 
             for key in self.args[1:]:
                 func(key)
+            pass
+        else:
+            value = process.extractOne(
+                self.args[0], ["option", "alias", "macro"])
+            if value is not None and value[1] > 50:
+                console.print(
+                    f"[{_FALERT}]Error unrecognized action: '{self.args[0]}'..." +
+                    f" Did you mean [{_FURGENT}]'{value[0]}'[/]?[/]")
+            else:
+                console.print(
+                    f"[{_FALERT}]Error: unrecognized action '{self.args[0]}'[/]")
             pass
         return self.retobj
 
@@ -84,8 +88,7 @@ class unset_val:
 
         else:
             console.print(
-                f"[{_FALERT}][-] Error: no such alias '[{_FURGENT}]{alias}[/]' exists[/]"
-            )
+                f"[{_FALERT}][-] Error: no such alias '[{_FURGENT}]{alias}[/]' exists[/]")
             self.retobj.exit_code = 2
 
         self.retobj.aliases = aliases
@@ -100,8 +103,7 @@ class unset_val:
 
         else:
             console.print(
-                f"[{_FALERT}][-] Error: no such alias '[{_FURGENT}]{macro}[/]' exists[/]"
-            )
+                f"[{_FALERT}][-] Error: no such alias '[{_FURGENT}]{macro}[/]' exists[/]")
             self.retobj.exit_code = 2
 
         self.retobj.aliases = macros
