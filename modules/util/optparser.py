@@ -1,6 +1,8 @@
 import sys
 from modules.util.extra import string
 from rich import traceback
+from config import option_dict as default_option_dict
+
 traceback.install()
 
 class OptionsParser:
@@ -83,6 +85,10 @@ class OptionsParser:
                         else:
                             try: self.__dictparser(data)
                             except TypeError as e: print(f'Something went wrong... => {e}')
+                            except ValueError as e:
+                                print(f'invalid value for option: {e}')
+                                option_dict[data]['value'] = ''
+                                continue
                     pass
 
                 elif option_dict[data]['type'] == "int": 
