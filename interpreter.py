@@ -188,7 +188,6 @@ class input_parser:
                 if "$" in command:
                     for x in re.findall("\\$\\(.*?\\)", command):
                         command = command.replace(x, macros.get(x[2:-1:], x[2:-1:]))
-                    print(command)
                     cmd_list = command.split(" ")
                     for x in cmd_list:
                         if x.strip('"').strip("'").startswith("$"):
@@ -197,7 +196,6 @@ class input_parser:
                     for x in cmd_list:
                         if x.strip('"').strip("'").strip().startswith("$"):
                             command = command.replace(x, macros.get(x.strip("$"), ""))
-                    # print(command)
                 if ";" in command:
                     for x in splitter.dbreaker(command, delimiter=";"):
                         if "\\semicolon" in command:
@@ -225,7 +223,6 @@ class input_parser:
         arguments = " ".join(arglist)
         cmd_split: list = command.split()
         cmd_split_quoted = splitter.quote(command, " ")
-        print(cmd_split_quoted)
 
         verb: str = cmd_split[0].lower()
 
