@@ -11,7 +11,7 @@ FURGENT = colors.FURGENT
 
 class Help():
     """This class prints help for the interpreter."""
-    def __init__(self, command : str):
+    def __init__(self, command : str | None = None):
         self.command = command
 
     def showHelp(self):
@@ -19,7 +19,7 @@ class Help():
         command = self.command
 
         # Checks whether the shell is module interpreter or module selector session
-        if command == '':
+        if not command:
             Console.print(f'\n[{FSUCCESS}]Usage: [verb] [options]\n'+
             'Available verbs are:\n\n'+
             '\t use\t\t (*)use an available module\n'+
